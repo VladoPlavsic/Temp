@@ -13,7 +13,7 @@ class JWTMeta(BaseModel):
 class JWTCreds(BaseModel):
     """How we'll identify users"""
     sub: EmailStr
-    username: str
+    phone_number: str
 
 class JWTPayload(JWTMeta, JWTCreds):
     """

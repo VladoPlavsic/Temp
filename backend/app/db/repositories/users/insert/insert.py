@@ -21,16 +21,9 @@ class UserDBInsertRepository(BaseDBRepository):
                 detail="This email is already taken. Login whith that email or register with new one!"
             )
         
-        # make sure username is not taken
-        if await self.get_user_by_username(username=new_user.username):
-            raise HTTPException(
-                status_code=409,
-                detail="This username is already taken. Login with that username or register with new one!"
-            )
-        
         user_password_update = self.auth_service.create_salt_and_hash_password(plaintext_password=new_user.password)
         new_user_params = new_user.copy(update=user_password_update.dict())
-        registred = await self.__execute(query=register_new_user_query(full_name=new_user_params.full_name, username=new_user_params.username, email=new_user_params.email, salt=new_user_params.salt, password=new_user_params.password))
+        registred = await self.__execute(query=register_new_user_query(**new_user_params.dict()))
 
         return UserInDB(**registred)
 

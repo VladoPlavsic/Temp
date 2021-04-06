@@ -3,6 +3,7 @@ from typing import List, Tuple
 from app.models.private import StructureAllModel
 from app.models.private import MaterialAllModel
 from app.models.private import AudioImagesAllModel
+from app.models.about import TeamMemberInDBModel
 
 def get_specific_keys_from_content_list(content_list, **kwargs) -> List:
         '''
@@ -177,5 +178,10 @@ def material_keys_from_list_of_objects(list_: List[MaterialAllModel]):
 
 def audio_images_keys_from_list_of_objects(list_: List[AudioImagesAllModel]):
     list_of_keys = [{"Key": media_object.key} for media_object in list_]
+
+    return list_of_keys
+
+def team_member_keys_from_list_of_objects(list_: List[TeamMemberInDBModel]):
+    list_of_keys = [{"Key": team_member.photo_key} for team_member in list_]
 
     return list_of_keys

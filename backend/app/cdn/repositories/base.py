@@ -118,7 +118,7 @@ class BaseCDNRepository:
 
         return response
 
-    def get_sharing_links_from_objects(self, *, list_of_objects, type_: Union['structure', 'material', 'parts']) -> Dict:
+    def get_sharing_links_from_objects(self, *, list_of_objects, type_: Union['structure', 'material', 'parts', 'team']) -> Dict:
         '''
         Accept List of objects
         Returns Dict:
@@ -133,6 +133,8 @@ class BaseCDNRepository:
             list_of_keys = material_keys_from_list_of_objects(list_=list_of_objects)
         elif type_ == 'parts':
             list_of_keys = audio_images_keys_from_list_of_objects(list_=list_of_objects)
+        elif type_ == 'team':
+            list_of_keys = team_member_keys_from_list_of_objects(list_=list_of_objects)
         else:
             return None        
 

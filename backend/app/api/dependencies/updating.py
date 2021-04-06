@@ -4,7 +4,7 @@ from app.db.repositories.private.private import PrivateDBRepository
 from app.cdn.repositories.private.private import PrivateYandexCDNRepository
 from app.db.repositories.public.public import PublicDBRepository
 from app.cdn.repositories.public.public import PublicYandexCDNRepository
-
+from app.db.repositories.about.about import AboutDBRepository
 
 from app.api.dependencies.database import get_db_repository
 from app.api.dependencies.cdn import get_cdn_repository
@@ -12,6 +12,7 @@ from app.api.dependencies.cdn import get_cdn_repository
 async def update_sharing_links_function(
     public_db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     private_db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    about_db_repo: AboutDBRepository = Depends(get_db_repository(AboutDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     ) -> None:
 
@@ -86,3 +87,9 @@ async def update_sharing_links_function(
     if public_practice_audio:
         updated = cdn_repo.get_sharing_links_from_objects(list_of_objects=public_practice_audio, type_='parts')
         await public_db_repo.update_presentation_part_links(prats=updated, presentation='practice', media_type='audio')
+
+    # about content update
+    team_members = await about_db_repo.select_all_team_members()
+    if team_members:
+        updated = cdn_repo.get_sharing_links_from_objects(list_of_objects=team_members, type_='team')
+        await about_db_repo.update_team_member_photos(photos=updated)

@@ -101,7 +101,7 @@ async def user_login_with_email_and_password_send_code(
 
     background_tasks.add_task(send_message, subject="Confirmation code.", message_text=create_confirm_code_msg(confirmation_code=confirmation_code), to=user.email)
 
-    return {"Detail": "Confirmation email sent!"}
+    return {"Detail": "Confirmation code email sent!"}
 
 @router.post("/login/token/", response_model=AccessToken)
 async def user_login_with_email_and_password(

@@ -1,6 +1,8 @@
-def register_new_user_query(full_name, username, email, salt, password) -> str:
+from app.models.user import UserCreate
+
+def register_new_user_query(full_name, email, phone_number, city, school, salt, password) -> str:
     return \
-        f"SELECT (users.create_user_function('{full_name}', '{username}', '{email}', '{salt}', '{password}')).*"
+        f"SELECT (users.create_user_function('{full_name}', '{email}', '{phone_number}', '{city}', '{school}', '{salt}', '{password}')).*"
 
 def set_jwt_token_query(user_id, token) -> str:
     return \

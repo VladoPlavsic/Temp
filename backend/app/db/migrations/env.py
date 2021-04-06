@@ -45,6 +45,7 @@ def run_migrations_online() -> None:
         default_conn.execute("CREATE SCHEMA IF NOT EXISTS private")
         default_conn.execute("CREATE SCHEMA IF NOT EXISTS public")
         default_conn.execute("CREATE SCHEMA IF NOT EXISTS users")
+        default_conn.execute("CREATE SCHEMA IF NOT EXISTS about")
 
     # create private for live db
     if DB_URL != DATABASE_URL:

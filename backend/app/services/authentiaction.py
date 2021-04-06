@@ -52,7 +52,7 @@ class AuthService:
             iat=datetime.timestamp(datetime.utcnow()),
             exp=datetime.timestamp(datetime.utcnow() + timedelta(minutes=expires_in)),
         )
-        jwt_creds = JWTCreds(sub=user.email, username=user.username)
+        jwt_creds = JWTCreds(sub=user.email, phone_number=user.phone_number)
         token_payload = JWTPayload(
             **jwt_meta.dict(),
             **jwt_creds.dict(),
@@ -71,4 +71,4 @@ class AuthService:
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        return payload.username
+        return payload.sub

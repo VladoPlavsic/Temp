@@ -140,11 +140,22 @@ async def get_private_lectures(
     (fk, path) = await db_repo.get_branch_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en)
     response = await db_repo.select_lectures(fk=fk.id)
 
+
     return LectureResponse(lectures=response, fk=fk.id, path=path + '/' + fk.name_ru)
 
-# ######
-# NOTE JUST DO IT
-# ######
+@router.get("/lecture/id", name="private:get-lecture-id", status_code=HTTP_200_OK)
+async def get_private_lectures_id(
+    grade_name_en: str,
+    subject_name_en: str,
+    branch_name_en: str,
+    lecture_name_en: str,
+    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    ):
+
+    (fk, path) = await db_repo.get_lecture_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en, lecture_name=lecture_name_en)
+
+    return {"Lecture id": fk.id}
+
 @router.get("/material", response_model=MaterialResponse, name="private:get-material", status_code=HTTP_200_OK)
 async def get_private_material(
     token: str,
