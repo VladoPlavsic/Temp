@@ -61,7 +61,6 @@ class UsersDBSelectRepository(BaseDBRepository):
             logger.error(e)
             logger.error("--- ERROR EXECUTING QUERY IN SELECT USERS REPOSITORY ---")
             raise HTTPException(status_code=400, detail=f"Unhandled exception executing query in select users repository. Exited with {e}")
-
     
         return record
 

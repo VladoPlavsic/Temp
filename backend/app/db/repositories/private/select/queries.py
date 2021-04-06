@@ -86,3 +86,13 @@ def select_material_parts_query(fk, presentation, media_type) -> str:
 def select_all_material_part_keys_query(presentation, media_type) -> str:
     return \
         f"SELECT (private.select_all_{presentation}_{media_type}_keys()).*"
+
+
+# users
+def select_all_user_available_grades_query(user_id: int) -> str:
+    return \
+        f"SELECT (users.select_all_user_available_grades({user_id})).*"
+
+def select_all_user_available_subjects_query(user_id: int) -> str:
+    return \
+        f"SELECT (users.select_all_user.available_subjects({user_id})).*"

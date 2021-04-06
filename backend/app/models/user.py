@@ -1,5 +1,6 @@
 import string
-from typing import Optional
+from datetime import datetime
+from typing import Optional, Any
 from pydantic import EmailStr, constr, validator
 from app.models.core import BaseModel
 from app.models.token import AccessToken
@@ -63,3 +64,15 @@ class UserInDB(UserBase):
 class PublicUserInDB(UserBase):
     id: int
     access_token: Optional[AccessToken]
+
+
+# availble subjects/grades
+class UserAvailableGrades(BaseModel):
+    grade_id: int
+    crated_at: Any
+    updated_at: Any
+
+class UserAvailableSubjects(BaseModel):
+    subject_id: int
+    created_at: datetime
+    updated_at: datetime
