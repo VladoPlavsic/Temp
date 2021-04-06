@@ -62,3 +62,12 @@ def update_video_query(id, name_ru, description, url) -> str:
 def update_game_query(id, name_ru, description, url) -> str:
     return \
         f"SELECT (private.update_game({id}, {string_or_null(name_ru, description, url)})).*"
+
+# update metadata
+def update_book_query(id, name_ru, description) -> str:
+    return \
+        f"SELECT (private.update_book_metadata({id}, {string_or_null(name_ru, description)})).*"
+
+def update_presentation_query(presentation, id, name_ru, description) -> str:
+    return \
+        f"SELECT (private.update_{presentation}_metadata({id}, {string_or_null(name_ru, description)}))"

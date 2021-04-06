@@ -10,6 +10,8 @@ from app.models.private import UpdateStructureModel
 from app.models.private import UpdateLectureModel
 from app.models.private import UpdateVideoModel
 from app.models.private import UpdateGameModel
+from app.models.private import UpdateBookModel
+from app.models.private import UpdatePresentationModel
 
 # import response models
 from app.models.private import GradeInDB
@@ -18,6 +20,8 @@ from app.models.private import BranchInDB
 from app.models.private import LectureInDB
 from app.models.private import VideoInDB
 from app.models.private import GameInDB
+from app.models.private import BookInDB
+from app.models.private import PresentationMasterInDB
 
 
 import logging
@@ -157,6 +161,18 @@ class PrivateDBUpdateRepository(BaseDBRepository):
         return GameInDB(**response)
 
     
+    async def update_book(self, *, updated: UpdateBookModel) -> BookInDB:
+        response = await self.__update(query=update_book_query(id=updated.id, description=updated.description, name_ru=updated.name_ru))
+        if not response:
+            raise HTTPException(status_code=404, detail="Nothing updated!")
+        return BookInDB(**response)
+
+    async def update_presentation(self, *, updated: UpdatePresentationModel, presentation: Union['practice', 'theory']) -> PresentationMasterInDB:
+        response = await self.__update(query=update_presentation_query(id=updated.id, description=updated.description, name_ru=updated.name_ru ,presentation=presentation))
+        if not response:
+            raise HTTPException(status_code=404, detail="Nothing updated!")
+        return PresentationMasterInDB(id=response['id'], description=response['description'], name_ru=response['name_ru'])
+
     async def __update(self, *, query) -> None:
         try:
             updated = await self.db.fetch_one(query=query)

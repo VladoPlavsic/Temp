@@ -12,6 +12,9 @@ from app.models.private import BranchInDB
 from app.models.private import LectureInDB
 from app.models.private import MaterialResponseModel
 
+from app.models.user import UserAvailableGrades
+from app.models.user import UserAvailableSubjects
+
 from app.models.private import VideoInDB
 from app.models.private import GameInDB
 from app.models.private import BookInDB
@@ -230,7 +233,20 @@ class PrivateDBSelectRepository(BaseDBRepository):
         records = await self.__select_many(query=select_all_material_part_keys_query(presentation=presentation, media_type=media_type))
 
         response = [AudioImagesAllModel(**record) for record in records] 
-        return response      
+        return response     
+
+    # users
+    async def select_user_available_grades(self, *, user_id: int) -> List[UserAvailableGrades]:
+        records = await self.__select_many(query=select_all_user_available_grades_query(user_id=user_id))
+
+        return [UserAvailableGrades(**record) for record in records]
+
+
+    async def select_user_available_subjects(self, *, user_id: int) -> List[UserAvailableSubjects]:
+        records = await self.__select_many(query=select_all_user_available_subjects_query(user_id=user_id))
+
+        return [UserAvailableSubjects(**record) for record in records]
+
 
     async def __select_many(self, *, query):
         try:
