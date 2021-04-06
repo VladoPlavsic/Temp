@@ -167,7 +167,7 @@ class PrivateDBUpdateRepository(BaseDBRepository):
             raise HTTPException(status_code=404, detail="Nothing updated!")
         return BookInDB(**response)
 
-    async def update_presentation(self, *, updated: UpdatePresentationModel, presentation: Union['practice', 'theory']) -> PresentationMasterInDB:
+    async def update_presentation(self, *, updated: UpdatePresentationModel, presentation: Union['practice', 'theory']):
         response = await self.__update(query=update_presentation_query(id=updated.id, description=updated.description, name_ru=updated.name_ru ,presentation=presentation))
         if not response:
             raise HTTPException(status_code=404, detail="Nothing updated!")

@@ -27,7 +27,7 @@ from app.models.private import LectureInDB
 from app.models.private import VideoInDB
 from app.models.private import GameInDB
 from app.models.private import BookInDB
-from app.models.private import PresentationInDB
+from app.models.private import PresentationMasterInDB
 
 
 router = APIRouter()
@@ -128,7 +128,7 @@ async def update_private_book(
 async def update_private_practice(
     updated: UpdatePresentationModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> PresentationInDB:
+    ) -> PresentationMasterInDB:
 
     response = await db_repo.update_presentation(updated=updated, presentation="practice")
     return response
@@ -137,7 +137,7 @@ async def update_private_practice(
 async def update_private_thoery(
     updated: UpdatePresentationModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> PresentationInDB:
+    ) -> PresentationMasterInDB:
 
     response = await db_repo.update_presentation(updated=updated, presentation="theory")
     return response
