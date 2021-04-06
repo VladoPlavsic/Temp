@@ -276,3 +276,9 @@ class UpdateLectureModel(UpdateBaseModel):
 
 class UpdateStructureModel(UpdateBaseModel):
     background_key: Optional[str]
+
+class UpdateBookModel(UpdateBaseModel):
+    description: Optional[str]
+
+class UpdatePresentationModel(UpdateBaseModel):
+    description: Optional[str]

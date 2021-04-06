@@ -132,7 +132,7 @@ def create_user_functions() -> None:
     # select all user available grades
     op.execute("""
     CREATE OR REPLACE FUNCTION users.select_all_user_available_grades(user_id int)
-    RETURNS TABLE (grade_id int, created_at timestamp, updated_at timestamp)
+    RETURNS TABLE (grade_id int, created_at timestamp WITH TIME ZONE, updated_at timestamp WITH TIME ZONE)
     AS $$
     BEGIN
         RETURN QUERY (SELECT users.user_grades.grade_fk, users.user_grades.created_at, users.user_grades.updated_at FROM users.user_grades WHERE users.user_grades.user_fk = user_id);
@@ -141,7 +141,7 @@ def create_user_functions() -> None:
     # select all user available subjects
     op.execute("""
     CREATE OR REPLACE FUNCTION users.select_all_user_available_subjects(user_id int)
-    RETURNS TABLE (subject_id int, created_at timestamp, updated_at timestamp)
+    RETURNS TABLE (subject_id int, created_at timestamp WITH TIME ZONE, updated_at timestamp WITH TIME ZONE)
     AS $$
     BEGIN 
         RETURN QUERY (SELECT users.user_subjects.subject_fk, users.user_subjects.created_at, users.user_subjects.updated_at FROM users.user_subjcts WHERE users.user_subjects.user_fk = user_id);

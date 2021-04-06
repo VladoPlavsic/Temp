@@ -129,3 +129,29 @@ async def user_login_with_email_and_password(
     await user_repo.set_jwt_token(user_id=user.id, token=access_token.access_token)
 
     return access_token
+
+
+# buying grades/subjects
+@router.post("/buy/grade")
+async def user_buy_grade_access(
+    grade_id: int = Body(..., embed=True),
+    user = Depends(get_user_from_token),
+    user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
+    ) -> None:
+
+    # remove default days
+    await user_repo.add_grade_to_user(user_id=user.id, grade_id=grade_id, days=200)
+
+    return None
+
+@router.post("/buy/subject")
+async def user_buy_subject_access(
+    subject_id: int = Body(..., embed=True),
+    user = Depends(get_user_from_token),
+    user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
+    ) -> None:
+
+    # remove default days
+    await user_repo.add_subject_to_user(user_id=user.id, subject_id=subject_id, days=200)
+
+    return None
