@@ -4,6 +4,8 @@ from starlette.status import HTTP_200_OK
 
 from app.api.dependencies.database import get_db_repository
 from app.db.repositories.about.about import AboutDBRepository
+from app.api.dependencies.cdn import get_cdn_repository
+from app.cdn.repositories.about.about import AboutYandexCDNRepository
 
 # request models
 from app.models.about import UpdateTeamMemberModel
@@ -21,7 +23,11 @@ router = APIRouter()
 async def update_team_member(
     updated: UpdateTeamMemberModel = Body(...),
     db_repo: AboutDBRepository = Depends(get_db_repository(AboutDBRepository)),
+    cdn_repo: AboutYandexCDNRepository = Depends(get_cdn_repository(AboutYandexCDNRepository)),
     ) -> TeamMemberInDBModel:
+    if updated.photo_key:
+        updated_key = cdn_repo.get_sharing_links_from_keys(list_of_objects=[{"Key": updated.photo_key}])
+        updated.photo_link = updated_key[updated.photo_key]
 
     response = await db_repo.update_team_member(updated=updated)
     return response

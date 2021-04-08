@@ -6,9 +6,13 @@ def update_team_member_photos_query(photo_keys, photo_links) -> str:
     return \
         f"SELECT (about.update_team_member_photos('{{{photo_keys}}}'::text[],'{{{photo_links}}}'::text[]))"
 
-def update_team_member_query(id, order, name, role, profession, description) -> str:
+def update_team_member_query(id, order, name, role, profession, photo_key, photo_link, description) -> str:
+    if not description:
+        description = 'null'
+    else:
+        description = f"'{description}'"
     return \
-        f"SELECT (about.update_team_member({id}, {string_or_null(order, name, role, profession, description)})).*"
+        f"SELECT (about.update_team_member({id}, {string_or_null(order, name, role, profession, photo_key, photo_link)}, {description})).*"
 
 def update_contact_query(id, order, html) -> str:
     return \

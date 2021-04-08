@@ -72,7 +72,7 @@ def create_update_functions() -> None:
     ''')
     # update team member
     op.execute('''
-    CREATE OR REPLACE FUNCTION about.update_team_member(id int, i_order int, i_name text, i_role text, i_profession text, i_description text)
+    CREATE OR REPLACE FUNCTION about.update_team_member(id int, i_order int, i_name text, i_role text, i_profession text, i_photo_key text, i_photo_link text,  i_description text)
         RETURNS TABLE ("order" int, name text, role text, profession text, description text, photo_key text, photo_link text)
         AS $$
         BEGIN
@@ -81,7 +81,9 @@ def create_update_functions() -> None:
             name = COALESCE(i_name, about.our_team.name),
             role = COALESCE(i_role, about.our_team.role),
             profession = COALESCE(i_profession, about.our_team.profession), 
-            description = COALESCE(i_description, about.our_team.description)
+            description = COALESCE(i_description, about.our_team.description),
+            photo_key = COALESCE(i_photo_key, about.our_team.photo_key),
+            photo_link = COALESCE(i_photo_link, about.our_team.photo_link)
         WHERE about.our_team.order = id;
         RETURN QUERY (SELECT * FROM about.our_team WHERE about.our_team.order = COALESCE(i_order, id));
         END $$ LANGUAGE plpgsql;

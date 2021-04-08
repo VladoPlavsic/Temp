@@ -21,6 +21,8 @@ class TeamMemberInDBModel(TeamMemberBaseModel):
 
 class UpdateTeamMemberModel(BaseModel):
     id: int
+    photo_link: Optional[str]
+    photo_key: Optional[str]
     order: Optional[int]
     role: Optional[str]
     name: Optional[str]
