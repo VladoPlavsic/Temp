@@ -11,8 +11,11 @@ async def connect_to_db(app: FastAPI) -> None:
     database = Database(DB_URL, min_size=2, max_size=10)
 
     try:
+        # connect to database
         await database.connect()
         app.state._db = database
+        # upgrade database to current migration head
+        os.system("alembic upgrade head")
 
     except Exception as e:
         logger.warn("--- DB CONNECTION ERROR ---")

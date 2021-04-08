@@ -7,7 +7,7 @@ def update_team_member_photos_query(photo_keys, photo_links) -> str:
         f"SELECT (about.update_team_member_photos('{{{photo_keys}}}'::text[],'{{{photo_links}}}'::text[]))"
 
 def update_team_member_query(id, order, name, role, profession, photo_key, photo_link, description) -> str:
-    if not description:
+    if description == None:
         description = 'null'
     else:
         description = f"'{description}'"
