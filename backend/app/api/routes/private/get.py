@@ -37,8 +37,8 @@ router = APIRouter()
 
 @router.get("/grade", response_model=GradeResponse, name="private:get-grades", status_code=HTTP_200_OK)
 async def get_private_grades(
-    token: str,
-    user = Depends(get_user_from_token),
+    #token: str,
+    #user = Depends(get_user_from_token),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     ) -> GradeResponse:
 
@@ -46,7 +46,7 @@ async def get_private_grades(
     # available grade id's for a user will be returned to him when he logs in, same time as token
     # super user (admin) will skip process id validation
 
-    if not user.is_superuser:
+    '''    if not user.is_superuser:
         user_grades = await db_repo.select_user_available_grades(user_id=user.id)
         ids = [grade.grade_id for grade in user_grades]
         if not ids:
@@ -54,16 +54,16 @@ async def get_private_grades(
         else:
             response = await db_repo.select_grades(ids=ids)
             return GradeResponse(grades=response)
-    else:
-        response = await db_repo.select_grades()
-        return GradeResponse(grades=response)
+    else:'''
+    response = await db_repo.select_grades()
+    return GradeResponse(grades=response)
 
 
 @router.get("/subject", response_model=SubjectResponse, name="private:get-subjects", status_code=HTTP_200_OK)
 async def get_private_subjects(
-    token: str,
+    #token: str,
     grade_name_en: str,
-    user = Depends(get_user_from_token),
+    #user = Depends(get_user_from_token),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     ) -> SubjectResponse:
     
@@ -85,10 +85,10 @@ async def get_private_subjects(
 
 @router.get("/branch", response_model=BranchResponse, name="private:get-branches", status_code=HTTP_200_OK)
 async def get_private_branches(
-    token: str,
+    #token: str,
     grade_name_en: str,
     subject_name_en: str,
-    user = Depends(get_user_from_token),
+    #user = Depends(get_user_from_token),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     ) -> BranchResponse:
 
@@ -114,11 +114,11 @@ async def get_private_branches(
 
 @router.get("/lecture", response_model=LectureResponse, name="private:get-lectures", status_code=HTTP_200_OK)
 async def get_private_lectures(
-    token: str,
+    #token: str,
     grade_name_en: str,
     subject_name_en: str,
     branch_name_en: str,
-    user = Depends(get_user_from_token),
+    #user = Depends(get_user_from_token),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     ) -> LectureResponse:
     # we will accept token for validating user and available grade id's as well as available subject id's
@@ -158,12 +158,12 @@ async def get_private_lectures_id(
 
 @router.get("/material", response_model=MaterialResponse, name="private:get-material", status_code=HTTP_200_OK)
 async def get_private_material(
-    token: str,
+    #token: str,
     grade_name_en: str,
     subject_name_en: str,
     branch_name_en: str,
     lecture_name_en: str,
-    user = Depends(get_user_from_token),
+    #user = Depends(get_user_from_token),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     ) -> MaterialResponse:
     # we will accept token for validating user and available grade id's as well as available subject id's
@@ -184,8 +184,8 @@ async def get_private_material(
     #     return 402 Payment required
     # super user (admin) will skip process id validation
 
-    grade_id = await db_repo.get_grade_by_name(grade_name=grade_name_en)
-    subject_id = await db_repo.get_subject_by_name(subject_name=subject_name_en)
+    '''grade_id = await db_repo.get_grade_by_name(grade_name=grade_name_en)
+    subject_id = await db_repo.get_subject_by_name(subject_name=subject_name_en)'''
     (fk, path) = await db_repo.get_lecture_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en, lecture_name=lecture_name_en)
 
     response = await db_repo.select_material(fk=fk.id)
