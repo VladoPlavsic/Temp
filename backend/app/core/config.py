@@ -11,6 +11,12 @@ API_PREFIX = "/api"
 # EMAIL
 SERVER_EMAIL = config("SERVER_EMAIL", cast=str,  default="vladoplavsicvladoplavsic@gmail.com")
 ADMIN_EMAIL = config("ADMIN_EMAIL", cast=str, default='johnyglup98@gmail.com')
+# GMAIL
+GMAIL_TOKEN = config("GMAIL_TOKEN", cast=str)
+GMAIL_REFRESH_TOKEN = config("GMAIL_REFRESH_TOKEN", cast=str)
+GMAIL_TOKEN_URI = config("GMAIL_TOKEN_URI", cast=str)
+GMAIL_CLIENT_ID = config("GMAIL_CLIENT_ID", cast=str)
+GMAIL_CLIENT_SECRET = config("GMAIL_CLIENT_SECRET", cast=Secret)
 
 # CDN CREDS
 AWS_SECRET_KEY_ID = config("AWS_SECRET_KEY_ID", cast=str)

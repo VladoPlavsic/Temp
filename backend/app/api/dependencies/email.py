@@ -45,6 +45,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
+from app.core.config import GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN, GMAIL_TOKEN, GMAIL_TOKEN_URI
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
@@ -62,6 +63,15 @@ def send_message(subject, message_text, to=ADMIN_EMAIL) -> EmailResponse:
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     # If there are no (valid) credentials available, let the user log in.
+    else:
+        creds = Credentials(
+          token=GMAIL_TOKEN, 
+          refresh_token=GMAIL_REFRESH_TOKEN,
+          token_uri=GMAIL_TOKEN_URI,
+          client_id=GMAIL_CLIENT_ID,
+          client_secret=GMAIL_CLIENT_SECRET,
+          scopes=SCOPES
+        )
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
