@@ -76,20 +76,20 @@ def create_user_functions() -> None:
     """)
     # add grade to user
     op.execute("""
-    CREATE OR REPLACE FUNCTION users.add_grade_to_user_function(user_id int, grade_id int, days int)
+    CREATE OR REPLACE FUNCTION users.add_grade_to_user_function(user_id int, grade_id int, days int, i_for_life boolean default 'f')
     RETURNS VOID
     AS $$
     BEGIN
-        INSERT INTO users.user_grades(user_fk, grade_fk, days_left) VALUES(user_id, grade_id, days);
+        INSERT INTO users.user_grades(user_fk, grade_fk, days_left, for_life) VALUES(user_id, grade_id, days, i_for_life);
     END $$ LANGUAGE plpgsql;
     """)
     # add subject to user
     op.execute("""
-    CREATE OR REPLACE FUNCTION users.add_subject_to_user_function(user_id int, subject_id int, days int)
+    CREATE OR REPLACE FUNCTION users.add_subject_to_user_function(user_id int, subject_id int, days int, i_for_life boolean default 'f')
     RETURNS VOID
     AS $$
     BEGIN 
-        INSERT INTO users.user_subjects(user_fk, subject_fk, days_left) VALUES (user_id, subject_id, days);
+        INSERT INTO users.user_subjects(user_fk, subject_fk, days_left, for_life) VALUES (user_id, subject_id, days, i_for_life);
     END $$ LANGUAGE plpgsql;
     """)
 
@@ -119,7 +119,7 @@ def create_user_functions() -> None:
     AS $$
     BEGIN 
         UPDATE users.user_grades SET
-            days_left = days,
+            days_left = users.user_grades.days_left + days,
             updated_at = now() 
         WHERE users.user_grades.user_fk = user_id AND users.user_grades.grade_fk = grade_id;
     END $$ LANGUAGE plpgsql;
@@ -131,7 +131,7 @@ def create_user_functions() -> None:
     AS $$ 
     BEGIN 
         UPDATE users.user_subjects SET
-            days_left = days,
+            days_left = users.user_subjects.days_left + days,
             updated_at = now()
         WHERE users.user_subjects.user_fk = user_id AND users.user_subjects.subject_fk = subject_id;
     END $$ LANGUAGE plpgsql;
@@ -163,9 +163,9 @@ def create_user_functions() -> None:
     AS $$
     BEGIN
         UPDATE users.user_grades SET
-            days_left = days_left - 1;
-        UPDATE users.subject_grades SET
-            days_left = days_left - 1;
+            days_left = days_left - 1 WHERE users.user_grades.for_life = 'f';
+        UPDATE users.user_subjects SET
+            days_left = days_left - 1 WHERE users.user_subjects.for_life = 'f';
         SELECT delete_expired_subscriptions();
     END $$ LANGUAGE plpgsql;
     """)

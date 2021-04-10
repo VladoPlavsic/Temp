@@ -54,9 +54,10 @@ def create_user_tables() -> None:
     # user - grades
     op.create_table(
         "user_grades",
-        sa.Column("user_fk", sa.Integer(), nullable=False),
-        sa.Column("grade_fk", sa.Integer(), nullable=False),
-        sa.Column("days_left", sa.Integer(), nullable=False),
+        sa.Column("user_fk", sa.Integer, nullable=False),
+        sa.Column("grade_fk", sa.Integer, nullable=False),
+        sa.Column("days_left", sa.Integer, nullable=False),
+        sa.Column("for_life", sa.Boolean, nullable=False, server_default="False"),
         *timestamps(),
         sa.ForeignKeyConstraint(['user_fk'], ['users.users.id'], onupdate='CASCADE', ondelete='CASCADE'),
         sa.ForeignKeyConstraint(['grade_fk'], ['private.grade.id'], onupdate='CASCADE', ondelete='CASCADE'),
@@ -69,6 +70,7 @@ def create_user_tables() -> None:
         sa.Column("user_fk", sa.Integer(), nullable=False),
         sa.Column("subject_fk", sa.Integer(), nullable=False),
         sa.Column("days_left", sa.Integer(), nullable=False),
+        sa.Column("for_life", sa.Boolean, nullable=False, server_default="False"),
         *timestamps(),
         sa.ForeignKeyConstraint(['user_fk'], ['users.users.id'], onupdate='CASCADE', ondelete='CASCADE'),
         sa.ForeignKeyConstraint(['subject_fk'], ['private.subject.id'], onupdate='CASCADE', ondelete='CASCADE'),
@@ -76,6 +78,7 @@ def create_user_tables() -> None:
         schema='users'
     )
 
+    # TODO: trigger on insert grade -> insert all subjects for that grade!!!!! - when delete grade delete all subjects for that grade!
 
 def drop_users_tables() -> None:
     op.execute("DROP TABLE users.user_subjects")

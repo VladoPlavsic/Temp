@@ -34,11 +34,11 @@ class UserDBInsertRepository(BaseDBRepository):
         await self.__execute(query=verify_email_query(user_id=user_id))
 
 
-    async def add_grade_to_user(self, *, user_id: int, grade_id: int, days: int):
-        await self.__execute(query=add_grade_to_user_query(user_id=user_id, grade_id=grade_id, days=days))
+    async def add_grade_to_user(self, *, user_id: int, grade_id: int, days: int, for_life: bool = False):
+        await self.__execute(query=add_grade_to_user_query(user_id=user_id, grade_id=grade_id, days=days, for_life=for_life))
 
-    async def add_subject_to_user(self, *, user_id: int, subject_id: int, days: int):
-        await self.__execute(query=add_subject_to_user_query(user_id=user_id, subject_id=subject_id, days=days))
+    async def add_subject_to_user(self, *, user_id: int, subject_id: int, days: int, for_life: bool = False):
+        await self.__execute(query=add_subject_to_user_query(user_id=user_id, subject_id=subject_id, days=days, for_life=for_life))
 
     async def __execute(self, *, query): 
         try:

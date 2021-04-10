@@ -20,13 +20,34 @@ async def get_user_from_token(
     token: str,
     user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     ) -> Optional[UserInDB]:
+    '''
+        Takes in JWT token 
+        Returns UserInDB or raises 401 if: token expired, not valid token
+    '''
     try:
         email = auth_service.get_user_from_token(token=token, secret_key=str(SECRET_KEY))
         user = await user_repo.get_user_by_email(email=email)
     except Exception as e:
         raise e
-    
+
+    if user.jwt != token:
+        raise HTTPException(status_code=401, detail="Session expired.")
+
     return user
+
+async def is_superuser(
+    *,
+    user: UserInDB = Depends(get_user_from_token),
+    ) -> bool:
+
+    return user.is_superuser
+
+async def is_verified(
+    *,
+    user: UserInDB = Depends(get_user_from_token),
+    ) -> bool:
+
+    return user.email_verified
 
 async def get_current_active_user(current_user: UserInDB = Depends(get_user_from_token)) -> Optional[UserInDB]:
     if not current_user:

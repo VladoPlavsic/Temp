@@ -50,6 +50,8 @@ async def register_new_user(
         access_token=auth_service.create_access_token_for_user(user=registred), token_type='bearer'
     )
 
+    await db_repo.set_jwt_token(user_id=registred.id, token=access_token.access_token)
+
     background_tasks.add_task(send_message, subject="Email confirmation. MPEI kids", message_text=create_confirm_link(token=access_token.access_token), to=registred.email)
 
     return PublicUserInDB(**registred.dict())
@@ -57,7 +59,7 @@ async def register_new_user(
 @router.get("/confirm_email/")
 async def confirm_email(
     token: str,
-    user = Depends(get_user_from_token),
+    user: UserInDB = Depends(get_user_from_token),
     db_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     ) -> AccessToken:
     if not user.email_verified:
@@ -72,7 +74,9 @@ async def confirm_email(
 
     await db_repo.set_jwt_token(user_id=user.id, token=access_token.access_token)
 
-    return access_token
+    user.jwt = access_token.access_token
+
+    return PublicUserInDB(**user.dict(), access_token=access_token)
 
 @router.post("/login/code", status_code=HTTP_200_OK)
 async def user_login_with_email_and_password_send_code(
@@ -103,12 +107,12 @@ async def user_login_with_email_and_password_send_code(
 
     return {"Detail": "Confirmation code email sent!"}
 
-@router.post("/login/token/", response_model=AccessToken)
+@router.post("/login/token/", response_model=PublicUserInDB)
 async def user_login_with_email_and_password(
     confirmation_code: str,
     user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     form_data: OAuth2PasswordRequestForm = Depends(OAuth2PasswordRequestForm),
-    ) -> AccessToken:
+    ) -> PublicUserInDB:
     user = await user_repo.authenticate_user(email=form_data.username, password=form_data.password)
 
     if not user:
@@ -128,7 +132,7 @@ async def user_login_with_email_and_password(
 
     await user_repo.set_jwt_token(user_id=user.id, token=access_token.access_token)
 
-    return access_token
+    return PublicUserInDB(**user.dict(), access_token=access_token)
 
 
 # buying grades/subjects

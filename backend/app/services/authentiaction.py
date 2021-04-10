@@ -61,6 +61,10 @@ class AuthService:
         return access_token
 
     def get_user_from_token(self, *, token: str, secret_key: str) -> Optional[str]:
+        '''
+        Takes in JWT token
+        Returns user email (encoded in token) || 401
+        '''
         try:
             decoded_token = jwt.decode(token, str(secret_key), audience=JWT_AUDIENCE, algorithms=[JWT_ALGORITHM])
             payload = JWTPayload(**decoded_token)

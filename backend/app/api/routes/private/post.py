@@ -1,12 +1,14 @@
 from fastapi import APIRouter, HTTPException
 from fastapi import Depends, Body
-from starlette.status import HTTP_201_CREATED
+from starlette.status import HTTP_201_CREATED, HTTP_403_FORBIDDEN
 
 from app.db.repositories.private.private import PrivateDBRepository
 from app.cdn.repositories.private.private import PrivateYandexCDNRepository
 
 from app.api.dependencies.database import get_db_repository
 from app.api.dependencies.cdn import get_cdn_repository
+
+from app.api.dependencies.auth import get_user_from_token, is_superuser, is_verified
 
 # ###
 # Request models
@@ -36,6 +38,8 @@ from app.models.private import SubjectInDB
 from app.models.private import BranchInDB
 from app.models.private import LectureInDB
 
+from app.models.user import UserInDB
+
 router = APIRouter()
 
 # ###
@@ -43,10 +47,22 @@ router = APIRouter()
 # ###
 @router.post("/practice", response_model=PresentationInDB, name="private:post-practice", status_code=HTTP_201_CREATED)
 async def create_private_practice(
+    token: str,
     presentation: PresentationCreateModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> PresentationInDB:
+    '''
+    We could use get_superuser_from_token (returns bool), but we might want to keep log 
+    about changes made by superuser
+    '''
+    if not is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     # get images and audio formed data    
     (images, audio) = cdn_repo.form_presentation_insert_data(prefix=presentation.key, fk=presentation.fk)
@@ -57,10 +73,18 @@ async def create_private_practice(
 
 @router.post("/theory", response_model=PresentationInDB, name="private:post-theory", status_code=HTTP_201_CREATED)
 async def create_private_theory(
+    token: str,
     presentation: PresentationCreateModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> PresentationInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     # get images and audio formed data    
     (images, audio) = cdn_repo.form_presentation_insert_data(prefix=presentation.key, fk=presentation.fk)
@@ -71,10 +95,18 @@ async def create_private_theory(
 
 @router.post("/book", response_model=BookInDB, name="private:post-book", status_code=HTTP_201_CREATED)
 async def create_private_book(
+    token: str,
     book: BookPostModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> BookInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     (key, url) = cdn_repo.form_book_insert_data(prefix=book.key)
     book = BookCreateModel(key=key, url=url, name_ru=book.name_ru, description=book.description, fk=book.fk)
@@ -84,9 +116,17 @@ async def create_private_book(
 
 @router.post("/video/youtube", response_model=VideoInDB, name="private:post-video-yt", status_code=HTTP_201_CREATED)
 async def create_private_video(
+    token: str,
     video: VideoPostModelYT = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> VideoInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     video = VideoCreateModel(fk=video.fk, url=video.url, name_ru=video.name_ru, description=video.description, key=None)
     response = await db_repo.insert_video(video=video, parse_link=True)
@@ -95,10 +135,18 @@ async def create_private_video(
 
 @router.post("/video/cdn", response_model=VideoInDB, name="private:post-video-cdn", status_code=HTTP_201_CREATED)
 async def create_private_video(
+    token: str,
     video: VideoPostModelCDN = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> VideoInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     (key, url) = cdn_repo.form_video_insert_data(prefix=video.key)
     video = VideoCreateModel(key=key, url=url, name_ru=video.name_ru, description=video.description, fk=video.fk)
@@ -108,9 +156,17 @@ async def create_private_video(
 
 @router.post("/game", response_model=GameInDB, name="private:post-game", status_code=HTTP_201_CREATED)
 async def create_private_game(
+    token: str,
     game: GamePostModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> GameInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     response = await db_repo.insert_game(game=game)
 
@@ -121,12 +177,20 @@ async def create_private_game(
 # ###
 @router.post("/grade", response_model=GradeInDB, name="private:post-grade", status_code=HTTP_201_CREATED)
 async def create_private_grade(
+    token: str,
     grade: GradePostModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> GradeInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
+
     background = cdn_repo.get_background_url(key=grade.background_key, remove_extra=True)
-    
     response  = await db_repo.insert_grade(grade=GradeCreateModel(name_en=grade.name_en , name_ru=grade.name_ru, background_key=grade.background_key, background=background))
 
     return response
@@ -134,24 +198,40 @@ async def create_private_grade(
 
 @router.post("/subject", response_model=SubjectInDB, name="private:post-subject", status_code=HTTP_201_CREATED)
 async def create_private_subject(
+    token: str,
     subject: SubejctPostModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> SubjectInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
+
     background = cdn_repo.get_background_url(key=subject.background_key, remove_extra=True)
-    
     response  = await db_repo.insert_subject(subject=SubjectCreateModel(fk=subject.fk, name_en=subject.name_en , name_ru=subject.name_ru, background_key=subject.background_key, background=background))
 
     return response
 
 @router.post("/branch", response_model=BranchInDB, name="private:post-branch", status_code=HTTP_201_CREATED)
 async def create_private_branch(
+    token: str,
     branch: BranchPostModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> BranchInDB:
-    background = cdn_repo.get_background_url(key=branch.background_key, remove_extra=True)
-    
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
+
+    background = cdn_repo.get_background_url(key=branch.background_key, remove_extra=True)    
     response  = await db_repo.insert_branch(branch=BranchCreateModel(fk=branch.fk, name_en=branch.name_en , name_ru=branch.name_ru, background_key=branch.background_key, background=background))
 
     return response
@@ -159,12 +239,20 @@ async def create_private_branch(
 
 @router.post("/lecture", response_model=LectureInDB, name="private:post-lecture", status_code=HTTP_201_CREATED)
 async def create_private_lecture(
+    token: str,
     lecture: LecturePostModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> LectureInDB:
-    background = cdn_repo.get_background_url(key=lecture.background_key, remove_extra=True)
-    
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
+
+    background = cdn_repo.get_background_url(key=lecture.background_key, remove_extra=True)    
     response  = await db_repo.insert_lecture(lecture=LectureCreateModel(fk=lecture.fk, name_en=lecture.name_en , name_ru=lecture.name_ru, description=lecture.description, background_key=lecture.background_key, background=background))
 
     return response
