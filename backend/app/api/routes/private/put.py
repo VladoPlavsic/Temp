@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends, Body, BackgroundTasks
 from starlette.status import HTTP_200_OK
 
 from app.db.repositories.private.private import PrivateDBRepository
@@ -7,6 +7,7 @@ from app.db.repositories.parsers import parse_youtube_link
 
 from app.api.dependencies.database import get_db_repository
 from app.api.dependencies.cdn import get_cdn_repository
+
 from app.api.dependencies.updating import update_sharing_links_function
 
 from app.api.dependencies.auth import get_user_from_token, is_superuser, is_verified
@@ -38,15 +39,13 @@ router = APIRouter()
 # force update all links
 @router.put("/update")
 async def update_sharing_links(
-    update_function = Depends(update_sharing_links_function)
+    update = Depends(update_sharing_links_function),
     ) -> None:
-
-    return None
+    pass
 
 
 @router.put("/grade", response_model=GradeInDB, name="private:put-grade", status_code=HTTP_200_OK)
 async def update_private_grade(
-    token: str,
     updated: UpdateStructureModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
@@ -68,7 +67,6 @@ async def update_private_grade(
 
 @router.put("/subject", response_model=SubjectInDB, name="private:put-subject", status_code=HTTP_200_OK)
 async def update_private_subject( 
-    token: str,
     updated: UpdateStructureModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
@@ -90,7 +88,6 @@ async def update_private_subject(
 
 @router.put("/branch", response_model=BranchInDB, name="private:put-branch", status_code=HTTP_200_OK)
 async def update_private_branch(
-    token: str,
     updated: UpdateStructureModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
@@ -112,7 +109,6 @@ async def update_private_branch(
 
 @router.put("/lecture", response_model=LectureInDB, name="private:put-lecture", status_code=HTTP_200_OK)
 async def update_private_lecture(
-    token: str,
     updated: UpdateLectureModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
@@ -134,7 +130,6 @@ async def update_private_lecture(
 
 @router.put("/video", response_model=VideoInDB, name="private:put-video", status_code=HTTP_200_OK)
 async def update_private_theory(
-    token: str,
     updated: UpdateVideoModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -154,7 +149,6 @@ async def update_private_theory(
 
 @router.put("/game", response_model=GameInDB, name="private:put-game", status_code=HTTP_200_OK)
 async def update_private_game(
-    token: str,
     updated: UpdateGameModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -171,7 +165,6 @@ async def update_private_game(
 
 @router.put("/book")
 async def update_private_book(
-    token: str,
     updated: UpdateBookModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -189,7 +182,6 @@ async def update_private_book(
 
 @router.put("/practice")
 async def update_private_practice(
-    token: str,
     updated: UpdatePresentationModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -206,7 +198,6 @@ async def update_private_practice(
 
 @router.put("/theory")
 async def update_private_thoery(
-    token: str,
     updated: UpdatePresentationModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),

@@ -16,7 +16,6 @@ router = APIRouter()
 @router.delete('/grade', response_model=None, name="private:delete-grade", status_code=HTTP_200_OK)
 async def delete_private_grade(
     id: int,
-    token: str,
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -36,7 +35,6 @@ async def delete_private_grade(
 @router.delete('/subject')
 async def delete_private_subject(
     id: int,
-    token: str,
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -56,7 +54,6 @@ async def delete_private_subject(
 @router.delete('/branch')
 async def delete_private_branch(
     id: int,
-    token: str,
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -76,7 +73,6 @@ async def delete_private_branch(
 @router.delete('/lecture')
 async def delete_private_lecture(
     id: int,
-    token: str,
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -96,7 +92,6 @@ async def delete_private_lecture(
 @router.delete('/theory')
 async def delete_private_theory(
     id: int,
-    token: str,
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -116,7 +111,6 @@ async def delete_private_theory(
 @router.delete('/practice')
 async def delete_private_practice(
     id: int,
-    token: str,
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -136,7 +130,6 @@ async def delete_private_practice(
 @router.delete('/book')
 async def delete_private_book(
     id: int,
-    token: str,
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -158,7 +151,6 @@ async def delete_private_book(
 @router.delete('/video/youtube')
 async def delete_private_video(
     id: int,
-    token: str,
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
     is_superuser = Depends(is_superuser),
@@ -177,7 +169,6 @@ async def delete_private_video(
 @router.delete('/game')
 async def delete_private_game(
     id: int,
-    token: str,
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
     is_superuser = Depends(is_superuser),

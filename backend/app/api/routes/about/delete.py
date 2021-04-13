@@ -15,7 +15,6 @@ router = APIRouter()
 
 @router.delete("/team/{order}", response_model=None, name="delete:about-team", status_code=HTTP_200_OK)
 async def delete_team_member(
-    token: str, 
     order: int = Path(...),
     db_repo: AboutDBRepository = Depends(get_db_repository(AboutDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -32,7 +31,6 @@ async def delete_team_member(
 
 @router.delete("/contacts/{order}", response_model=None, name="delete:about-contact", status_code=HTTP_200_OK)
 async def delete_contact(
-    token: str,
     order: int = Path(...),
     db_repo: AboutDBRepository = Depends(get_db_repository(AboutDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -48,7 +46,6 @@ async def delete_contact(
 
 @router.delete("/about_project/{order}", response_model=None, name="delete:about-about_project", status_code=HTTP_200_OK)
 async def delete_about_project(
-    token: str,
     order: int = Path(...),
     db_repo: AboutDBRepository = Depends(get_db_repository(AboutDBRepository)),
     user: UserInDB = Depends(get_user_from_token),

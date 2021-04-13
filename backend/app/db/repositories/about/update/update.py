@@ -46,7 +46,6 @@ class AboutDBUpdateRepository(BaseDBRepository):
 
     async def __update(self, *, query):
         try:
-            print(query)
             response = await self.db.fetch_one(query=query)
         except Exception as e:
             logger.error("--- ERROR UPDATING ABOUT ---")

@@ -47,7 +47,6 @@ router = APIRouter()
 # ###
 @router.post("/practice", response_model=PresentationInDB, name="private:post-practice", status_code=HTTP_201_CREATED)
 async def create_private_practice(
-    token: str,
     presentation: PresentationCreateModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
@@ -55,10 +54,6 @@ async def create_private_practice(
     is_superuser = Depends(is_superuser),
     is_verified = Depends(is_verified),
     ) -> PresentationInDB:
-    '''
-    We could use get_superuser_from_token (returns bool), but we might want to keep log 
-    about changes made by superuser
-    '''
     if not is_superuser:
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
     if not is_verified:
@@ -73,7 +68,6 @@ async def create_private_practice(
 
 @router.post("/theory", response_model=PresentationInDB, name="private:post-theory", status_code=HTTP_201_CREATED)
 async def create_private_theory(
-    token: str,
     presentation: PresentationCreateModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
@@ -95,7 +89,6 @@ async def create_private_theory(
 
 @router.post("/book", response_model=BookInDB, name="private:post-book", status_code=HTTP_201_CREATED)
 async def create_private_book(
-    token: str,
     book: BookPostModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
@@ -116,7 +109,6 @@ async def create_private_book(
 
 @router.post("/video/youtube", response_model=VideoInDB, name="private:post-video-yt", status_code=HTTP_201_CREATED)
 async def create_private_video(
-    token: str,
     video: VideoPostModelYT = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -135,7 +127,6 @@ async def create_private_video(
 
 @router.post("/video/cdn", response_model=VideoInDB, name="private:post-video-cdn", status_code=HTTP_201_CREATED)
 async def create_private_video(
-    token: str,
     video: VideoPostModelCDN = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
@@ -156,7 +147,6 @@ async def create_private_video(
 
 @router.post("/game", response_model=GameInDB, name="private:post-game", status_code=HTTP_201_CREATED)
 async def create_private_game(
-    token: str,
     game: GamePostModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -177,7 +167,6 @@ async def create_private_game(
 # ###
 @router.post("/grade", response_model=GradeInDB, name="private:post-grade", status_code=HTTP_201_CREATED)
 async def create_private_grade(
-    token: str,
     grade: GradePostModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
@@ -198,7 +187,6 @@ async def create_private_grade(
 
 @router.post("/subject", response_model=SubjectInDB, name="private:post-subject", status_code=HTTP_201_CREATED)
 async def create_private_subject(
-    token: str,
     subject: SubejctPostModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
@@ -218,7 +206,6 @@ async def create_private_subject(
 
 @router.post("/branch", response_model=BranchInDB, name="private:post-branch", status_code=HTTP_201_CREATED)
 async def create_private_branch(
-    token: str,
     branch: BranchPostModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
@@ -239,7 +226,6 @@ async def create_private_branch(
 
 @router.post("/lecture", response_model=LectureInDB, name="private:post-lecture", status_code=HTTP_201_CREATED)
 async def create_private_lecture(
-    token: str,
     lecture: LecturePostModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),

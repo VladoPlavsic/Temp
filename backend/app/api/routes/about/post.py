@@ -26,7 +26,6 @@ router = APIRouter()
 
 @router.post("/team", response_model=TeamMemberInDBModel, name="about:post-team-member", status_code=HTTP_201_CREATED)
 async def create_about_team(
-    token: str,
     new_team_member: PostTeamMemberModel = Body(...),
     db_repo: AboutDBRepository = Depends(get_db_repository(AboutDBRepository)),
     cdn_repo: AboutYandexCDNRepository = Depends(get_cdn_repository(AboutYandexCDNRepository)),
@@ -45,7 +44,6 @@ async def create_about_team(
 
 @router.post("/contacts", response_model=ContactsInDBModel, name="about:post-contacts", status_code=HTTP_201_CREATED)
 async def create_contacts(
-    token: str,
     new_contact: PostContactsModel = Body(...),
     db_repo: AboutDBRepository = Depends(get_db_repository(AboutDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -62,7 +60,6 @@ async def create_contacts(
 
 @router.post("/about_project", response_model=AboutProjectInDBModel, name="about:post-about_project", status_code=HTTP_201_CREATED)
 async def create_about_project(
-    token: str,
     new_about_project: PostAboutProjectModel = Body(...),
     db_repo: AboutDBRepository = Depends(get_db_repository(AboutDBRepository)),
     user: UserInDB = Depends(get_user_from_token),

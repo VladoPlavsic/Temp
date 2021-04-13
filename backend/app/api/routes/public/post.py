@@ -43,7 +43,6 @@ router = APIRouter()
 # ###
 @router.post("/practice", response_model=PresentationInDB, name="public:post-practice", status_code=HTTP_201_CREATED)
 async def create_public_practice(
-    token: str,
     presentation: PresentationCreateModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
@@ -65,7 +64,6 @@ async def create_public_practice(
 
 @router.post("/theory", response_model=PresentationInDB, name="public:post-theory", status_code=HTTP_201_CREATED)
 async def create_public_theory(
-    token: str,
     presentation: PresentationCreateModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
@@ -87,7 +85,6 @@ async def create_public_theory(
 
 @router.post("/book", response_model=BookInDB, name="public:post-book", status_code=HTTP_201_CREATED)
 async def create_public_book(
-    token: str,
     book: BookPostModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
@@ -108,7 +105,6 @@ async def create_public_book(
 
 @router.post("/video/youtube", response_model=VideoInDB, name="public:post-video-yt", status_code=HTTP_201_CREATED)
 async def create_public_video(
-    token: str,
     video: VideoPostModelYT = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -127,7 +123,6 @@ async def create_public_video(
 
 @router.post("/video/cdn", response_model=VideoInDB, name="public:post-video-cdn", status_code=HTTP_201_CREATED)
 async def create_public_video(
-    token: str,
     video: VideoPostModelCDN = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
@@ -148,7 +143,6 @@ async def create_public_video(
 
 @router.post("/game", response_model=GameInDB, name="public:post-game", status_code=HTTP_201_CREATED)
 async def create_public_game(
-    token: str,
     game: GamePostModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -168,7 +162,6 @@ async def create_public_game(
 
 @router.post("/about_us", response_model=AboutUsInDB, name="public:post-about_us", status_code=HTTP_201_CREATED)
 async def create_about_us(
-    token: str,
     about_us: AboutUsPostModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -185,7 +178,6 @@ async def create_about_us(
 
 @router.post("/instructions", response_model=InstructionInDB, name="public:post-instruction", status_code=HTTP_201_CREATED)
 async def create_instructions(
-    token: str,
     instruction: InstructionPostModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -202,7 +194,6 @@ async def create_instructions(
 
 @router.post("/faq", response_model=FAQInDB, name="public:post-faq", status_code=HTTP_201_CREATED)
 async def create_faq(
-    token: str,
     faq: FAQPostModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     user: UserInDB = Depends(get_user_from_token),

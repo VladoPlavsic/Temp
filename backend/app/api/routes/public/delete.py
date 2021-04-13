@@ -17,7 +17,6 @@ router = APIRouter()
 
 @router.delete("/theory", name="public:delete-theory", status_code=HTTP_200_OK)
 async def delete_theory(
-    token: str,
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -38,7 +37,6 @@ async def delete_theory(
 
 @router.delete("/practice", name="public:delete-practice", status_code=HTTP_200_OK)
 async def delete_practice(
-    token: str,
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -59,7 +57,6 @@ async def delete_practice(
 
 @router.delete("/book", name="public:delete-book", status_code=HTTP_200_OK)
 async def delete_book(
-    token: str,
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -81,7 +78,6 @@ async def delete_book(
 
 @router.delete("/video/youtube", name="public:delete-video-youtube", status_code=HTTP_200_OK)
 async def delete_video(
-    token: str,
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
     is_superuser = Depends(is_superuser),
@@ -98,7 +94,6 @@ async def delete_video(
 
 @router.delete("/game", name="public:delete-game", status_code=HTTP_200_OK)
 async def delete_game(
-    token: str,
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
     is_superuser = Depends(is_superuser),
@@ -115,7 +110,6 @@ async def delete_game(
 @router.delete("/about_us", name="public:delete-about_us", status_code=HTTP_200_OK)
 async def delete_about_us(
     order_number: int,
-    token: str,
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
     is_superuser = Depends(is_superuser),
@@ -132,7 +126,6 @@ async def delete_about_us(
 @router.delete("/faq", name="public:delete-faq", status_code=HTTP_200_OK)
 async def delete_faq(
     id: int,
-    token: str,
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
     is_superuser = Depends(is_superuser),
@@ -149,7 +142,6 @@ async def delete_faq(
 @router.delete("/instructions", name="public:delete-instructions", status_code=HTTP_200_OK)
 async def delete_instruction(
     order_number: int,
-    token: str,
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
     is_superuser = Depends(is_superuser),

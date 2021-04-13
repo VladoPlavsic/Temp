@@ -13,6 +13,12 @@ down_revision = '91c0fe2ebacf'
 branch_labels = None
 depends_on = None
 
+def create_tables() -> None:
+    pass
+
+def drop_tables() -> None:
+    pass
+
 def upgrade() -> None:
     pass
 

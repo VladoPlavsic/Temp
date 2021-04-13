@@ -24,7 +24,6 @@ router = APIRouter()
 
 @router.put("/team", response_model=TeamMemberInDBModel, name="put:about-team", status_code=HTTP_200_OK)
 async def update_team_member(
-    token: str,
     updated: UpdateTeamMemberModel = Body(...),
     db_repo: AboutDBRepository = Depends(get_db_repository(AboutDBRepository)),
     cdn_repo: AboutYandexCDNRepository = Depends(get_cdn_repository(AboutYandexCDNRepository)),
@@ -46,7 +45,6 @@ async def update_team_member(
 
 @router.put("/contacts", response_model=ContactsInDBModel, name="put:about-contact", status_code=HTTP_200_OK)
 async def update_contact(
-    token: str,
     updated: UpdateContactsModel = Body(...),
     db_repo: AboutDBRepository = Depends(get_db_repository(AboutDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -63,7 +61,6 @@ async def update_contact(
 
 @router.put("/about_project", response_model=AboutProjectInDBModel, name="put:about-about_contact", status_code=HTTP_200_OK)
 async def update_about_project(
-    token: str,
     updated: UpdateAboutProjectModel = Body(...),
     db_repo: AboutDBRepository = Depends(get_db_repository(AboutDBRepository)),
     user: UserInDB = Depends(get_user_from_token),

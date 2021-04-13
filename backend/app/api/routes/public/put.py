@@ -31,7 +31,6 @@ router = APIRouter()
 
 @router.put("/video/youtube", response_model=VideoInDB, name="public:update-video-youtube", status_code=HTTP_200_OK)
 async def update_video(
-    token: str,
     video: UpdateVideoModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -51,7 +50,6 @@ async def update_video(
 
 @router.put("/game", response_model=GameInDB, name="public:update-game", status_code=HTTP_200_OK)
 async def update_game(
-    token: str,
     game: UpdateGameModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -68,7 +66,6 @@ async def update_game(
 
 @router.put("/about_us", response_model=AboutUsInDB, name="public:update-about_us", status_code=HTTP_200_OK)
 async def update_about_us(
-    token: str,
     about_us: UpdateAboutUsModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -85,7 +82,6 @@ async def update_about_us(
 
 @router.put("/faq", response_model=FAQInDB, name="public:update-faq", status_code=HTTP_200_OK)
 async def update_faq(
-    token: str,
     faq: UpdateFAQModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
@@ -102,7 +98,6 @@ async def update_faq(
 
 @router.put("/instructions", response_model=InstructionInDB, name="public:update-instruction", status_code=HTTP_200_OK)
 async def update_instruction(
-    token: str,
     instruction: UpdateInstructionModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
