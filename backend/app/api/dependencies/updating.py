@@ -27,7 +27,6 @@ async def update_sharing_links_function(
 
     # private content update
     async def update():
-        logger.warn("Yipi kay yey mf.")
         grades = await private_db_repo.select_all_grades()
         if grades:
             updated = cdn_repo.get_sharing_links_from_objects(list_of_objects=grades, type_='structure')

@@ -58,13 +58,12 @@ async def register_new_user(
 
 @router.get("/confirm_email/")
 async def confirm_email(
-    token: str,
     user: UserInDB = Depends(get_user_from_token),
     db_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     ) -> AccessToken:
     if not user.email_verified:
         await db_repo.verify_email(user_id=user.id)
-    
+
     if not user.is_active:
         return None
 

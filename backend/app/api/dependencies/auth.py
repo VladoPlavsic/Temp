@@ -9,8 +9,6 @@ from app.api.dependencies.database import get_db_repository
 from app.db.repositories.users.users import UsersDBRepository
 from app.services import auth_service
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{API_PREFIX}/users/confirm_email/token")
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -29,6 +27,9 @@ async def get_user_from_token(
         user = await user_repo.get_user_by_email(email=email)
     except Exception as e:
         raise e
+
+    if not user:
+        raise HTTPException(status_code=404, detail="No user found!")
 
     if user.jwt != token:
         raise HTTPException(status_code=401, detail="Session expired.")

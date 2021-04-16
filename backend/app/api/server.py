@@ -29,7 +29,6 @@ def get_application():
     # TODO This is cringe! Don't do this....
     def update():
         r = requests.put("http://localhost:1337/api/private/update/")
-        print(r.status_code)
 
     @app.on_event("startup")
     @repeat_every(seconds=6 * 24 * 60 * 60) # update every 6 days

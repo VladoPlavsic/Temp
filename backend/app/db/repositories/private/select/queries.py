@@ -95,4 +95,4 @@ def select_all_user_available_grades_query(user_id: int) -> str:
 
 def select_all_user_available_subjects_query(user_id: int) -> str:
     return \
-        f"SELECT (users.select_all_user.available_subjects({user_id})).*"
+        f"SELECT (users.select_all_user_available_subjects({user_id})).*"

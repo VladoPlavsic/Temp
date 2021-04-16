@@ -152,7 +152,7 @@ def create_user_functions() -> None:
     RETURNS TABLE (subject_id int, created_at timestamp WITH TIME ZONE, updated_at timestamp WITH TIME ZONE)
     AS $$
     BEGIN 
-        RETURN QUERY (SELECT users.user_subjects.subject_fk, users.user_subjects.created_at, users.user_subjects.updated_at FROM users.user_subjcts WHERE users.user_subjects.user_fk = user_id);
+        RETURN QUERY (SELECT users.user_subjects.subject_fk, users.user_subjects.created_at, users.user_subjects.updated_at FROM users.user_subjects WHERE users.user_subjects.user_fk = user_id);
     END $$ LANGUAGE plpgsql;
     """)
 

@@ -110,11 +110,11 @@ async def get_private_subjects(
     if not is_superuser:
         user_grades = await db_repo.select_user_available_grades(user_id=user.id)
         ids = [grade.grade_id for grade in user_grades]
-        if fk not in ids:
+        if fk.id not in ids:
             raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
         else:
             user_subjects = await db_repo.select_user_available_subjects(user_id=user.id)
-            ids = [subject.id for subject in user_subjects]
+            ids = [subject.subject_id for subject in user_subjects]
             if not ids:
                 return SubjectResponse(fk=fk.id, path=fk.name_ru, subjects=[])
             else:
@@ -130,6 +130,8 @@ async def get_private_branches(
     subject_name_en: str,
     user = Depends(get_user_from_token),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> BranchResponse:
 
     # we will accept token for validating user and available grade id's as well as available subject id's
@@ -155,13 +157,15 @@ async def get_private_branches(
     if not is_superuser:
         user_grades = await db_repo.select_user_available_grades(user_id=user.id)
         ids = [grade.grade_id for grade in user_grades]
-        if fk not in ids:
-            raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
+        if fk.id in ids:
+            (fk, path) = await db_repo.get_subject_by_name(grade_name=grade_name_en, subject_name=subject_name_en)
+            response = await db_repo.select_branches(fk=fk.id)
+            return BranchResponse(branches=response, fk=fk.id, path=path + '/' + fk.name_ru)
         else:
             (fk, path) = await db_repo.get_subject_by_name(grade_name=grade_name_en, subject_name=subject_name_en)
             user_subjects = await db_repo.select_user_available_subjects(user_id=user.id)
-            ids = [subject.id for subject in user_subjects]
-            if fk not in ids: 
+            ids = [subject.subject_id for subject in user_subjects]
+            if fk.id not in ids: 
                 raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
             else:
                 response = await db_repo.select_branches(fk=fk.id)
@@ -180,6 +184,8 @@ async def get_private_lectures(
     branch_name_en: str,
     user = Depends(get_user_from_token),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> LectureResponse:
     # we will accept token for validating user and available grade id's as well as available subject id's
     # available grade id's for a user will be returned to him when he logs in, same time as token
@@ -205,22 +211,24 @@ async def get_private_lectures(
     if not is_superuser:
         user_grades = await db_repo.select_user_available_grades(user_id=user.id)
         ids = [grade.grade_id for grade in user_grades]
-        if fk not in ids:
-            raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
+        if fk.id in ids:
+            (fk, path) = await db_repo.get_branch_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en)
+            response = await db_repo.select_lectures(fk=fk.id)
+            return LectureResponse(lectures=response, fk=fk.id, path=path + '/' + fk.name_ru)
         else:
             (fk, path) = await db_repo.get_subject_by_name(grade_name=grade_name_en, subject_name=subject_name_en)
             user_subjects = await db_repo.select_user_available_subjects(user_id=user.id)
-            ids = [subject.id for subject in user_subjects]
-            if fk not in ids: 
+            ids = [subject.subject_id for subject in user_subjects]
+            if fk.id not in ids: 
                 raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
             else:
                 (fk, path) = await db_repo.get_branch_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en)
-                response = await db_repo.select_branches(fk=fk.id)
+                response = await db_repo.select_lectures(fk=fk.id)
                 return LectureResponse(lectures=response, fk=fk.id, path=path + '/' + fk.name_ru)
 
     else: # if superuser
         (fk, path) = await db_repo.get_branch_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en)
-        response = await db_repo.select_branches(fk=fk.id)
+        response = await db_repo.select_lectures(fk=fk.id)
         return LectureResponse(lectures=response, fk=fk.id, path=path + '/' + fk.name_ru)
 
 
@@ -232,6 +240,8 @@ async def get_private_material(
     lecture_name_en: str,
     user = Depends(get_user_from_token),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> MaterialResponse:
     # we will accept token for validating user and available grade id's as well as available subject id's
     # available grade id's for a user will be returned to him when he logs in, same time as token
@@ -258,13 +268,15 @@ async def get_private_material(
     if not is_superuser:
         user_grades = await db_repo.select_user_available_grades(user_id=user.id)
         ids = [grade.grade_id for grade in user_grades]
-        if fk not in ids:
-            raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
+        if fk.id in ids:
+            (fk, path) = await db_repo.get_lecture_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en, lecture_name=lecture_name_en)
+            response = await db_repo.select_material(fk=fk.id)
+            return MaterialResponse(material=response, path=path, fk=fk.id)
         else:
             (fk, path) = await db_repo.get_subject_by_name(grade_name=grade_name_en, subject_name=subject_name_en)
             user_subjects = await db_repo.select_user_available_subjects(user_id=user.id)
-            ids = [subject.id for subject in user_subjects]
-            if fk not in ids: 
+            ids = [subject.subject_id for subject in user_subjects]
+            if fk.id not in ids:
                 raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
             else:
                 (fk, path) = await db_repo.get_lecture_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en, lecture_name=lecture_name_en)
