@@ -4,6 +4,7 @@ from app.models.private import StructureAllModel
 from app.models.private import MaterialAllModel
 from app.models.private import AudioImagesAllModel
 from app.models.about import TeamMemberInDBModel
+from app.models.news import NewsImagesAllModel
 
 def get_specific_keys_from_content_list(content_list, **kwargs) -> List:
         '''
@@ -178,6 +179,11 @@ def material_keys_from_list_of_objects(list_: List[MaterialAllModel]):
 
 def audio_images_keys_from_list_of_objects(list_: List[AudioImagesAllModel]):
     list_of_keys = [{"Key": media_object.key} for media_object in list_]
+
+    return list_of_keys
+
+def news_images_keys_from_list_of_objects(list_: List[NewsImagesAllModel]):
+    list_of_keys = [{"Key": media_object.cloud_key} for media_object in list_]
 
     return list_of_keys
 
