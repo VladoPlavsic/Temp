@@ -50,3 +50,6 @@ DATABASE_URL = config(
   cast=DatabaseURL,
   default=f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
 )
+
+# SITE URL
+SITE_URL = config("SITE_URL", cast=str, default="http://localhost:8080")

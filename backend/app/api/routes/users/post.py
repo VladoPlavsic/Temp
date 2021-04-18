@@ -27,7 +27,7 @@ from app.models.user import PublicUserInDB, UserInDB
 
 router = APIRouter()
 
-@router.post("/contact/email")
+@router.post("/email/contact")
 async def send_user_question_via_email(
     background_tasks: BackgroundTasks,
     email: QuestionEmail = Body(..., embed=True),
@@ -36,7 +36,6 @@ async def send_user_question_via_email(
     background_tasks.add_task(send_message, subject=email.user_email, message_text=email.email_body)
 
     return None
-
 
 @router.post("/register")
 async def register_new_user(
@@ -56,7 +55,7 @@ async def register_new_user(
 
     return PublicUserInDB(**registred.dict())
 
-@router.get("/confirm_email/")
+@router.get("/email/confirm")
 async def confirm_email(
     user: UserInDB = Depends(get_user_from_token),
     db_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
