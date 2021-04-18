@@ -43,14 +43,6 @@ def create_contatcts_and_information_about_project() -> None:
     schema='about'
     )
 
-def create_tables_for_news() -> None:
-    # 
-    # 
-    # 
-    # 
-    # 
-    pass
-
 def drop_tables() -> None:
     op.execute("DROP TABLE about.our_team")
     op.execute("DROP TABLE about.contacts")
@@ -60,7 +52,6 @@ def drop_tables() -> None:
 def upgrade() -> None:
     create_contatcts_and_information_about_project()
     create_table_for_our_team()
-    create_tables_for_news()
 
 def downgrade() -> None:
     drop_tables()

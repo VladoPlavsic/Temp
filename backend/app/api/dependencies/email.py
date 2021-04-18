@@ -4,6 +4,8 @@ import base64
 from fastapi import HTTPException
 from app.models.email import EmailResponse
 
+from app.core.config import SITE_URL
+
 def create_message(sender, to, subject, message_text):
   """Create a message for an email.
   Args:
@@ -99,7 +101,7 @@ def create_confirm_link(token: str) -> str:
     # elif there is something wrong with verification (e.g. user doesn't exist anymore):
     #     server responds with coresponding error message
     #     page displays something gone wrong
-    confirm_url = f"http://localhost:1337/api/users/confirm_email?token={token}"
+    confirm_url = f"{SITE_URL}/email/confirm/{token}"
 
     return f"""
     <div style="position: absolute; left: 50%; bottom: 50%; transform: translate(50%, 50%)">

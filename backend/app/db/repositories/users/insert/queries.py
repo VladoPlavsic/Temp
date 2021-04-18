@@ -13,10 +13,10 @@ def verify_email_query(user_id) -> str:
         f"SELECT users.verify_email({user_id})"
 
 
-def add_grade_to_user_query(user_id, grade_id, days) -> str:
+def add_grade_to_user_query(user_id, grade_id, days, for_life) -> str:
     return \
-        f"SELECT users.add_grade_to_user_function({user_id}, {grade_id}, {days})"
+        f"SELECT users.add_grade_to_user_function({user_id}, {grade_id}, {days}, '{for_life}')"
 
-def add_subject_to_user_query(user_id, subject_id, days) -> str:
+def add_subject_to_user_query(user_id, subject_id, days, for_life) -> str:
     return \
-        f"SELECT users.add_subject_to_user_function({user_id}, {subject_id}, {days})"
+        f"SELECT users.add_subject_to_user_function({user_id}, {subject_id}, {days}, '{for_life}')"

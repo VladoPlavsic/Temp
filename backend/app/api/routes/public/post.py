@@ -7,6 +7,7 @@ from app.cdn.repositories.public.public import PublicYandexCDNRepository
 
 from app.api.dependencies.database import get_db_repository
 from app.api.dependencies.cdn import get_cdn_repository
+from app.api.dependencies.auth import get_user_from_token, is_superuser, is_verified
 
 # post models
 from app.models.public import PresentationPostModel
@@ -34,6 +35,8 @@ from app.models.public import AboutUsInDB
 from app.models.public import FAQInDB
 from app.models.public import InstructionInDB
 
+from app.models.user import UserInDB
+
 router = APIRouter()
 # ###
 # content creation routes
@@ -43,7 +46,14 @@ async def create_public_practice(
     presentation: PresentationCreateModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> PresentationInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     # get images and audio formed data    
     (images, audio) = cdn_repo.form_presentation_insert_data(prefix=presentation.key)
@@ -57,7 +67,14 @@ async def create_public_theory(
     presentation: PresentationCreateModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> PresentationInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     # get images and audio formed data    
     (images, audio) = cdn_repo.form_presentation_insert_data(prefix=presentation.key)
@@ -71,7 +88,14 @@ async def create_public_book(
     book: BookPostModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> BookInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     (key, url) = cdn_repo.form_book_insert_data(prefix=book.key)
     book = BookCreateModel(key=key, url=url, name_ru=book.name_ru, description=book.description)
@@ -83,7 +107,14 @@ async def create_public_book(
 async def create_public_video(
     video: VideoPostModelYT = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> VideoInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     video = VideoCreateModel(url=video.url, name_ru=video.name_ru, description=video.description, key=None)
     response = await db_repo.insert_video(video=video, parse_link=True)
@@ -95,7 +126,14 @@ async def create_public_video(
     video: VideoPostModelCDN = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> VideoInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     (key, url) = cdn_repo.form_video_insert_data(prefix=video.key)
     video = VideoCreateModel(key=key, url=url, name_ru=video.name_ru, description=video.description)
@@ -107,10 +145,16 @@ async def create_public_video(
 async def create_public_game(
     game: GamePostModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> GameInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     response = await db_repo.insert_game(game=game)
-
     return response
 
 
@@ -120,7 +164,15 @@ async def create_public_game(
 async def create_about_us(
     about_us: AboutUsPostModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> AboutUsInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
+
     response = await db_repo.insert_about_us(about_us=about_us)
     return response
 
@@ -128,14 +180,30 @@ async def create_about_us(
 async def create_instructions(
     instruction: InstructionPostModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> InstructionInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
+
     response = await db_repo.insert_instruction(instruction=instruction)
     return response
 
 @router.post("/faq", response_model=FAQInDB, name="public:post-faq", status_code=HTTP_201_CREATED)
-async def create_faq(  
+async def create_faq(
     faq: FAQPostModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> FAQInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
+
     response = await db_repo.insert_faq(faq=faq)
     return response

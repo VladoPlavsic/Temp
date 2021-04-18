@@ -54,9 +54,10 @@ def create_user_tables() -> None:
     # user - grades
     op.create_table(
         "user_grades",
-        sa.Column("user_fk", sa.Integer(), nullable=False),
-        sa.Column("grade_fk", sa.Integer(), nullable=False),
-        sa.Column("days_left", sa.Integer(), nullable=False),
+        sa.Column("user_fk", sa.Integer, nullable=False),
+        sa.Column("grade_fk", sa.Integer, nullable=False),
+        sa.Column("days_left", sa.Integer, nullable=False),
+        sa.Column("for_life", sa.Boolean, nullable=False, server_default="False"),
         *timestamps(),
         sa.ForeignKeyConstraint(['user_fk'], ['users.users.id'], onupdate='CASCADE', ondelete='CASCADE'),
         sa.ForeignKeyConstraint(['grade_fk'], ['private.grade.id'], onupdate='CASCADE', ondelete='CASCADE'),
@@ -69,6 +70,7 @@ def create_user_tables() -> None:
         sa.Column("user_fk", sa.Integer(), nullable=False),
         sa.Column("subject_fk", sa.Integer(), nullable=False),
         sa.Column("days_left", sa.Integer(), nullable=False),
+        sa.Column("for_life", sa.Boolean, nullable=False, server_default="False"),
         *timestamps(),
         sa.ForeignKeyConstraint(['user_fk'], ['users.users.id'], onupdate='CASCADE', ondelete='CASCADE'),
         sa.ForeignKeyConstraint(['subject_fk'], ['private.subject.id'], onupdate='CASCADE', ondelete='CASCADE'),
@@ -76,11 +78,61 @@ def create_user_tables() -> None:
         schema='users'
     )
 
+    # TRIGGERS
+
+    # after insert on grades function
+    op.execute("""
+    CREATE OR REPLACE FUNCTION users.insert_subject_after_grade_trigger_function() RETURNS TRIGGER
+    AS $$
+    DECLARE
+        _row RECORD;
+    BEGIN
+        FOR _row IN SELECT private.subject.id FROM private.subject WHERE private.subject.fk = NEW.grade_fk LOOP
+            INSERT INTO users.user_subjects VALUES (NEW.user_fk, _row.id, NEW.days_left, NEW.for_life, NEW.created_at, NEW.updated_at)
+            ON CONFLICT (user_fk, subject_fk) DO
+            UPDATE
+                SET
+                    updated_at = NEW.updated_at,
+                    days_left = NEW.days_left,
+                    for_life = NEW.for_life
+            WHERE users.user_subjects.subject_fk = _row.id;
+        END LOOP;
+    RETURN NEW;
+    END $$ LANGUAGE plpgsql
+    """)
+    # after insert on grades trigger
+    op.execute("""
+    CREATE TRIGGER insert_subject_after_grade_trigger AFTER INSERT ON users.user_grades
+    FOR EACH ROW EXECUTE PROCEDURE users.insert_subject_after_grade_trigger_function();
+    """)
+
+    # after delete on grades function
+    op.execute("""
+    CREATE OR REPLACE FUNCTION users.delete_subject_after_grade_trigger_function() RETURNS TRIGGER
+    AS $$
+    DECLARE
+        _row RECORD;
+    BEGIN
+        FOR _row IN SELECT private.subject.id FROM private.subject WHERE private.subject.fk = OLD.grade_fk LOOP
+            DELETE FROM users.user_subjects WHERE subject_fk = _row.id;
+        END LOOP;
+    RETURN NEW;
+    END $$ LANGUAGE plpgsql
+    """)
+    # after delete on grades trigger
+    op.execute("""
+    CREATE TRIGGER delete_subject_after_grade_trigger AFTER DELETE ON users.user_grades
+    FOR EACH ROW EXECUTE PROCEDURE users.delete_subject_after_grade_trigger_function();
+    """)
+
 
 def drop_users_tables() -> None:
     op.execute("DROP TABLE users.user_subjects")
     op.execute("DROP TABLE users.user_grades")
     op.execute("DROP TABLE users.users")
+    op.execute("DROP FUNCTION users.delete_subject_after_grade_trigger_function")
+    op.execute("DROP FUNCTION users.insert_subject_after_grade_trigger_function")
+
 
 def upgrade() -> None:
     create_user_tables()

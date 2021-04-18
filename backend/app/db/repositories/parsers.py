@@ -16,9 +16,10 @@ def list_to_string(list_) -> str:
     """
     Accepts list object, stringifys it and removes NOTE[]'NOTE symbols
     """
-    list_ = str(list_).replace('[','')
-    list_ = str(list_).replace(']','')
-    list_ = str(list_).replace("'",'')
+    list_ = str(list_)
+    list_ = list_.replace('[','')
+    list_ = list_.replace(']','')
+    list_ = list_.replace("'",'')
     return list_
 
 
