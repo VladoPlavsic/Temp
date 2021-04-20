@@ -17,7 +17,7 @@ from app.api.dependencies.auth import generate_confirmation_code
 from app.models.token import AccessToken
 from app.services import auth_service
 
-from app.api.dependencies.auth import get_user_from_token
+from app.api.dependencies.auth import get_user_from_token, is_superuser
 
 # request models
 from app.models.user import UserCreate
@@ -26,6 +26,15 @@ from app.models.user import UserCreate
 from app.models.user import PublicUserInDB, UserInDB
 
 router = APIRouter()
+
+
+@router.get("/admin", name="users:check-if-admin", status_code=HTTP_200_OK)
+async def get_private_grades(
+    user: UserInDB = Depends(get_user_from_token),
+    is_superuser = Depends(is_superuser),
+    ):
+
+    return is_superuser
 
 @router.post("/email/contact")
 async def send_user_question_via_email(
