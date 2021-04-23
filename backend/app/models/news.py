@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from app.models.core import BaseModel
 
@@ -31,10 +31,22 @@ class NewsCreateModel(NewsCoreModel):
 class NewsInDBModel(NewsCoreModel):
     id: int
     preview_image_url: str
-    images: List[NewsImagesCore]
+    images: List[NewsImagesInDB]
 
-class NewsUpdateModel(NewsCoreModel):
-    pass
+class NewsResponseModel(BaseModel):
+    count: int 
+    news: List[NewsInDBModel]
+
+class NewsUpdateModel(BaseModel):
+    id: int
+    date: Optional[str]
+    title: Optional[str]
+    short_desc: Optional[str]
+    content: Optional[str]
+    url: Optional[str]
+    cloud_key: Optional[str]
+    preview_image_url: Optional[str]
+
 
 class NewsImagesAllModel(BaseModel):
     cloud_key: str

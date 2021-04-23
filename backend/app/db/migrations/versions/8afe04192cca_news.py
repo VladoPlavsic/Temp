@@ -25,6 +25,7 @@ def create_tables() -> None:
         sa.Column('url', sa.Text, nullable=False),
         sa.Column('cloud_key', sa.Text, nullable=False),
         sa.Column('preview_image_url', sa.Text, nullable=False),
+        sa.UniqueConstraint('date', 'url'),
         schema='news'
     )
     # slave table
@@ -71,12 +72,12 @@ def create_news_functions() -> None:
     RETURNS TABLE (id int, date text, title text, short_desc text, content text, url text, cloud_key text, preview_image_url text)
     AS $$
     BEGIN
-        RETURN QUERY (SELECT * FROM news.news ORDER BY id LIMIT i_limit OFFSET i_offset);
+        RETURN QUERY (SELECT * FROM news.news ORDER BY date DESC LIMIT i_limit OFFSET i_offset);
     END $$ LANGUAGE plpgsql
     """)
     # select news slave
     op.execute("""
-    CREATE OR REPLACE FUNCTION news.select_salve_news(i_fk int)
+    CREATE OR REPLACE FUNCTION news.select_slave_news(i_fk int)
     RETURNS TABLE (fk int, "order" int, cloud_key text, url text)
     AS $$
     BEGIN
@@ -140,6 +141,36 @@ def create_news_functions() -> None:
     END LOOP;
     END $$ LANGUAGE plpgsql;
     """)
+    # get news count
+    op.execute("""
+    CREATE OR REPLACE FUNCTION news.get_news_count()
+    RETURNS INT
+    AS $$
+    BEGIN
+        RETURN (SELECT COUNT(*) FROM news.news);
+    END $$ LANGUAGE plpgsql;
+    """)
+
+    # update news metadata
+    op.execute("""
+    CREATE OR REPLACE FUNCTION news.update_news_metadata(i_id INT, i_date TEXT, i_title TEXT, i_short_desc TEXT , i_content TEXT, i_url TEXT, i_cloud_key TEXT, i_preview_image_url TEXT)
+    RETURNS TABLE (id int, date text, title text, short_desc text, content text, url text, cloud_key text, preview_image_url text)
+    AS $$
+    BEGIN
+
+        UPDATE news.news SET
+            date = COALESCE(i_date, news.news.date),
+            title = COALESCE(i_title, news.news.title),
+            short_desc = COALESCE(i_short_desc, news.news.short_desc),
+            content = COALESCE(i_content, news.news.content),
+            url = COALESCE(i_url, news.news.url),
+            cloud_key = COALESCE(i_cloud_key, news.news.cloud_key),
+            preview_image_url = COALESCE(i_preview_image_url, news.news.preview_image_url)
+        WHERE news.news.id = i_id;
+        RETURN QUERY (SELECT * FROM news.news WHERE news.news.id = i_id);
+
+    END $$ LANGUAGE plpgsql;
+    """)
 
 
 def drop_tables() -> None:
@@ -151,12 +182,14 @@ def drop_functions() -> None:
         'insert_news_master',
         'insert_news_slave',
         'select_master_news',
-        'select_salve_news',
+        'select_slave_news',
         'select_all_master_news',
         'select_all_slave_news',
         'delete_news',
         'update_news_sharing_links',
         'update_news_images_sharing_links',
+        'get_news_count',
+        'update_news_metadata',
     ]
 
     for function in functions:

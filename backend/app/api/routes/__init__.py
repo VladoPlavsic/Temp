@@ -21,6 +21,10 @@ from app.api.routes.about.delete import router as about_delete_router
 
 # news routes
 from app.api.routes.news.post import router as news_post_router
+from app.api.routes.news.get import router as news_get_router
+from app.api.routes.news.put import router as news_put_router
+from app.api.routes.news.delete import router as news_delete_router
+
 
 router = APIRouter()
 
@@ -47,4 +51,8 @@ router.include_router(about_delete_router, prefix='/about', tags=['about'])
 
 # news routes
 router.include_router(news_post_router, prefix="/news", tags=['news'])
+router.include_router(news_get_router, prefix="/news", tags=['news'])
+router.include_router(news_put_router, prefix="/news", tags=['news'])
+router.include_router(news_delete_router, prefix="/news", tags=['news'])
+
 

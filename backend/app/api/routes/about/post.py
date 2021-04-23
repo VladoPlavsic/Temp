@@ -66,6 +66,7 @@ async def create_about_project(
     is_superuser = Depends(is_superuser),
     is_verified = Depends(is_verified),
     ) -> AboutProjectInDBModel:
+    # i don't think i need user here ?? Check it later
     if not user.is_superuser:
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
     if not is_verified:
