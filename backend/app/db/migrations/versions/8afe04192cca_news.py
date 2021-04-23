@@ -106,10 +106,13 @@ def create_news_functions() -> None:
     # delete news
     op.execute("""
     CREATE OR REPLACE FUNCTION news.delete_news(i_id int)
-    RETURNS VOID
+    RETURNS TEXT
     AS $$
+        DECLARE cloud_key TEXT;
     BEGIN
+        SELECT news.news.cloud_key INTO cloud_key FROM news.news WHERE news.news.id = i_id; 
         DELETE FROM news.news WHERE id = i_id;
+        RETURN cloud_key;
     END $$ LANGUAGE plpgsql
     """)
 
