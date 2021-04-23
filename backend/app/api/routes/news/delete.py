@@ -17,17 +17,16 @@ async def create_news(
     id: int,
     db_repo: NewsDBRepository = Depends(get_db_repository(NewsDBRepository)),
     cdn_repo: NewsYandexCDNRepository = Depends(get_cdn_repository(NewsYandexCDNRepository)),
-    #is_superuser = Depends(is_superuser),
-    #is_verified = Depends(is_verified),
+    is_superuser = Depends(is_superuser),
+    is_verified = Depends(is_verified),
     ) -> None:
 
-    #if not is_superuser:
-    #    raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
-    #if not is_verified:
-    #    raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
+    if not is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     deleted_key = await db_repo.delete_news(id=id)
-    print(deleted_key)
 
     cdn_repo.delete_folder_by_inner_key(key=deleted_key)
 
