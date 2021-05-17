@@ -204,7 +204,7 @@ def create_select_public_procedures() -> None:
         RETURNS TABLE (url text, "order" int, key text)
         AS $$
         BEGIN
-        RETURN QUERY (SELECT public.theory_image.url, public.theory_image."order", public.theory_image.key FROM public.theory_image);
+        RETURN QUERY (SELECT public.theory_image.url, public.theory_image."order", public.theory_image.key FROM public.theory_image ORDER BY public.theory_image.order);
         END $$ LANGUAGE plpgsql;
     """)
     # theory audio
@@ -213,7 +213,7 @@ def create_select_public_procedures() -> None:
         RETURNS TABLE (url text, "order" int, key text)
         AS $$
         BEGIN
-        RETURN QUERY (SELECT public.theory_audio.url, public.theory_audio."order", public.theory_audio.key FROM public.theory_audio);
+        RETURN QUERY (SELECT public.theory_audio.url, public.theory_audio."order", public.theory_audio.key FROM public.theory_audio ORDER BY public.theory_audio.order);
         END $$ LANGUAGE plpgsql;
     """)
     
@@ -232,7 +232,7 @@ def create_select_public_procedures() -> None:
         RETURNS TABLE (url text, "order" int, key text)
         AS $$
         BEGIN
-        RETURN QUERY (SELECT public.practice_image.url, public.practice_image."order", public.practice_image.key FROM public.practice_image);
+        RETURN QUERY (SELECT public.practice_image.url, public.practice_image."order", public.practice_image.key FROM public.practice_image ORDER BY public.practice_image.order);
         END $$ LANGUAGE plpgsql;
     """)
     # practice audio
@@ -241,7 +241,7 @@ def create_select_public_procedures() -> None:
         RETURNS TABLE (url text, "order" int, key text)
         AS $$
         BEGIN
-        RETURN QUERY (SELECT public.practice_audio.url, public.practice_audio."order", public.practice_audio.key FROM public.practice_audio);
+        RETURN QUERY (SELECT public.practice_audio.url, public.practice_audio."order", public.practice_audio.key FROM public.practice_audio ORDER BY public.practice_audio.order);
         END $$ LANGUAGE plpgsql;
     """)
 

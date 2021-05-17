@@ -27,7 +27,7 @@ async def get_news(
     db_repo: NewsDBRepository = Depends(get_db_repository(NewsDBRepository)),
     ) -> NewsResponseModel:
 
-    count = await db_repo.get_news_count()
     news = await db_repo.select_news(start=start,count=count)
+    count = await db_repo.get_news_count()
 
     return NewsResponseModel(news=news, count=count)
