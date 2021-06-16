@@ -14,7 +14,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class UserDBSubscriptionsRepository(BaseDBRepository):
+class UsersDBSubscriptionsRepository(BaseDBRepository):
     async def create_payment_request(self, *, user_fk: int, offer_fk: int, payment_id: str, level: int) -> None:
         exists = await self.__execute(query=check_payment_request_query(user_fk=user_fk, offer_fk=offer_fk, level=level))
         if exists['pending']:
@@ -45,9 +45,9 @@ class UserDBSubscriptionsRepository(BaseDBRepository):
         try:
             response = await self.db.fetch_one(query=query)
         except Exception as e:
-            logger.error("ERROR IN USER INSERT REPOSITORY")
+            logger.error("ERROR IN USER SUBSCRIPTIONS REPOSITORY")
             logger.error(e)
-            logger.error("ERROR IN USER INSERT REPOSITORY")            
-            raise HTTPException(status_code=400, detail=f"Unhandled exception raised in user insert repository. Exited with {e}")
+            logger.error("ERROR IN USER SUBSCRIPTIONS REPOSITORY")            
+            raise HTTPException(status_code=400, detail=f"Unhandled exception raised in user subscription repository. Exited with {e}")
 
         return response

@@ -1,5 +1,7 @@
 from fastapi import APIRouter
-from fastapi import Body, Depends
+from fastapi import Body, Depends, BackgroundTasks, HTTPException
+
+from app.api.dependencies.email import send_message
 
 from app.db.repositories.users.users import UsersDBRepository
 from app.api.dependencies.database import get_db_repository
@@ -31,7 +33,7 @@ async def user_buy_grade_access(
 
     payment = Payment.create({
         "amount": {
-            "value": plan_details.price, # use the value from database
+            "value": plan_details.price,
             "currency": "RUB"
         },
         "confirmation":{
@@ -61,7 +63,7 @@ async def user_buy_subject_access(
 
     payment = Payment.create({
         "amount": {
-            "value": plan_details.price, # use the value from database
+            "value": plan_details.price,
             "currency": "RUB"
         },
         "confirmation":{
@@ -75,3 +77,48 @@ async def user_buy_subject_access(
 
     return payment
 
+# password recovery
+@router.put("/request/password/recovery")
+async def request_password_recovery(
+    background_task: BackgroundTasks,
+    email: str = Body(..., embed=True),
+    user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
+    ) -> None:
+
+    # Create password recovery request and send recovery key to email 
+    # or return bad request (if email is not valid)
+    response = await user_repo.request_reset_password(email=email)
+    if not response:
+        raise HTTPException(status_code=404, detail="User not found for given email")
+        
+    # send recovery email
+    background_task.add_task(send_message, subject="Password recovery", message_text=f"Your recovery code is {response}", to=email)
+    return None
+
+@router.put("/confirm/password/recovery")
+async def confirm_password_recovery(
+    recovery_key: str,
+    email: str = Body(..., embed=True),
+    user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
+    ) -> None:
+
+    response = await user_repo.confirm_reset_password(email=email, recovery_key=recovery_key)
+
+    if not response:
+        raise HTTPException(status_code=400, detail="Ooops! Something went wrong. Please try creating new recovery request!")
+
+    return response
+
+@router.put("/recover/passwrd")
+async def recover_passwrd(
+    recovery_hash: str,
+    password: str = Body(..., embed=True),
+    user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
+    ) -> None:
+
+    response = await user_repo.reset_password(recovery_hash=recovery_hash, password=password)
+
+    if not response:
+        raise HTTPException(status_code=400, detail="Ooops! Something went wrong. Please try creating new recovery request!")
+
+    return response
