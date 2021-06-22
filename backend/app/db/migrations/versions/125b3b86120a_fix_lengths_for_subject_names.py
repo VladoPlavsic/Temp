@@ -537,19 +537,19 @@ def drop_stored_procedures() -> None:
 def update_private_tables() -> None:
     # grades table
     op.execute("ALTER TABLE private.grade ALTER COLUMN name_en TYPE VARCHAR(100), ALTER COLUMN name_ru TYPE VARCHAR(100)")
-    op.execute("ALTER TABLE private.grade ADD COLUMN order_number INTEGER NOT NULL")
-
+    op.execute("ALTER TABLE private.grade ADD COLUMN order_number INTEGER NOT NULL DEFAULT 0")
+    
     # subjects table
     op.execute("ALTER TABLE private.subject ALTER COLUMN name_en TYPE VARCHAR(100), ALTER COLUMN name_ru TYPE VARCHAR(100)")
-    op.execute("ALTER TABLE private.subject ADD COLUMN order_number INTEGER NOT NULL")
+    op.execute("ALTER TABLE private.subject ADD COLUMN order_number INTEGER NOT NULL DEFAULT 0")
 
     # branches table
     op.execute("ALTER TABLE private.branch ALTER COLUMN name_en TYPE VARCHAR(100), ALTER COLUMN name_ru TYPE VARCHAR(100)")
-    op.execute("ALTER TABLE private.branch ADD COLUMN order_number INTEGER NOT NULL")
+    op.execute("ALTER TABLE private.branch ADD COLUMN order_number INTEGER NOT NULL DEFAULT 0")
 
     # lectures table
     op.execute("ALTER TABLE private.lecture ALTER COLUMN name_en TYPE VARCHAR(100), ALTER COLUMN name_ru TYPE VARCHAR(100)")
-    op.execute("ALTER TABLE private.lecture ADD COLUMN order_number INTEGER NOT NULL")
+    op.execute("ALTER TABLE private.lecture ADD COLUMN order_number INTEGER NOT NULL DEFAULT 0")
 
     # material tables
     # video
