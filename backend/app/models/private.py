@@ -280,6 +280,7 @@ class UpdateLectureModel(UpdateBaseModel):
 
 class UpdateStructureModel(UpdateBaseModel):
     background_key: Optional[str]
+    order_number: Optional[int]
 
 class UpdateBookModel(UpdateBaseModel):
     description: Optional[str]

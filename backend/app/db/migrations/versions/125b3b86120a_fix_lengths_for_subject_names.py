@@ -529,7 +529,12 @@ def drop_stored_procedures() -> None:
     "delete_practice_by_id",
     "delete_subject_by_id",
     "delete_theory_by_id",
-    "delete_video_by_id",]
+    "delete_video_by_id",
+    "update_grade",
+    "update_subject",
+    "update_branch",
+    "update_lecture",
+    ]
 
     for procedure in procedure_list:
         op.execute(f"DROP FUNCTION private.{procedure}")
@@ -538,7 +543,7 @@ def update_private_tables() -> None:
     # grades table
     op.execute("ALTER TABLE private.grade ALTER COLUMN name_en TYPE VARCHAR(100), ALTER COLUMN name_ru TYPE VARCHAR(100)")
     op.execute("ALTER TABLE private.grade ADD COLUMN order_number INTEGER NOT NULL DEFAULT 0")
-    
+
     # subjects table
     op.execute("ALTER TABLE private.subject ALTER COLUMN name_en TYPE VARCHAR(100), ALTER COLUMN name_ru TYPE VARCHAR(100)")
     op.execute("ALTER TABLE private.subject ADD COLUMN order_number INTEGER NOT NULL DEFAULT 0")
@@ -759,13 +764,90 @@ def remove_order_number_from_functions() -> None:
         schema="private"
     )
 
+def create_stored_procedures_update() -> None:
+    # update grade functions
+    op.execute("""
+    CREATE OR REPLACE FUNCTION private.update_grade(int, varchar(20), text, text, int)
+        RETURNS TABLE (id int, name_en varchar(20), name_ru varchar(20), background text, background_key text, order_number int)
+        AS $$
+        BEGIN
+        UPDATE private.grade SET 
+        name_ru = COALESCE($2, private.grade.name_ru),
+        background = COALESCE($3, private.grade.background),
+        background_key = COALESCE($4, private.grade.background_key),
+        order_number = COALESCE($5, private.grade.order_number)
+        WHERE private.grade.id = $1;
+        RETURN QUERY (SELECT * FROM private.grade WHERE private.grade.id = $1);
+        END $$ LANGUAGE plpgsql;
+    """)
+
+    # subject
+    op.execute("""
+    CREATE OR REPLACE FUNCTION private.update_subject(int, varchar(20), text, text, int)
+        RETURNS TABLE (id int, fk int, name_en varchar(20), name_ru varchar(20), background text, background_key text, order_number int)
+        AS $$
+        BEGIN
+        UPDATE private.subject SET 
+        name_ru = COALESCE($2, private.subject.name_ru),
+        background = COALESCE($3, private.subject.background),
+        background_key = COALESCE($4, private.subject.background_key),
+        order_number = COALESCE($5, private.subject.order_number)
+        WHERE private.subject.id = $1;
+        RETURN QUERY (SELECT * FROM private.subject WHERE private.subject.id = $1);
+        END $$ LANGUAGE plpgsql;
+    """)
+
+    # branch
+    op.execute("""
+    CREATE OR REPLACE FUNCTION private.update_branch(int, varchar(20), text, text, int)
+        RETURNS TABLE (id int, fk int, name_en varchar(20), name_ru varchar(20), background text, background_key text, order_number int)
+        AS $$
+        BEGIN
+        UPDATE private.branch SET 
+        name_ru = COALESCE($2, private.branch.name_ru),
+        background = COALESCE($3, private.branch.background),
+        background_key = COALESCE($4, private.branch.background_key),
+        order_number = COALESCE($5, private.branch.order_number)
+        WHERE private.branch.id = $1;
+        RETURN QUERY (SELECT * FROM private.branch WHERE private.branch.id = $1);
+        END $$ LANGUAGE plpgsql;
+    """)
+    
+    # lecture
+    op.execute("""
+    CREATE OR REPLACE FUNCTION private.update_lecture(int, varchar(20), text, text, text, int)
+        RETURNS TABLE (id int, fk int, name_en varchar(20), name_ru varchar(20), description text, background text, background_key text, order_number int)
+        AS $$
+        BEGIN
+        UPDATE private.lecture SET 
+        name_ru = COALESCE($2, private.lecture.name_ru),
+        description = COALESCE($3, private.lecture.description),
+        background = COALESCE($4, private.lecture.background),
+        background_key = COALESCE($5, private.lecture.background_key),
+        order_number = COALESCE($6, private.lecture.order_number)
+        WHERE private.lecture.id = $1;
+        RETURN QUERY (SELECT * FROM private.lecture WHERE private.lecture.id = $1);
+        END $$ LANGUAGE plpgsql;
+    """)
+
+
+# REMOVE UNIQUE CONSTRAINT FROM ABOUT_US -> OUR_TEAM ON order_number
+def remove_unique_constraint_our_team() -> None:
+    op.execute('ALTER TABLE about.our_team ADD COLUMN id SERIAL PRIMARY KEY, DROP CONSTRAINT our_team_order_key')
+
+def add_unique_constraint_our_team() -> None:
+    op.execute('ALTER TABLE about.our_team DROP COLUMN id, ADD CONSTRAINT our_team_order_key UNIQUE("order")')
+
 def upgrade() -> None:
     drop_stored_procedures()
     update_private_tables()
     create_stored_procedures_insert()
     create_stored_procedures_select()
     create_stored_procedures_delete()
+    create_stored_procedures_update()
+    remove_unique_constraint_our_team()
 
 def downgrade() -> None:
     remove_order_number()
     remove_order_number_from_functions()
+    add_unique_constraint_our_team()
