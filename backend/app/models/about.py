@@ -4,6 +4,7 @@ from app.models.core import BaseModel
 
 class TeamMemberBaseModel(BaseModel):
     order: int
+    id: int
     role: str
     name: str
     profession: str

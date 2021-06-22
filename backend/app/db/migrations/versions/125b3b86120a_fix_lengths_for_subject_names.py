@@ -833,10 +833,56 @@ def create_stored_procedures_update() -> None:
 
 # REMOVE UNIQUE CONSTRAINT FROM ABOUT_US -> OUR_TEAM ON order_number
 def remove_unique_constraint_our_team() -> None:
-    op.execute('ALTER TABLE about.our_team ADD COLUMN id SERIAL PRIMARY KEY, DROP CONSTRAINT our_team_order_key')
+    op.execute('ALTER TABLE about.our_team ADD COLUMN id SERIAL PRIMARY KEY, DROP CONSTRAINT IF EXISTS our_team_order_key')
+
+    op.execute("DROP FUNCTION about.insert_our_team")
+    # create team
+    op.execute('''
+    CREATE OR REPLACE FUNCTION about.insert_our_team(i_order int, i_name text, i_role text, i_profession text, i_description text, i_photo_key text, i_photo_link text)
+        RETURNS TABLE ("order" int, name text, role text, profession text, description text, photo_key text, photo_link text, id int)
+        AS $$
+        DECLARE 
+            inserted_id int;
+        BEGIN 
+        INSERT INTO about.our_team ("order", name, role, profession, description, photo_key, photo_link)
+        VALUES (i_order, i_name, i_role,i_profession, i_description, i_photo_key, i_photo_link) RETURNING about.our_team."order" INTO inserted_id;
+        RETURN QUERY (SELECT * FROM about.our_team WHERE about.our_team.order = inserted_id);
+        END $$ LANGUAGE plpgsql;
+    ''')
+
+    op.execute("DROP FUNCTION about.select_all_team_members()")
+    # select all team members
+    op.execute('''
+    CREATE OR REPLACE FUNCTION about.select_all_team_members()
+        RETURNS TABLE ("order" int, name text, role text, profession text, description text, photo_key text, photo_link text, id int)
+        AS $$
+        BEGIN
+        RETURN QUERY (SELECT * FROM about.our_team ORDER BY "order");
+        END $$ LANGUAGE plpgsql;
+    ''')
+
+    op.execute("DROP FUNCTION about.update_team_member(integer,integer,text,text,text,text,text,text)")
+    # update team member
+    op.execute('''
+    CREATE OR REPLACE FUNCTION about.update_team_member(id_ int, i_order int, i_name text, i_role text, i_profession text, i_photo_key text, i_photo_link text,  i_description text)
+        RETURNS TABLE ("order" int, name text, role text, profession text, description text, photo_key text, photo_link text)
+        AS $$
+        BEGIN
+        UPDATE about.our_team SET
+            "order" = COALESCE(i_order, about.our_team.order),
+            name = COALESCE(i_name, about.our_team.name),
+            role = COALESCE(i_role, about.our_team.role),
+            profession = COALESCE(i_profession, about.our_team.profession), 
+            description = COALESCE(i_description, about.our_team.description),
+            photo_key = COALESCE(i_photo_key, about.our_team.photo_key),
+            photo_link = COALESCE(i_photo_link, about.our_team.photo_link)
+        WHERE about.our_team.id = id_;
+        RETURN QUERY (SELECT * FROM about.our_team WHERE about.our_team.order = COALESCE(i_order, id));
+        END $$ LANGUAGE plpgsql;
+    ''')
 
 def add_unique_constraint_our_team() -> None:
-    op.execute('ALTER TABLE about.our_team DROP COLUMN id, ADD CONSTRAINT our_team_order_key UNIQUE("order")')
+    op.execute('ALTER TABLE about.our_team DROP COLUMN id')
 
 def upgrade() -> None:
     drop_stored_procedures()
