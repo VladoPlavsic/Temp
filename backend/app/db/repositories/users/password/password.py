@@ -1,6 +1,11 @@
 from app.db.repositories.base import BaseDBRepository
+from fastapi import HTTPException
 
 from app.db.repositories.users.password.queries import *
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class UsersDBPasswordRepository(BaseDBRepository):

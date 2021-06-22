@@ -236,7 +236,7 @@ def recovery_functions() -> None:
         ELSE
             DELETE FROM users.recovery_keys WHERE user_fk = user_;
             SELECT ENCODE(sha256(key::bytea), 'hex') INTO hash;
-            INSERT INTO users.recovery_hashes VALUES(user_, hash) RETURNING recovery_hash INTO key;
+            INSERT INTO users.recovery_hashes VALUES(user_, hash) ON CONFLICT (user_fk) DO UPDATE SET recovery_hash = hash RETURNING recovery_hash INTO key;
             RETURN key;
         END IF;
     END $$ LANGUAGE plpgsql;
