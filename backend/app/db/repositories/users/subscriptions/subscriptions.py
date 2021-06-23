@@ -16,10 +16,11 @@ logger = logging.getLogger(__name__)
 
 class UsersDBSubscriptionsRepository(BaseDBRepository):
     async def create_payment_request(self, *, user_fk: int, offer_fk: int, payment_id: str, level: int) -> None:
-        exists = await self.__execute(query=check_payment_request_query(user_fk=user_fk, offer_fk=offer_fk, level=level))
-        if exists['pending']:
-            raise HTTPException(status_code=409, detail="Already pending!")
         await self.__execute(query=create_payment_request_query(user_fk=user_fk, offer_fk=offer_fk, payment_id=payment_id, level=level))
+
+    async def check_payment_request(self, *, user_fk: int, offer_fk: int, level: int) -> str:
+        payment_id = await self.__execute(query=check_payment_request_query(user_fk=user_fk, offer_fk=offer_fk, level=level))
+        return payment_id['payment_id'] if payment_id else None
 
     async def get_payment_request(self, *, payment_id: str) -> PaymentRequestDetails:
         response = await self.__execute(query=get_payment_request_query(payment_id=payment_id))

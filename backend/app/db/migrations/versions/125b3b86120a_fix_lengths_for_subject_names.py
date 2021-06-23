@@ -865,7 +865,7 @@ def remove_unique_constraint_our_team() -> None:
     # update team member
     op.execute('''
     CREATE OR REPLACE FUNCTION about.update_team_member(id_ int, i_order int, i_name text, i_role text, i_profession text, i_photo_key text, i_photo_link text,  i_description text)
-        RETURNS TABLE ("order" int, name text, role text, profession text, description text, photo_key text, photo_link text)
+        RETURNS TABLE ("order" int, name text, role text, profession text, description text, photo_key text, photo_link text, id int)
         AS $$
         BEGIN
         UPDATE about.our_team SET
@@ -877,12 +877,42 @@ def remove_unique_constraint_our_team() -> None:
             photo_key = COALESCE(i_photo_key, about.our_team.photo_key),
             photo_link = COALESCE(i_photo_link, about.our_team.photo_link)
         WHERE about.our_team.id = id_;
-        RETURN QUERY (SELECT * FROM about.our_team WHERE about.our_team.order = COALESCE(i_order, id));
+        RETURN QUERY (SELECT * FROM about.our_team WHERE about.our_team.id = id_);
+        END $$ LANGUAGE plpgsql;
+    ''')
+
+    op.execute("DROP FUNCTION about.delete_team_member")
+    # delete team member
+    op.execute('''
+    CREATE OR REPLACE FUNCTION about.delete_team_member(id_ int)
+        RETURNS VOID 
+        AS $$
+        BEGIN 
+        DELETE FROM about.our_team WHERE id = id_;
         END $$ LANGUAGE plpgsql;
     ''')
 
 def add_unique_constraint_our_team() -> None:
     op.execute('ALTER TABLE about.our_team DROP COLUMN id')
+
+
+
+# FIX PAYMENT PROCESS 
+def fix_payment_process() -> None:
+    # check if user has already submited subscription request for given offer
+    # if he did, return old token instead of creating new payment request
+    op.execute("DROP FUNCTION subscriptions.check_subscription_pending(int, int, int)")
+    op.execute("""
+    CREATE OR REPLACE FUNCTION subscriptions.check_subscription_pending(i_user_fk int, i_offer_fk int, i_level int)
+    RETURNS TEXT
+    AS $$
+    DECLARE token TEXT;
+    BEGIN
+        SELECT payment_id INTO token FROM subscriptions.pending_subscriptions WHERE user_fk = i_user_fk AND offer_fk = i_offer_fk AND level = i_level::boolean;
+        RETURN token;
+    END $$ LANGUAGE plpgsql;
+    """)
+
 
 def upgrade() -> None:
     drop_stored_procedures()
@@ -892,6 +922,7 @@ def upgrade() -> None:
     create_stored_procedures_delete()
     create_stored_procedures_update()
     remove_unique_constraint_our_team()
+    fix_payment_process()
 
 def downgrade() -> None:
     remove_order_number()

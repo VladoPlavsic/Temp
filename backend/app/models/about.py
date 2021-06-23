@@ -1,10 +1,8 @@
 from typing import Optional
 from app.models.core import BaseModel
 
-
 class TeamMemberBaseModel(BaseModel):
     order: int
-    id: int
     role: str
     name: str
     profession: str
@@ -18,6 +16,7 @@ class CreateTeamMemberModel(TeamMemberBaseModel):
     photo_link: str
 
 class TeamMemberInDBModel(TeamMemberBaseModel):
+    id: int
     photo_link: str
 
 class UpdateTeamMemberModel(BaseModel):

@@ -277,6 +277,7 @@ class UpdateGameModel(UpdateBaseModel):
 class UpdateLectureModel(UpdateBaseModel):
     description: Optional[str]
     background_key: Optional[str]
+    order_number: Optional[int]
 
 class UpdateStructureModel(UpdateBaseModel):
     background_key: Optional[str]
