@@ -15,6 +15,7 @@ depends_on = None
 
 def fix_updating_video_keys_functions() -> None:
     # accidently added private.theory.key instead of private.video.key
+    op.execute("DROP FUNCTION private.select_all_video_keys()")
     op.execute("""
     CREATE OR REPLACE FUNCTION private.select_all_video_keys()
         RETURNS TABLE (id int, key text)

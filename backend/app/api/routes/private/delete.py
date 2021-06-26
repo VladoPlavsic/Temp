@@ -148,9 +148,10 @@ async def delete_private_book(
 
 
 # non cdn content
-@router.delete('/video/youtube')
+@router.delete('/video')
 async def delete_private_video(
     id: int,
+    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     user: UserInDB = Depends(get_user_from_token),
     is_superuser = Depends(is_superuser),
@@ -162,7 +163,7 @@ async def delete_private_video(
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     deleted_key = await db_repo.delete_video(id=id)
-    if deleted_key:
+    if deleted_key and deleted_key != 'null':
         cdn_repo.delete_folder_by_inner_key(key=deleted_key)
 
     return None

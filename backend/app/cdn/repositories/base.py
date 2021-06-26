@@ -168,7 +168,7 @@ class BaseCDNRepository:
 
     def form_video_insert_data(self, *, prefix) -> Tuple:
         """
-        Accepts prefix at which our book is located
+        Accepts prefix at which our video is located
         """
         return self.__form_video_or_book(prefix=prefix, content_type='video')
 
