@@ -7,28 +7,26 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
-
 # ###
 # Structure queries
 # ###
 
 def insert_grades_query(name_en, name_ru, background_key, background, order_number) -> str:
     return \
-        f"SELECT (private.insert_grade('{name_en}', '{name_ru}', '{background_key}', '{background}', {order_number})).*"
+        f"SELECT (private.insert_grade({string_or_null(name_en, name_ru, background_key, background)}, {order_number})).*"
         
 
 def insert_subject_query(fk, name_en, name_ru, background_key, background, order_number) -> str:
     return \
-        f"SELECT (private.insert_subject({fk}, '{name_en}', '{name_ru}', '{background_key}', '{background}', {order_number})).*"
+        f"SELECT (private.insert_subject({fk}, {string_or_null(name_en, name_ru, background_key, background)}, {order_number})).*"
 
 def insert_branch_query(fk, name_en, name_ru, background_key, background, order_number) -> str:
     return \
-        f"SELECT (private.insert_branch({fk}, '{name_en}', '{name_ru}', '{background_key}', '{background}', {order_number})).*"
+        f"SELECT (private.insert_branch({fk}, {string_or_null(name_en, name_ru, background_key, background)}, {order_number})).*"
 
 def insert_lecture_query(fk, name_en, name_ru, description, background_key, background, order_number) -> str:
     return \
-        f"SELECT (private.insert_lecture({fk}, '{name_en}', '{name_ru}', '{description}', '{background_key}', '{background}', {order_number})).*"
+        f"SELECT (private.insert_lecture({fk}, {string_or_null(name_en, name_ru, description, background_key, background)}, {order_number})).*"
 
 # ###
 # Material queries
@@ -36,15 +34,15 @@ def insert_lecture_query(fk, name_en, name_ru, description, background_key, back
 
 def insert_video_query(fk, name_ru, description, key, url) -> str:
     return \
-        f"SELECT (private.insert_video({fk}, '{name_ru}', '{description}', '{key}', '{url}')).*"
+        f"SELECT (private.insert_video({fk}, {string_or_null(name_ru, description, key, url)})).*"
 
 def insert_game_query(fk, name_ru, description, url) -> str:
     return \
-        f"SELECT (private.insert_game({fk}, '{name_ru}', '{description}', '{url}')).*"
+        f"SELECT (private.insert_game({fk}, {string_or_null(name_ru, description, url)})).*"
 
 def insert_book_query(fk, name_ru, description, key, url) -> str:
     return \
-        f"SELECT (private.insert_book({fk}, '{name_ru}', '{description}', '{key}', '{url}')).*"
+        f"SELECT (private.insert_book({fk}, {string_or_null(name_ru, description, key, url)})).*"
 
 def insert_presentation_query(presentation, fk, name_ru, description, key) -> str:
     '''
@@ -56,7 +54,7 @@ def insert_presentation_query(presentation, fk, name_ru, description, key) -> st
     '''
 
     return \
-        f"SELECT (private.insert_{presentation}({fk}, '{name_ru}', '{description}', '{key}')).*"
+        f"SELECT (private.insert_{presentation}({fk}, {string_or_null(name_ru, description, key)})).*"
 
 def insert_presentation_media_query(presentation, media_type , medium: List[PresentationMediaCreate]) -> str:
     '''

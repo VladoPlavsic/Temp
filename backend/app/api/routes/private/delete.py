@@ -163,7 +163,7 @@ async def delete_private_video(
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     deleted_key = await db_repo.delete_video(id=id)
-    if deleted_key and deleted_key != 'null':
+    if deleted_key:
         cdn_repo.delete_folder_by_inner_key(key=deleted_key)
 
     return None
