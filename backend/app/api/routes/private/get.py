@@ -160,8 +160,6 @@ async def get_private_subjects(
 # ###
 # BRANCHES
 # ###
-
-
 @router.get("/branch/available", response_model=BranchResponse, name="private:get-branches", status_code=HTTP_200_OK)
 async def get_private_branches(
     grade_name_en: str,
@@ -230,7 +228,6 @@ async def get_private_branches(
 # ###
 # LECTURES
 # ###
-
 @router.get("/lecture/available", response_model=LectureResponse, name="private:get-lectures", status_code=HTTP_200_OK)
 async def get_private_lectures(
     grade_name_en: str,

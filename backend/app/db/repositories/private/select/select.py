@@ -180,8 +180,8 @@ class PrivateDBSelectRepository(BaseDBRepository):
         """
         records = await self.__select_many(query=select_all_material_keys_query(table='video'))
 
-        response = [MaterialAllModel(**record) for record in records] 
-        return response       
+        response = [MaterialAllModel(**record) for record in records if record.key]
+        return response
 
     async def select_book(self, *, fk) -> BookInDB:
         response = await self.__select_one(query=select_one_material_query(fk=fk, table='book'), raise_404=False)

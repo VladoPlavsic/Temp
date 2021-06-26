@@ -76,6 +76,15 @@ class PrivateDBUpdateRepository(BaseDBRepository):
         links = list(book.values())
         await self.__update(query=update_book_links_query(keys=keys, links=links))
 
+    async def update_video_links(self, *, video) -> None:
+        """
+        Accepts dict with keys = 'background_key' and value = 'sharing link'
+        Updated table video by keys
+        """
+        keys = list(video.keys())
+        links = list(video.values())
+        await self.__update(query=update_video_links_query(keys=keys, links=links))
+
     # presentation prats
     async def update_presentation_part_links(self, *, prats, presentation: Union['theory', 'practice'], media_type: Union['image', 'audio']) -> None:
         """
