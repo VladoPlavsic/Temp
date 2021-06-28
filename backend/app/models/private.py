@@ -135,6 +135,17 @@ class QuizQuestionInDB(QuestionInDB):
 class QuizInDB(DBCoreModel):
     questions: List[QuizQuestionInDB]
 
+class QuizQuestionAnswerPair(DBCoreModel):
+    question: int
+    answer: int
+
+class QuizGetResultsModel(DBCoreModel):
+    results: List[QuizQuestionAnswerPair]
+
+class QuizResults(DBCoreModel):
+    correct: int
+    count: int
+
 # ###
 # Structure models
 # ###

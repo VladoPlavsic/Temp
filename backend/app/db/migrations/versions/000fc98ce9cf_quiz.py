@@ -136,6 +136,24 @@ def create_quiz_handling_functions() -> None:
     END $$ LANGUAGE plpgsql;
     """)
 
+    # check test
+    op.execute("""
+    CREATE OR REPLACE FUNCTION private.check_quiz_success(i_question_id int[], i_answer_id int[])
+    RETURNS INT
+    AS $$
+    DECLARE 
+        correct INT default 0;
+    BEGIN
+        FOR index IN 1 .. array_upper(i_question_id, 1)
+        LOOP
+            IF (SELECT id FROM private.quiz_answers WHERE fk = i_question_id[index] AND is_true = 't') = i_answer_id[index] THEN
+                correct = correct + 1;
+            END IF;
+        END LOOP;
+        RETURN correct;
+    END $$ LANGUAGE plpgsql;
+    """)
+
 
 def drop_quiz_handling_functions() -> None:
     functions = [
@@ -146,6 +164,7 @@ def drop_quiz_handling_functions() -> None:
         'select_all_quiz_question_keys',
         'update_quiz_links',
         'delete_quiz_by_id',
+        'check_quiz_success',
     ]
 
     for function in functions:

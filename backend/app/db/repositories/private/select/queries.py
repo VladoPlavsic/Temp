@@ -1,3 +1,5 @@
+from app.db.repositories.parsers import list_to_string
+
 def select_grades_query(ids=None) -> str:
     if ids:
         available = ','.join(map(str,ids))
@@ -81,6 +83,10 @@ def select_quiz_questions_query(fk) -> str:
 def select_quiz_answers_query(fk) -> str:
     return \
         f"SELECT (private.get_quiz_answers({fk})).*"
+
+def check_quiz_results_query(questions, answers) -> str:
+    return \
+        f"SELECT (private.check_quiz_success('{{{list_to_string(questions)}}}'::int[], '{{{list_to_string(answers)}}}'::int[])) AS count"
 
 def select_all_material_keys_query(table) -> str:
     return \

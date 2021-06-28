@@ -18,7 +18,7 @@ from app.models.user import UserAvailableSubjects
 from app.models.private import VideoInDB
 from app.models.private import GameInDB
 from app.models.private import BookInDB
-from app.models.private import QuizInDB, QuizQuestionInDB, AnswersInDB
+from app.models.private import QuizInDB, QuizQuestionInDB, AnswersInDB, QuizGetResultsModel
 from app.models.private import PresentationInDB
 from app.models.private import PresentationMediaInDB
 
@@ -185,6 +185,13 @@ class PrivateDBSelectRepository(BaseDBRepository):
             question.answers = [AnswersInDB(**response) for response in responses]
 
         return QuizInDB(questions=questions) if len(questions) > 0 else None
+
+    async def check_quiz_results(self, *, quiz_results: QuizGetResultsModel) -> Tuple:
+        questions = [result.question for result in quiz_results.results]
+        answers = [result.answer for result in quiz_results.results]
+        response = await self.__select_one(query=check_quiz_results_query(questions=questions, answers=answers))
+
+        return (response['count'], len(questions))
 
     async def select_all_video(self) -> List[MaterialAllModel]:
         """
