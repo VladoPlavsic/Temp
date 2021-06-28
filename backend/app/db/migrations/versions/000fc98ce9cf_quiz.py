@@ -30,6 +30,7 @@ def create_tables() -> None:
         sa.Column("image_key", sa.Text, nullable=True),
         sa.Column("image_url", sa.Text, nullable=True),
         sa.ForeignKeyConstraint(['fk'], ['private.lecture.id'], onupdate='CASCADE', ondelete='CASCADE'),
+        sa.UniqueConstraint('fk', 'order_number'),
         schema='private'
     )
     # answers tables
