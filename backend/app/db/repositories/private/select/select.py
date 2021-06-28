@@ -184,7 +184,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
             responses = await self.__select_many(query=select_quiz_answers_query(fk=question.id))
             question.answers = [AnswersInDB(**response) for response in responses]
 
-        return QuizInDB(questions=questions)
+        return QuizInDB(questions=questions) if len(questions) > 0 else None
 
     async def select_all_video(self) -> List[MaterialAllModel]:
         """
