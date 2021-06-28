@@ -18,6 +18,7 @@ from app.models.user import UserAvailableSubjects
 from app.models.private import VideoInDB
 from app.models.private import GameInDB
 from app.models.private import BookInDB
+from app.models.private import QuizInDB, QuizQuestionInDB, AnswersInDB
 from app.models.private import PresentationInDB
 from app.models.private import PresentationMediaInDB
 
@@ -156,6 +157,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
         video = await self.select_video(fk=fk)
         book = await self.select_book(fk=fk)
         game = await self.select_game(fk=fk)
+        quiz = await self.select_quiz(fk=fk)
         theory = await self.select_presentation(fk=fk, presentation='theory')
         practice = await self.select_presentation(fk=fk, presentation='practice')
 
@@ -163,6 +165,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
             video=video,
             book=book,
             game=game,
+            quiz=quiz,
             theory=theory,
             practice=practice
         )
@@ -173,12 +176,30 @@ class PrivateDBSelectRepository(BaseDBRepository):
             return None
         return VideoInDB(**response)
 
+    async def select_quiz(self, *, fk) -> QuizInDB:
+        resposnes = await self.__select_many(query=select_quiz_questions_query(fk=fk))
+
+        questions = [QuizQuestionInDB(**response, answers=[]) for response in resposnes]
+        for question in questions:
+            responses = await self.__select_many(query=select_quiz_answers_query(fk=question.id))
+            question.answers = [AnswersInDB(**response) for response in responses]
+
+        return QuizInDB(questions=questions)
 
     async def select_all_video(self) -> List[MaterialAllModel]:
         """
         Returns list of id, keys for all video in database
         """
         records = await self.__select_many(query=select_all_material_keys_query(table='video'))
+
+        response = [MaterialAllModel(**record) for record in records if record['key']]
+        return response
+
+    async def select_all_quiz(self) -> List[MaterialAllModel]:
+        """
+        Returns list of id, keys for all quizes in database
+        """
+        records = await self.__select_many(query=select_all_material_keys_query(table='quiz_question'))
 
         response = [MaterialAllModel(**record) for record in records if record['key']]
         return response

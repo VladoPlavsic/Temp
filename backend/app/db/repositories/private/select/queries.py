@@ -74,6 +74,14 @@ def select_one_material_query(fk, table) -> str:
     return \
         f"SELECT (private.select_{table}({fk})).*"
 
+def select_quiz_questions_query(fk) -> str:
+    return \
+        f"SELECT (private.get_quiz_questions({fk})).*"
+
+def select_quiz_answers_query(fk) -> str:
+    return \
+        f"SELECT (private.get_quiz_answers({fk})).*"
+
 def select_all_material_keys_query(table) -> str:
     return \
         f"SELECT (private.select_all_{table}_keys()).*"

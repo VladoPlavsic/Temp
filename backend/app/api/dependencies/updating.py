@@ -58,6 +58,11 @@ async def update_sharing_links_function(
             updated = cdn_repo.get_sharing_links_from_objects(list_of_objects=private_video, type_='material')
             await private_db_repo.update_video_links(video=updated)
 
+        private_quiz = await private_db_repo.select_all_quiz()
+        if private_quiz:
+            updated = cdn_repo.get_sharing_links_from_objects(list_of_objects=private_quiz, type_='material')
+            await private_db_repo.update_quiz_links(quiz=updated)
+
         private_theory_images = await private_db_repo.select_all_presentation_parts(presentation='theory', media_type='image')
         if private_theory_images:
             updated = cdn_repo.get_sharing_links_from_objects(list_of_objects=private_theory_images, type_='parts')

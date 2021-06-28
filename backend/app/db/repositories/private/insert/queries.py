@@ -1,7 +1,7 @@
 from typing import List
 
 from app.models.private import PresentationMediaCreate
-from app.db.repositories.parsers import string_or_null
+from app.db.repositories.parsers import string_or_null, list_to_string
 
 import logging
 
@@ -75,6 +75,17 @@ def insert_presentation_media_query(presentation, media_type , medium: List[Pres
     return \
         f"SELECT (private.insert_{presentation}_{media_type}('{{{foreign_keys}}}'::int[], '{{{order_numbers}}}'::int[], '{{{urls}}}', '{{{keys}}}')).*"
 
+def insert_quiz_question_query(lecture_id: int, order_number: int, question: str, image_key: str, image_url: str, answers: List[str], is_true: List[bool]) -> str:
+    answers = list_to_string(answers)
+    is_true = list_to_string(is_true)
+    return \
+        f"SELECT (private.insert_quiz_question({lecture_id}, {order_number}, {string_or_null(question, image_key, image_url)}, '{{{answers}}}', '{{{is_true}}}')).*"
+
+def insert_quiz_question_answers_query(question_id: int, answers: List[str], is_true: List[bool]) -> str:
+    answers = list_to_string(answers)
+    is_true = list_to_string(is_true)
+    return \
+        f"SELECT (private.insert_quiz_answers({question_id}, '{{{answers}}}', '{{{is_true}}}')).*"
 
 # subscriptions
 # plans

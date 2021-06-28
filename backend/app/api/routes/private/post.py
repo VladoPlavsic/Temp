@@ -18,6 +18,7 @@ from app.models.private import PresentationCreateModel
 from app.models.private import BookPostModel, BookCreateModel
 from app.models.private import VideoPostModelYT, VideoPostModelCDN, VideoCreateModel
 from app.models.private import GamePostModel
+from app.models.private import QuizPostModel, QuizCreateModel
 # structure
 from app.models.private import GradePostModel, GradeCreateModel
 from app.models.private import SubejctPostModel, SubjectCreateModel
@@ -32,6 +33,7 @@ from app.models.private import PresentationInDB
 from app.models.private import BookInDB
 from app.models.private import VideoInDB
 from app.models.private import GameInDB
+from app.models.private import QuizQuestionInDB
 # structure
 from app.models.private import GradeInDB
 from app.models.private import SubjectInDB
@@ -158,6 +160,29 @@ async def create_private_game(
     response = await db_repo.insert_game(game=game)
 
     return response
+
+@router.post("/quiz", response_model=QuizQuestionInDB, name="private:post-quiz", status_code=HTTP_201_CREATED)
+async def create_private_game(
+    quiz: QuizPostModel = Body(...),
+    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    is_verified = Depends(is_verified),
+    ) -> QuizQuestionInDB:
+    if not user.is_superuser:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not superuser!")
+    if not is_verified:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
+
+    if quiz.image_key:
+        (key, url) = cdn_repo.form_quiz_insert_data(prefix=quiz.image_key)
+        quiz = QuizCreateModel(**quiz.dict(), image_url=url)
+    else:
+        quiz = QuizCreateModel(**quiz.dict(), image_url=None)
+    response = await db_repo.insert_quiz_question(quiz_question=quiz)
+
+    return response
+
 
 # ###
 # structure creation routes

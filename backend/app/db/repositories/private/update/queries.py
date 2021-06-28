@@ -38,6 +38,12 @@ def update_video_links_query(keys, links) -> str:
     return \
         f"SELECT private.update_video_links('{{{keys}}}', '{{{links}}}')"
 
+def update_quiz_links_query(keys, links) -> str:
+    keys = list_to_string(keys)
+    links = list_to_string(links)
+    return \
+        f"SELECT private.update_quiz_links('{{{keys}}}', '{{{links}}}')"
+
 def update_presentation_part_links_query(keys, links, presentation, media_type) -> str:
     keys = list_to_string(keys)
     links = list_to_string(links)
