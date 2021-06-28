@@ -95,7 +95,7 @@ def create_quiz_handling_functions() -> None:
     RETURNS TABLE (question_id int, answer_id int, answer text, is_true boolean)
     AS $$
     BEGIN
-        RETURN QUERY (SELECT * FROM private.quiz_answers WHERE private.quiz_answers.fk = i_question_id);
+        RETURN QUERY (SELECT fk, id, answer, is_true FROM private.quiz_answers WHERE private.quiz_answers.fk = i_question_id);
     END $$ LANGUAGE plpgsql;
     """)
 
