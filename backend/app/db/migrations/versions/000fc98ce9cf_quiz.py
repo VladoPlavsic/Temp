@@ -138,19 +138,11 @@ def create_quiz_handling_functions() -> None:
 
     # check test
     op.execute("""
-    CREATE OR REPLACE FUNCTION private.check_quiz_success(i_question_id int[], i_answer_id int[])
-    RETURNS INT
+    CREATE OR REPLACE FUNCTION private.check_quiz_success(lecture_id int)
+    RETURNS TABLE (question_id INT, answer_id INT)
     AS $$
-    DECLARE 
-        correct INT default 0;
     BEGIN
-        FOR index IN 1 .. array_upper(i_question_id, 1)
-        LOOP
-            IF (SELECT id FROM private.quiz_answers WHERE fk = i_question_id[index] AND is_true = 't') = i_answer_id[index] THEN
-                correct = correct + 1;
-            END IF;
-        END LOOP;
-        RETURN correct;
+        RETURN QUERY (SELECT qq.id, qa.id FROM private.quiz_questions AS qq INNER JOIN private.quiz_answers AS qa ON qq.id = qa.fk WHERE qq.fk = lecture_id AND qa.is_true = 't');
     END $$ LANGUAGE plpgsql;
     """)
 
@@ -164,7 +156,7 @@ def drop_quiz_handling_functions() -> None:
         'select_all_quiz_question_keys',
         'update_quiz_links',
         'delete_quiz_by_id',
-        'check_quiz_success',
+        'check_quiz_success'
     ]
 
     for function in functions:

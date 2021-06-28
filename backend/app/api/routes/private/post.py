@@ -193,9 +193,9 @@ async def get_quiz_results(
     if not is_verified:
       raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
-    (correct, count) = await db_repo.check_quiz_results(quiz_results=quiz_results)
+    response = await db_repo.check_quiz_results(quiz_results=quiz_results)
 
-    return QuizResults(correct=correct, count=count)
+    return response
 
 
 # ###
