@@ -149,6 +149,7 @@ class QuizQuestionAnswerCorrectPair(DBCoreModel):
     question_number: int
     answer: str
     correct: bool
+    correct_answer: str
 
 class QuizResults(DBCoreModel):
     results: List[QuizQuestionAnswerCorrectPair]

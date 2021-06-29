@@ -84,9 +84,11 @@ def select_quiz_answers_query(fk) -> str:
     return \
         f"SELECT (private.get_quiz_answers({fk})).*"
 
-def check_quiz_results_query(lecture_id) -> str:
+def check_quiz_results_query(questions, answers) -> str:
+    questions = list_to_string(questions)
+    answers = list_to_string(answers)
     return \
-        f"SELECT (private.check_quiz_success({lecture_id})).*"
+        f"SELECT * FROM private.check_quiz_success('{{{questions}}}'::int[], '{{{answers}}}'::int[]) AS (correct boolean[], answers text[], correct_answers text[], question_ids int[], answer_ids int[], question_numbers int[])"
 
 def select_all_material_keys_query(table) -> str:
     return \

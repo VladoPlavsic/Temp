@@ -187,17 +187,24 @@ class PrivateDBSelectRepository(BaseDBRepository):
         return QuizInDB(questions=questions) if len(questions) > 0 else None
 
     async def check_quiz_results(self, *, quiz_results: QuizGetResultsModel) -> QuizResults:
-        records = await self.__select_many(query=check_quiz_results_query(lecture_id=quiz_results.lecture_id))
+        questions = []
+        answers = []
+        for result in quiz_results.results:
+            questions.append(result.question)
+            answers.append(result.answer)
+
+        records = await self.__select_one(query=check_quiz_results_query(questions=questions, answers=answers))
         response = []
-        for record in records:
-            for result in quiz_results.resu:
-                if record['question_id'] == result.question:
-                    response.append(QuizQuestionAnswerCorrectPair(
-                        question_id=result.question, 
-                        answer_id=result.answer,
-                        question_number=record['question_number'],
-                        answer=record['answer'],
-                        correct=(result.answer == record['answer_id'])))
+
+        for index in range(0, len(records['question_ids'])):
+            response.append(QuizQuestionAnswerCorrectPair(
+                question_id=records['question_ids'][index],
+                answer_id=records['answer_ids'][index],
+                question_number=records['question_numbers'][index],
+                answer=records['answers'][index],
+                correct=records['correct'][index],
+                correct_answers=records['correct_answers'][index]
+            ))
 
         return QuizResults(results=response, lecture_id=quiz_results.lecture_id)
 

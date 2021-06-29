@@ -138,11 +138,32 @@ def create_quiz_handling_functions() -> None:
 
     # check test
     op.execute("""
-    CREATE OR REPLACE FUNCTION private.check_quiz_success(lecture_id int)
-    RETURNS TABLE (question_id INT, question_number INT, answer_id INT, answer TEXT)
+    CREATE OR REPLACE FUNCTION private.check_quiz_success(i_questions INT[], i_answers INT[])
+    RETURNS RECORD
     AS $$
+    DECLARE
+        correct BOOLEAN[];
+        question_numbers INT[];
+        answers TEXT[];
+        correct_answers TEXT[];
+        ret RECORD;
     BEGIN
-        RETURN QUERY (SELECT qq.id, qq.order_number, qa.id, qa.answer FROM private.quiz_questions AS qq INNER JOIN private.quiz_answers AS qa ON qq.id = qa.fk WHERE qq.fk = lecture_id AND qa.is_true = 't');
+        FOR index IN 1 .. array_upper(i_questions, 1) 
+        LOOP
+            IF (SELECT is_true FROM private.quiz_answers WHERE private.quiz_answers.fk = i_questions[index]) THEN
+                correct[index] = 't';
+                SELECT answer FROM private.quiz_answers WHERE private.quiz_answers.id = i_answers[index] INTO answers[index];
+                SELECT order_number FROM private.quiz_questions WHERE private.quiz_questions.id = i_questions[index] INTO question_numbers[index];
+                correct_answers[index] = answers[index];
+            ELSE
+                correct[index] = 'f';
+                SELECT answer FROM private.quiz_answers WHERE private.quiz_answers.id = i_answers[index] INTO answers[index];
+                SELECT order_number FROM private.quiz_questions WHERE private.quiz_questions.id = i_questions[index] INTO question_numbers[index];
+                SELECT answer FROM private.quiz_answers WHERE is_true = 't' AND private.quiz_answers.fk = i_questions[index] INTO correct_answers[index];
+            END IF;
+        END LOOP;
+        ret := (correct, answers, correct_answers, i_questions, i_answers, question_numbers);
+        RETURN ret; 
     END $$ LANGUAGE plpgsql;
     """)
 

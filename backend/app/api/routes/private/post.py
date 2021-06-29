@@ -176,7 +176,7 @@ async def create_private_quiz(
 
     if quiz.image_key:
         (key, url) = cdn_repo.form_quiz_insert_data(prefix=quiz.image_key)
-        quiz = QuizCreateModel(image_url=url, answers=quiz.answers, image_key=quiz.image_key, lecture_id=quiz.lecture_id, order_number=quiz.order_number, question=quiz.question)
+        quiz = QuizCreateModel(image_url=url, answers=quiz.answers, image_key=key, lecture_id=quiz.lecture_id, order_number=quiz.order_number, question=quiz.question)
     else:
         quiz = QuizCreateModel(**quiz.dict(), image_url=None)
     response = await db_repo.insert_quiz_question(quiz_question=quiz)
@@ -187,11 +187,11 @@ async def create_private_quiz(
 async def get_quiz_results(
     quiz_results: QuizGetResultsModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    user: UserInDB = Depends(get_user_from_token),
-    is_verified = Depends(is_verified),
+    #user: UserInDB = Depends(get_user_from_token),
+    #is_verified = Depends(is_verified),
     ) -> QuizResults:
-    if not is_verified:
-      raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
+    #if not is_verified:
+    #  raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Email not verified!")
 
     response = await db_repo.check_quiz_results(quiz_results=quiz_results)
 
