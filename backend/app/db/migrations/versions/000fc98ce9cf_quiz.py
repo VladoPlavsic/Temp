@@ -150,7 +150,7 @@ def create_quiz_handling_functions() -> None:
     BEGIN
         FOR index IN 1 .. array_upper(i_questions, 1) 
         LOOP
-            IF (SELECT is_true FROM private.quiz_answers WHERE private.quiz_answers.fk = i_questions[index]) THEN
+            IF (SELECT is_true FROM private.quiz_answers WHERE private.quiz_answers.id = i_answers[index]) THEN
                 correct[index] = 't';
                 SELECT answer FROM private.quiz_answers WHERE private.quiz_answers.id = i_answers[index] INTO answers[index];
                 SELECT order_number FROM private.quiz_questions WHERE private.quiz_questions.id = i_questions[index] INTO question_numbers[index];
