@@ -152,14 +152,14 @@ def create_quiz_handling_functions() -> None:
         LOOP
             IF (SELECT is_true FROM private.quiz_answers WHERE private.quiz_answers.id = i_answers[index]) THEN
                 correct[index] = 't';
-                SELECT answer FROM private.quiz_answers WHERE private.quiz_answers.id = i_answers[index] INTO answers[index];
-                SELECT order_number FROM private.quiz_questions WHERE private.quiz_questions.id = i_questions[index] INTO question_numbers[index];
+                answers[index] = (SELECT answer FROM private.quiz_answers WHERE private.quiz_answers.id = i_answers[index]);
+                question_numbers[index] = (SELECT order_number FROM private.quiz_questions WHERE private.quiz_questions.id = i_questions[index]);
                 correct_answers[index] = answers[index];
             ELSE
                 correct[index] = 'f';
-                SELECT answer FROM private.quiz_answers WHERE private.quiz_answers.id = i_answers[index] INTO answers[index];
-                SELECT order_number FROM private.quiz_questions WHERE private.quiz_questions.id = i_questions[index] INTO question_numbers[index];
-                SELECT answer FROM private.quiz_answers WHERE is_true = 't' AND private.quiz_answers.fk = i_questions[index] INTO correct_answers[index];
+                answers[index] = (SELECT answer FROM private.quiz_answers WHERE private.quiz_answers.id = i_answers[index]);
+                question_numbers[index] = (SELECT order_number FROM private.quiz_questions WHERE private.quiz_questions.id = i_questions[index]);
+                correct_answers[index] = (SELECT answer FROM private.quiz_answers WHERE is_true = 't' AND private.quiz_answers.fk = i_questions[index]);
             END IF;
         END LOOP;
         ret := (correct, answers, correct_answers, i_questions, i_answers, question_numbers);
