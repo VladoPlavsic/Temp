@@ -139,13 +139,12 @@ def create_quiz_handling_functions() -> None:
     # check test
     op.execute("""
     CREATE OR REPLACE FUNCTION private.check_quiz_success(lecture_id int)
-    RETURNS TABLE (question_id INT, answer_id INT)
+    RETURNS TABLE (question_id INT, question_number INT, answer_id INT, answer TEXT)
     AS $$
     BEGIN
-        RETURN QUERY (SELECT qq.id, qa.id FROM private.quiz_questions AS qq INNER JOIN private.quiz_answers AS qa ON qq.id = qa.fk WHERE qq.fk = lecture_id AND qa.is_true = 't');
+        RETURN QUERY (SELECT qq.id, qq.order_number, qa.id, qa.answer FROM private.quiz_questions AS qq INNER JOIN private.quiz_answers AS qa ON qq.id = qa.fk WHERE qq.fk = lecture_id AND qa.is_true = 't');
     END $$ LANGUAGE plpgsql;
     """)
-
 
 def drop_quiz_handling_functions() -> None:
     functions = [

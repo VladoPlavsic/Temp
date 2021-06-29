@@ -143,11 +143,16 @@ class QuizGetResultsModel(DBCoreModel):
     results: List[QuizQuestionAnswerPair]
     lecture_id: int
 
-class QuizQuestionAnswerCorrectPair(QuizQuestionAnswerPair):
+class QuizQuestionAnswerCorrectPair(DBCoreModel):
+    question_id: int
+    answer_id: int
+    question_number: int
+    answer: str
     correct: bool
 
 class QuizResults(DBCoreModel):
     results: List[QuizQuestionAnswerCorrectPair]
+    lecture_id: int
 
 # ###
 # Structure models

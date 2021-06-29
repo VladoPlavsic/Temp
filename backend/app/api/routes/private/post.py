@@ -176,7 +176,7 @@ async def create_private_quiz(
 
     if quiz.image_key:
         (key, url) = cdn_repo.form_quiz_insert_data(prefix=quiz.image_key)
-        quiz = QuizCreateModel(**quiz.dict(), image_url=url)
+        quiz = QuizCreateModel(image_url=url, answers=quiz.answers, image_key=quiz.image_key, lecture_id=quiz.lecture_id, order_number=quiz.order_number, question=quiz.question)
     else:
         quiz = QuizCreateModel(**quiz.dict(), image_url=None)
     response = await db_repo.insert_quiz_question(quiz_question=quiz)
