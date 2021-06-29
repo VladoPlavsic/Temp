@@ -190,7 +190,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
         records = await self.__select_many(query=check_quiz_results_query(lecture_id=quiz_results.lecture_id))
         response = []
         for record in records:
-            for result in results:
+            for result in quiz_results:
                 if record['question_id'] == result.question:
                     response.append(QuizQuestionAnswerCorrectPair(question=result.question, answer=result.answer, is_correct=(result.answer == record['answer_id'])))
 
