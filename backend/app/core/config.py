@@ -32,7 +32,7 @@ SECRET_KEY = config("SECRET_KEY", cast=Secret)
 ACCESS_TOKEN_EXPIRE_MINUTES = config(
   "ACCESS_TOKEN_EXPIRE_MINUTES",
   cast=int,
-  default=7 * 24 * 60 #one week
+  default=15
 )
 JWT_ALGORITHM = config("JWT_ALGORITHM", cast=str, default="HS256")
 JWT_AUDIENCE = config("JWT_AUDIENCE", cast=str, default="mpei-kids:auth")

@@ -15,12 +15,14 @@ class UserDBInsertRepository(BaseDBRepository):
 
     async def register_new_user(self, new_user: UserCreate) -> UserInDB:
         # make sure email is not taken
-        if await self.get_user_by_email(email=new_user.email):
-            raise HTTPException(
-                status_code=409,
-                detail="This email is already taken. Login whith that email or register with new one!"
-            )
-        
+        user = await self.get_user_by_email(email=new_user.email)
+        if user:
+            # if user is taken and email not confirmed, generate resend confirmation link
+            if not user.email_verified:
+                return user.jwt
+            else:
+                return None
+                        
         user_password_update = self.auth_service.create_salt_and_hash_password(plaintext_password=new_user.password)
         new_user_params = new_user.copy(update=user_password_update.dict())
         registred = await self.__execute(query=register_new_user_query(**new_user_params.dict()))

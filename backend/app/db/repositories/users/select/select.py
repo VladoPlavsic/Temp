@@ -50,6 +50,15 @@ class UsersDBSelectRepository(BaseDBRepository):
         
         return user
 
+    async def check_refresh_token(self, *, user: UserInDB, refresh_token: str) -> Optional[UserInDB]:
+        user = await self.get_user_by_email(email=user.email)
+        if not user:
+            return None
+        if user.jwt != refresh_token:
+            return None
+
+        return user
+
     async def check_code(self, *, user_id: int, code: str) -> bool:
         response = await self.__select_one(query=check_confirmation_code_query(user_id=user_id, confirmation_code=code))
         return response["valid"]

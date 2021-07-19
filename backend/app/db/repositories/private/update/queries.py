@@ -1,7 +1,6 @@
 from app.db.repositories.parsers import string_or_null, list_to_string
 
 # Update links (auto update)
-
 def update_grade_links_query(keys, links) -> str:
     keys = list_to_string(keys)
     links = list_to_string(links)
@@ -37,6 +36,12 @@ def update_video_links_query(keys, links) -> str:
     links = list_to_string(links)
     return \
         f"SELECT private.update_video_links('{{{keys}}}', '{{{links}}}')"
+
+def update_game_links_query(keys, links) -> str:
+    keys = list_to_string(keys)
+    links = list_to_string(links)
+    return \
+        f"SELECT private.update_game_links('{{{keys}}}', '{{{links}}}')"
 
 def update_quiz_links_query(keys, links) -> str:
     keys = list_to_string(keys)

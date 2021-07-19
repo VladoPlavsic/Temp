@@ -152,7 +152,9 @@ def update_login_logic() -> None:
         code VARCHAR(6);
     BEGIN   
         SELECT confirmation_code, expiration INTO code, expiration_date FROM users.codes WHERE user_fk = user_id;
-        IF expiration_date < now() or code != i_confirmation_code THEN
+        IF code ISNULL THEN
+            RETURN 'f';
+        ELSEIF expiration_date < now() or code != i_confirmation_code THEN
             RETURN 'f';
         END IF;
         DELETE FROM users.codes WHERE user_fk = user_id;
