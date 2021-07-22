@@ -45,6 +45,6 @@ async def create_news(
     images = cdn_repo.format_presentation_content(folder=news.folder, type_=DefaultFormats.IMAGES)
 
     create_news_model = NewsCreateModel(**news.dict(), preview_image_url=preview_image_url[news.object_key], images=images)
-    response = await db_repo.insert_news(news=create_model)
+    response = await db_repo.insert_news(news=create_news_model)
 
     return response
