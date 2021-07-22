@@ -25,7 +25,7 @@ class VideoCreateModel(VideoCoreModel):
 
 class VideoInDB(VideoCoreModel):
     url: str
-    object_key: str
+    object_key: Optional[str]
 
 # game
 class GameCoreModel(MaterialCoreModel):
