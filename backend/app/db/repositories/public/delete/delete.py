@@ -13,8 +13,8 @@ class PublicDBDeleteRepository(BaseDBRepository):
 
     async def delete_video(self) -> str:
         """Deletes video. Video does not have to have object_key!"""
-        respone = await self._fetch_one(query=delete_video_query())
-        return response['object_key'] if respone else None
+        response = await self._fetch_one(query=delete_video_query())
+        return response['object_key'] if response else None
 
     async def delete_quiz(self) -> str:
         """Deletes quiz entirely and returns list of deleted object_keys."""
