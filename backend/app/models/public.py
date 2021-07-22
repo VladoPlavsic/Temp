@@ -21,7 +21,7 @@ class VideoPostModelCDN(VideoCoreModel):
 
 class VideoCreateModel(VideoCoreModel):
     url: str
-    object_key: str
+    object_key: Optional[str]
 
 class VideoInDB(VideoCoreModel):
     url: str
