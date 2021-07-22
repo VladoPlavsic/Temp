@@ -288,3 +288,12 @@ class BaseCDNRepository:
             final.update(item)
         return final
 
+    def get_sharing_link_from_object_key(self, *, object_key: str) -> Dict:
+        """Accepts single object_key of and object stored in s3.
+        
+        Returns dictionary like object with:
+        key   -- object key in s3
+        value -- presigned sharing link
+        """
+
+        return self.__share_key_content(key=object_key)

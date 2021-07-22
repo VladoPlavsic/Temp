@@ -57,3 +57,9 @@ class UserAvailableSubjects(BaseModel):
     subject_id: int
     created_at: datetime
     updated_at: datetime
+
+class AdminAvailableData(BaseModel):
+    is_superuser: bool
+    AWS_SECRET_KEY_ID: Optional[str]
+    AWS_SECRET_ACCESS_KEY: Optional[str]
+    

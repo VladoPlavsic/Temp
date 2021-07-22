@@ -95,8 +95,6 @@ def create_news_functions() -> None:
     END $$ LANGUAGE plpgsql;
     """)
   
-
-
     # select all news master for updating
     op.execute("""
     CREATE OR REPLACE FUNCTION news.select_all_master_news()
@@ -188,6 +186,20 @@ def create_news_functions() -> None:
     END $$ LANGUAGE plpgsql;
     """)
 
+    # CHECK IF NEWS CAN BE CREATED
+    op.execute("""
+    CREATE OR REPLACE FUNCTION news.check_if_news_can_be_created(i_date TEXT, i_url TEXT)
+    RETURNS BOOLEAN
+    AS $$
+    DECLARE
+        yes BOOLEAN;
+    BEGIN
+        SELECT COUNT(*)::int::bool FROM news.news INTO yes WHERE date = i_date AND url = i_url;
+        yes = NOT yes;
+        RETURN yes;
+    END $$ LANGUAGE plpgsql;
+    """)
+
 
 def drop_tables() -> None:
     op.execute('DROP TABLE news.news_images')
@@ -207,6 +219,7 @@ def drop_functions() -> None:
         'get_news_count',
         'update_news_metadata',
         'select_news_by_unique_key',
+        'check_if_news_can_be_created',
     ]
 
     for function in functions:
