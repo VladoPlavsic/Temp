@@ -1,4 +1,9 @@
+from typing import List
 from app.cdn.repositories.base import BaseCDNRepository
+
+from app.models.public import PresentationMediaCreate
+
+from app.cdn.types import DefaultFormats
 
 class NewsYandexCDNRepository(BaseCDNRepository):
     def format_presentation_content(self, *, folder, type_: DefaultFormats) -> List[PresentationMediaCreate]:

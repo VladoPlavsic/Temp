@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from fastapi import Depends, Body
-from starlette.status import HTTP_201_CREATED
+from starlette.status import HTTP_201_CREATED, HTTP_200_OK
 
 from app.api.dependencies.cdn import get_cdn_repository
 from app.cdn.repositories.news.news import NewsYandexCDNRepository

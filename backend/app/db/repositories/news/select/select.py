@@ -25,7 +25,7 @@ class NewsDBSelectRepository(BaseDBRepository):
     async def select_all_news(self) -> List[NewsAllModel]:
         """Returns list of object_keys for all news preview images in database"""
         records = await self._fetch_many(query=select_all_news_query())
-        return NewsAllModel(**record) for record in records]
+        return [NewsAllModel(**record) for record in records]
 
     async def select_all_news_images(self) -> List[NewsImagesAllModel]:
         """Returns list of object_keys for all news images in database"""
