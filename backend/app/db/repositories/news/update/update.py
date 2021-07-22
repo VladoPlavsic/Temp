@@ -31,5 +31,5 @@ class NewsDBUpdateRepository(BaseDBRepository):
         if not response:
             return None
 
-        images = await self._BaseDBRepository__select_news_images(fk=response['id'])
+        images = await self.select_news_images(fk=response['id'])
         return NewsInDBModel(**response, images=images)
