@@ -25,7 +25,15 @@ class NewsDBInsertRepository(BaseDBRepository):
         return response['yes']
 
     async def insert_news(self, *, news: NewsCreateModel) -> NewsInDBModel:
-        metadata = await self._fetch_one(query=insert_news_master_query(**news.dict()))
+        metadata = await self._fetch_one(query=insert_news_master_query(
+            date=news.date,
+            title=news.title, 
+            short_desc=news.short_desc,
+            content=news.content,
+            url=news.url,
+            object_key=news.object_key,
+            preview_image_url=news.preview_image_url
+        ))
         if not metadata:
             return None
 
