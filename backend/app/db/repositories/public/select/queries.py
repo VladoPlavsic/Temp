@@ -30,7 +30,8 @@ def select_instruction_query() -> str:
     return \
         f"SELECT (public.select_instruction()).*"
 
-def select_faq_query(offset=0, limit='null') -> str:
+def select_faq_query(offset=0, limit=None) -> str:
+    limit = limit if limit else 'null'
     return \
         f"SELECT (public.select_faq({offset}, {limit})).*"
 
