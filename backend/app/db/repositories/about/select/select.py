@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import HTTPException
 
-from app.db.repositories.about.select.query import *
+from app.db.repositories.about.select.queries import *
 
 from app.db.repositories.base import BaseDBRepository
 

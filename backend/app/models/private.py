@@ -76,7 +76,6 @@ class VideoPostModelCDN(VideoModelCore):
     fk: int
     object_key: str
 
-
 class VideoCreateModel(VideoModelCore):
     fk: int
     url: str
