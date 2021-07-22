@@ -26,9 +26,10 @@ async def create_news(
     allowed: bool = Depends(allowed_or_denied),
     ) -> NewsInDBModel:
 
-    if updated.cloud_key:
+    if updated.object_key:
         preview_image_url = cdn_repo.get_sharing_link_from_object_key(object_key=updated.object_key)
         updated.preview_image_url = preview_image_url[updated.object_key]
 
     response = await db_repo.update_news_metadata(updated=updated)
     return response
+    
