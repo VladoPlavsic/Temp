@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 class NewsDBSelectRepository(BaseDBRepository):
 
-    async def __select_news_images(self, *, fk: int) -> List[NewsImagesInDB]:
+    async def select_news_images(self, *, fk: int) -> List[NewsImagesInDB]:
         """Returns list of images (NewsImagesInDB) based on news foreign key they belong to."""
         records = await self._fetch_many(query=select_images_for_news_query(fk=fk))
         return [NewsImagesInDB(**record) for record in records]
@@ -50,7 +50,7 @@ class NewsDBSelectRepository(BaseDBRepository):
         if not news:
             raise HTTPException(status_code=404, detail=f"News not found!")
 
-        images = await self.__select_news_images(fk=news['id'])
+        images = await self.select_news_images(fk=news['id'])
         return NewsInDBModel(**news, images=images)
 
     async def get_news_count(self) -> int:
