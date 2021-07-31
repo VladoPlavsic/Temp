@@ -150,5 +150,4 @@ class PublicDBSelectRepository(BaseDBRepository):
                 correct_answer=records['correct_answers'][index],
             ))
 
-        return QuizResults(results=response, lecture_id=quiz_results.lecture_id)
-        
+        return QuizResults(results=response)
