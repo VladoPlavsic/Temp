@@ -22,7 +22,7 @@ async def delete_theory(
     ) -> None:
 
     deleted_key = await db_repo.delete_theory()
-    if response:
+    if deleted_key:
         cdn_repo.delete_folder(folder=deleted_key)
 
     return None
@@ -35,8 +35,8 @@ async def delete_practice(
     ) -> None:
 
     deleted_key = await db_repo.delete_practice()
-    if response:
-        cdn_repo.delete_folder(fodler=deleted_key)
+    if deleted_key:
+        cdn_repo.delete_folder(folder=deleted_key)
 
     return None
 
@@ -48,7 +48,7 @@ async def delete_book(
     ) -> None:
 
     deleted_key = await db_repo.delete_book()
-    if response:
+    if deleted_key:
         cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
 
     return None

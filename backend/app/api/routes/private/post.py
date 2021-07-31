@@ -159,11 +159,11 @@ async def create_private_video(
     allowed: bool = Depends(allowed_or_denied),
     ) -> VideoInDB:
 
-    shared = cdn_repo.form_video_insert_data(prefix=video.object_key)
+    shared = cdn_repo.form_video_insert_data(folder=video.object_key)
     object_key = list(shared[0].keys())[0]
     url = shared[0][object_key]
     video.object_key = object_key
-    video = VideoCreateModel(**video.dic(), url=url)
+    video = VideoCreateModel(**video.dict(), url=url)
     response = await db_repo.insert_video(video=video)
 
     return response

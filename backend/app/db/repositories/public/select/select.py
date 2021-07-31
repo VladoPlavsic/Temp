@@ -140,10 +140,10 @@ class PublicDBSelectRepository(BaseDBRepository):
         records = await self._fetch_one(query=check_quiz_results_query(questions=questions, answers=answers))
         response = []
 
-        for index in range(0, len(records['question_identifications'])):
+        for index in range(0, len(records['question_ids'])):
             response.append(QuizQuestionAnswerCorrectPair(
-                question_id=records['question_identifications'][index],
-                answer_id=records['answer_identifications'][index],
+                question_id=records['question_ids'][index],
+                answer_id=records['answer_ids'][index],
                 question_number=records['question_numbers'][index],
                 answer=records['answers'][index],
                 correct=records['correct'][index],
