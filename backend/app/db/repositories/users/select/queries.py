@@ -15,3 +15,4 @@ def set_confirmation_code_query(user_id, confirmation_code) -> str:
 def check_confirmation_code_query(user_id, confirmation_code) -> str:
     return \
         f"SELECT users.check_confirmation_code({user_id}, {string_or_null(confirmation_code)}) AS valid"
+        

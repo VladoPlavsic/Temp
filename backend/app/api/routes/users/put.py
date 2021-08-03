@@ -92,7 +92,7 @@ async def request_password_recovery(
     user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     ) -> None:
 
-    # Create password recovery request and send recovery key to email 
+    # Create password recovery request and send recovery key to email
     # or return bad request (if email is not valid)
     response = await user_repo.request_reset_password(email=email)
     if not response:
@@ -105,11 +105,10 @@ async def request_password_recovery(
 @router.put("/confirm/password/recovery")
 async def confirm_password_recovery(
     recovery_key: str,
-    email: str = Body(..., embed=True),
     user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     ) -> None:
 
-    response = await user_repo.confirm_reset_password(email=email, recovery_key=recovery_key)
+    response = await user_repo.confirm_reset_password(recovery_key=recovery_key)
 
     if not response:
         raise HTTPException(status_code=400, detail="Ooops! Something went wrong. Please try creating new recovery request!")
