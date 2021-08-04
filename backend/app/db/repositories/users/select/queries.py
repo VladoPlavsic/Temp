@@ -8,10 +8,6 @@ def get_user_by_username_query(username) -> str:
     return \
         f"SELECT (users.get_user_by_username({string_or_null(username)}).*"
 
-def set_confirmation_code_query(user_id, confirmation_code) -> str:
-    return \
-        f"SELECT users.set_confirmation_code({user_id}, {string_or_null(confirmation_code)}) AS code"
-
 def check_confirmation_code_query(user_id, confirmation_code) -> str:
     return \
         f"SELECT users.check_confirmation_code({user_id}, {string_or_null(confirmation_code)}) AS valid"
