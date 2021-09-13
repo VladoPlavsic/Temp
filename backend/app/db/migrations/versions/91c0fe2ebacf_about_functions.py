@@ -62,7 +62,7 @@ def create_update_functions() -> None:
         RETURNS VOID
         AS $$
         BEGIN
-        FOR index IN 1 .. array_upper(object_key, 1)
+        FOR index IN 1 .. array_upper(object_keys, 1)
         LOOP
             UPDATE about.our_team SET
             photo_link = photo_links[index] 
