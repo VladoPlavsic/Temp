@@ -1,7 +1,7 @@
 from app.db.repositories.parsers import list_to_string, string_or_null
 
 def update_team_member_photos_query(object_keys, photo_links) -> str:
-    object_keys = list_to_string(list_=photo_keys)
+    object_keys = list_to_string(list_=object_keys)
     photo_links = list_to_string(list_=photo_links)
     return \
         f"SELECT (about.update_team_member_photos('{{{object_keys}}}'::text[],'{{{photo_links}}}'::text[]))"
