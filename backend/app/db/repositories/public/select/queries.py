@@ -20,7 +20,7 @@ def check_quiz_results_query(questions, answers) -> str:
     questions = list_to_string(questions)
     answers = list_to_string(answers)
     return \
-        f"SELECT * FROM public.check_quiz_success('{{{questions}}}'::int[], '{{{answers}}}'::int[]) AS (correct boolean[], answers text[], correct_answers text[], question_ids int[], answer_ids int[], question_numbers int[])"
+        f"SELECT * FROM public.check_quiz_success('{{{questions}}}'::int[], '{{{answers}}}'::int[]) AS (correct boolean[], answers text[], correct_answers text[], correct_answers_id int[], question_ids int[], answer_ids int[], question_numbers int[])"
 
 def select_about_us_query() -> str:
     return \
