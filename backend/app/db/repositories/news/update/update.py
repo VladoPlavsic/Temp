@@ -18,13 +18,13 @@ class NewsDBUpdateRepository(BaseDBRepository):
         """Function for updating news preview images presigned links."""
         keys = list(news.keys())
         links = list(news.values())
-        await self._execute_many(query=update_news_links_query(keys=keys, links=links))
+        await self._execute_one(query=update_news_links_query(keys=keys, links=links))
 
     async def update_images_links(self, *, images) -> None:
         """Function for updating news images presigned links."""
         keys = list(images.keys())
         links = list(images.values())
-        await self._execute_many(query=update_news_images_links_query(keys=keys, links=links))
+        await self._execute_one(query=update_news_images_links_query(keys=keys, links=links))
 
     async def update_news_metadata(self, *, updated: NewsUpdateModel) -> NewsInDBModel:
         response = await self._fetch_one(query=update_news_metadata_query(**updated.dict()))

@@ -24,7 +24,7 @@ class AboutDBUpdateRepository(BaseDBRepository):
         """Function used in CRON job for updating presigned links every 6 days"""
         keys = list(photos.keys())
         links = list(photos.values())
-        await self._execute_many(query=update_team_member_photos_query(object_keys=keys, photo_links=links))
+        await self._execute_one(query=update_team_member_photos_query(object_keys=keys, photo_links=links))
 
     async def update_team_member(self, *, updated: UpdateTeamMemberModel) -> TeamMemberInDBModel:
         response = await self._fetch_one(query=update_team_member_query(**updated.dict()))
