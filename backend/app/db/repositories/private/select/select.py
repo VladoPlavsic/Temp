@@ -251,6 +251,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
                 answer=records['answers'][index],
                 correct=records['correct'][index],
                 correct_answer=records['correct_answers'][index],
+                correct_answers_id=records['correct_answers_id'][index],
             ))
 
         return QuizResults(results=response, lecture_id=quiz_results.lecture_id)

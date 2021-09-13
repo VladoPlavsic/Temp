@@ -378,6 +378,7 @@ def create_quiz_handling_functions() -> None:
         question_numbers INT[];
         answers TEXT[];
         correct_answers TEXT[];
+        correct_answers_id INT[];
         ret RECORD;
     BEGIN
         FOR index IN 1 .. array_upper(i_questions, 1) 
@@ -392,9 +393,10 @@ def create_quiz_handling_functions() -> None:
                 answers[index] = (SELECT answer FROM public.quiz_answers WHERE public.quiz_answers.id = i_answers[index]);
                 question_numbers[index] = (SELECT order_number FROM public.quiz_questions WHERE public.quiz_questions.id = i_questions[index]);
                 correct_answers[index] = (SELECT answer FROM public.quiz_answers WHERE is_true = 't' AND public.quiz_answers.fk = i_questions[index]);
+                correct_answers_id[index] = (SELECT id FROM public.quiz_answers WHERE is_true = 't' AND public.quiz_answers.fk = i_questions[index]);
             END IF;
         END LOOP;
-        ret := (correct, answers, correct_answers, i_questions, i_answers, question_numbers);
+        ret := (correct, answers, correct_answers, correct_answers_id, i_questions, i_answers, question_numbers);
         RETURN ret; 
     END $$ LANGUAGE plpgsql;
     """)

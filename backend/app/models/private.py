@@ -166,6 +166,7 @@ class QuizQuestionAnswerCorrectPair(DBCoreModel):
     answer: str
     correct: bool
     correct_answer: str
+    correct_answers_id: int
 
 class QuizResults(DBCoreModel):
     results: List[QuizQuestionAnswerCorrectPair]
