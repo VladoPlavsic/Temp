@@ -388,6 +388,7 @@ def create_quiz_handling_functions() -> None:
                 answers[index] = (SELECT answer FROM public.quiz_answers WHERE public.quiz_answers.id = i_answers[index]);
                 question_numbers[index] = (SELECT order_number FROM public.quiz_questions WHERE public.quiz_questions.id = i_questions[index]);
                 correct_answers[index] = answers[index];
+                correct_answers_id[index] = (SELECT id FROM public.quiz_answers WHERE is_true = 't' AND public.quiz_answers.fk = i_questions[index]);
             ELSE
                 correct[index] = 'f';
                 answers[index] = (SELECT answer FROM public.quiz_answers WHERE public.quiz_answers.id = i_answers[index]);

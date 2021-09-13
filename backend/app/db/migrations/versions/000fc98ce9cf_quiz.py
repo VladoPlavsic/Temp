@@ -165,6 +165,7 @@ def create_quiz_handling_functions() -> None:
                 answers[index] = (SELECT answer FROM private.quiz_answers WHERE private.quiz_answers.id = i_answers[index]);
                 question_numbers[index] = (SELECT order_number FROM private.quiz_questions WHERE private.quiz_questions.id = i_questions[index]);
                 correct_answers[index] = answers[index];
+                correct_answers_id[index] = (SELECT id FROM private.quiz_answers WHERE is_true = 't' AND private.quiz_answers.fk = i_questions[index]);
             ELSE
                 correct[index] = 'f';
                 answers[index] = (SELECT answer FROM private.quiz_answers WHERE private.quiz_answers.id = i_answers[index]);
