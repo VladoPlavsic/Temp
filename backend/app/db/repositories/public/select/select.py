@@ -115,7 +115,7 @@ class PublicDBSelectRepository(BaseDBRepository):
 
     async def select_intro_video(self) -> IntroVideoInDB:
         """Returns VideoInDB (intro) from schema public"""
-        response = await self._fetch_one()(query=select_intro_video_query())
+        response = await self._fetch_one(query=select_intro_video_query())
         return IntroVideoInDB(**response) if response else None
 
     async def select_all_video(self) -> List[MaterialAllModel]:
