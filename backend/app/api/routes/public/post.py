@@ -98,8 +98,14 @@ async def create_public_book(
 async def create_public_video(
     video: VideoPostModelYT = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
+    cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
     ) -> VideoInDB:
+
+    # First delete video this way. The old way doesn't delete video from CDN !
+    deleted_key = await db_repo.delete_video()
+    if deleted_key:
+        cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
 
     video = VideoCreateModel(**video.dict(), object_key=None)
     response = await db_repo.insert_video(video=video, parse_link=True)
@@ -114,6 +120,10 @@ async def create_public_video(
     allowed: bool = Depends(allowed_or_denied),
     ) -> VideoInDB:
 
+    deleted_key = await db_repo.delete_video()
+    if deleted_key:
+        cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
+
     shared = cdn_repo.form_video_insert_data(folder=video.object_key)
     object_key = list(shared[0].keys())[0]
     url = shared[0][object_key]
@@ -127,8 +137,14 @@ async def create_public_video(
 async def create_public_video(
     video: IntroVideoPostModelYT = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
+    cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
     ) -> IntroVideoInDB:
+
+    deleted_key = await db_repo.delete_intro_video()
+    print(deleted_key)
+    if deleted_key:
+        cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
 
     video = IntroVideoCreateModel(**video.dict(), object_key=None)
     response = await db_repo.insert_intro_video(video=video, parse_link=True)
@@ -142,6 +158,10 @@ async def create_public_video(
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
     ) -> VideoInDB:
+
+    deleted_key = await db_repo.delete_intro_video()
+    if deleted_key:
+        cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
 
     shared = cdn_repo.form_video_insert_data(folder=video.object_key)
     object_key = list(shared[0].keys())[0]

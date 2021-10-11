@@ -271,5 +271,5 @@ class UpdateIntroVideoModel(UpdateCoreModel):
     pass
 
 class IntroVideoAllResponse(DBCoreModel):
-    intro: IntroVideoInDB
+    intro: Optional[IntroVideoInDB]
 
