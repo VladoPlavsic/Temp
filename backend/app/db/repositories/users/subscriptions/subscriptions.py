@@ -29,7 +29,6 @@ class UsersDBSubscriptionsRepository(BaseDBRepository):
 
     async def get_plan_details(self, *, level: int, plan_fk: int) -> Union[AvailableGradeSubscriptionPlans, AvailableSubjectSubscriptionPlans]:
         response = await self._fetch_one(query=get_plan_details_query(level=level, plan_fk=plan_fk))
-        logger.warn(plan_fk)
         return AvailableSubjectSubscriptionPlans(**response) if level else AvailableGradeSubscriptionPlans(**response)
 
     async def check_expired_subscriptions(self) -> None:
