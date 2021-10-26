@@ -32,6 +32,11 @@ def update_faq_query(id, question, answer) -> str:
     return \
         f"SELECT (public.update_faq({id}, {string_or_null(question, answer)})).*"
 
+def update_review_query(id, name, review) -> str:
+    return \
+        f"SELECT (public.update_review({id}, {string_or_null(name, review)})).*"
+
+
 # link updating
 def update_book_links_query(keys, links) -> str:
     keys = list_to_string(keys)

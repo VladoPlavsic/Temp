@@ -19,6 +19,7 @@ from app.models.public import UpdatePresentationModel
 from app.models.public import UpdateAboutUsModel
 from app.models.public import UpdateFAQModel
 from app.models.public import UpdateInstructionModel
+from app.models.public import UpdateReviewModel
 
 # import response models
 from app.models.public import VideoInDB
@@ -29,6 +30,7 @@ from app.models.public import PresentationMasterInDB
 from app.models.public import AboutUsInDB
 from app.models.public import FAQInDB
 from app.models.public import InstructionInDB
+from app.models.public import ReviewInDB
 
 from app.db.repositories.types import ContentType
 
@@ -130,4 +132,14 @@ async def update_instruction(
     ) -> InstructionInDB:
 
     response = await db_repo.update_instruction(updated=instruction)
+    return response
+
+@router.put("/review", response_model=ReviewInDB, name="public:update-review", status_code=HTTP_200_OK)
+async def update_review(
+    review: UpdateReviewModel = Body(...),
+    db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
+    allowed: bool = Depends(allowed_or_denied),
+    ) -> ReviewInDB:
+
+    response = await db_repo.update_review(updated=review)
     return response

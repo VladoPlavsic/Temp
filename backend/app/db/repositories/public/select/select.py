@@ -17,6 +17,7 @@ from app.models.public import PresentationMediaInDB
 from app.models.public import AboutUsInDB
 from app.models.public import FAQInDB
 from app.models.public import InstructionInDB
+from app.models.public import ReviewInDB
 
 from app.models.public import MaterialAllModel
 from app.models.public import AudioImagesAllModel
@@ -66,6 +67,11 @@ class PublicDBSelectRepository(BaseDBRepository):
         """Returns all instructions."""
         records = await self._fetch_many(query=select_instruction_query())
         return [InstructionInDB(**record) for record in records]
+    
+    async def select_reivew(self) -> List[ReviewInDB]:
+        """Returns all reviews"""
+        records = await self._fetch_many(query=select_all_reviews_query())
+        return [ReviewInDB(**record) for record in records]
 
     async def select_all_presentation_parts(self, presentation: ContentType, media_type:ContentType) -> List[AudioImagesAllModel]:
         """Returns list of order, object_keys for all presentation (theory || practice) parts (images|| audio) in database schema public"""

@@ -14,6 +14,7 @@ from app.models.public import UpdatePresentationModel
 from app.models.public import UpdateAboutUsModel
 from app.models.public import UpdateFAQModel
 from app.models.public import UpdateInstructionModel
+from app.models.public import UpdateReviewModel
 
 # response models
 from app.models.public import VideoInDB
@@ -24,6 +25,7 @@ from app.models.public import PresentationMasterInDB
 from app.models.public import AboutUsInDB
 from app.models.public import FAQInDB
 from app.models.public import InstructionInDB
+from app.models.public import ReviewInDB
 
 from app.db.repositories.types import ContentType
 
@@ -170,5 +172,12 @@ class PublicDBUpdateRepository(BaseDBRepository):
         if not response:
             raise HTTPException(status_code=404, detail="Instruction not updated, nothing found in public instruction table")
         return InstructionInDB(**response)
+
+    async def update_review(self, *, updated: UpdateReviewModel) -> ReviewInDB:
+        """Updates public reviews"""
+        response = await self._fetch_one(query=update_review_query(**updated.dict()))
+        if not response:
+            raise HTTPException(status_code=404, detail="Review not updated, nothing found in public review table")
+        return ReviewInDB(**response)
 
     

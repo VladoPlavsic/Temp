@@ -80,7 +80,6 @@ def create_handling_functions() -> None:
     END $$ LANGUAGE plpgsql;
     """)
     # add subject to user
-    # TODO: This doesn't work, if there is expiration date, UPDATE DO NOT INSERT. On add_grade_to_user TO!
     op.execute("""
     CREATE OR REPLACE FUNCTION users.add_subject_to_user(i_user_id int, i_subject_id int, i_subscription_fk int)
     RETURNS VOID
