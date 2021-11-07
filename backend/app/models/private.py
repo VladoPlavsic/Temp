@@ -426,6 +426,7 @@ class PaymentRequestDetails(DBCoreModel):
     offer_fk: int
     payment_id: str
     level: bool
+    confirmation_token: str
 
 class SubscriptionInformation(DBCoreModel):
     for_life: bool

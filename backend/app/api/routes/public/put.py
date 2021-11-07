@@ -71,8 +71,6 @@ async def update_game(
     response = await db_repo.update_game(updated=game)
     return response
 
-""" NEW """
-
 @router.put("/book", response_model=BookInDB, name="public:update-book", status_code=HTTP_200_OK)
 async def update_public_book(
     updated: UpdateBookModel = Body(...),
@@ -102,8 +100,6 @@ async def update_public_practice(
 
     response = await db_repo.update_presentation(updated=updated, presentation=ContentType.THEORY)
     return response
-
-""" END NEW """
 
 
 @router.put("/about_us", response_model=AboutUsInDB, name="public:update-about_us", status_code=HTTP_200_OK)

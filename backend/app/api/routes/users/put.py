@@ -46,7 +46,9 @@ async def user_buy_grade_access(
         }, uuid.uuid4())
         await user_repo.create_payment_request(user_fk=user.id, offer_fk=offer_fk, payment_id=payment.id, level=0)
     else:
+        request_details = await user_repo.get_payment_request(payment_id=payment_id)
         payment = Payment.find_one(payment_id)
+        payment["confirmation"] = {"confirmation_token": request_details.confirmation_token, "type": "embedded"}
 
     return payment
 
@@ -80,7 +82,9 @@ async def user_buy_subject_access(
         }, uuid.uuid4())
         await user_repo.create_payment_request(user_fk=user.id, offer_fk=offer_fk, payment_id=payment.id, level=1)
     else:
+        request_details = await user_repo.get_payment_request(payment_id=payment_id)
         payment = Payment.find_one(payment_id)
+        payment["confirmation"] = {"confirmation_token": request_details.confirmation_token, "type": "embedded"}
 
     return payment
 

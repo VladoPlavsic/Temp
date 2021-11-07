@@ -79,8 +79,8 @@ def upgrade() -> None:
         i_subject_sub_fk INT;
     BEGIN
         IF (SELECT month_count FROM subscriptions.grade_subscription_plans WHERE id = i_subscription_fk) > 0 THEN
-            IF (SELECT expiration_date FROM users.user_grades WHERE user_fk = i_user_id) > now() THEN
-                UPDATE users.user_grades SET expiration_date = (SELECT expiration_date FROM users.user_grades WHERE user_fk = i_user_id) + interval '1 month' * (SELECT month_count FROM subscriptions.grade_subscription_plans WHERE id = i_subscription_fk) WHERE user_fk = i_user_id AND grade_fk = i_grade_id;
+            IF (SELECT users.user_grades.expiration_date FROM users.user_grades WHERE user_fk = i_user_id) > now() THEN
+                UPDATE users.user_grades SET expiration_date = (SELECT users.user_grades.expiration_date FROM users.user_grades WHERE user_fk = i_user_id) + interval '1 month' * (SELECT month_count FROM subscriptions.grade_subscription_plans WHERE id = i_subscription_fk) WHERE user_fk = i_user_id AND grade_fk = i_grade_id;
             ELSE
                 INSERT INTO users.user_grades(user_fk, grade_fk, expiration_date, for_life) VALUES (i_user_id, i_grade_id, now() + interval '1 month' * (SELECT month_count FROM subscriptions.grade_subscription_plans WHERE id = i_subscription_fk), 'f');
             END IF;
@@ -104,8 +104,8 @@ def upgrade() -> None:
     AS $$
     BEGIN
         IF (SELECT month_count FROM subscriptions.subject_subscription_plans WHERE id = i_subscription_fk) > 0 THEN
-            IF (SELECT expiration_date FROM users.user_subjects WHERE user_fk = i_user_id) > now() THEN
-                UPDATE users.user_subjects SET expiration_date = (SELECT expiration_date FROM users.user_subjects WHERE user_fk = i_user_id) + interval '1 month' * (SELECT month_count FROM subscriptions.subject_subscription_plans WHERE id = i_subscription_fk) WHERE user_fk = i_user_id AND subject_fk = i_subject_id;
+            IF (SELECT users.user_subjects.expiration_date FROM users.user_subjects WHERE user_fk = i_user_id) > now() THEN
+                UPDATE users.user_subjects SET expiration_date = (SELECT users.user_subjects.expiration_date FROM users.user_subjects WHERE user_fk = i_user_id) + interval '1 month' * (SELECT month_count FROM subscriptions.subject_subscription_plans WHERE id = i_subscription_fk) WHERE user_fk = i_user_id AND subject_fk = i_subject_id;
             ELSE
                 INSERT INTO users.user_subjects(user_fk, subject_fk, expiration_date, for_life) VALUES (i_user_id, i_subject_id, now() + interval '1 month' * (SELECT month_count FROM subscriptions.subject_subscription_plans WHERE id = i_subscription_fk), 'f');
             END IF;
