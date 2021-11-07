@@ -26,7 +26,7 @@ def upgrade() -> None:
 
     op.execute("""
     CREATE OR REPLACE FUNCTION public.insert_review(name_ TEXT, review_ TEXT, object_key_ TEXT, image_url_ TEXT)
-    RETURNS TABLE(id INT, name TEXT, review TEXT)
+    RETURNS TABLE(id INT, name TEXT, review TEXT, object_key TEXT, image_url TEXT)
     AS $$
     DECLARE 
         id_ INT;
@@ -38,7 +38,7 @@ def upgrade() -> None:
 
     op.execute("""
     CREATE OR REPLACE FUNCTION public.select_all_reviews()
-    RETURNS TABLE(id INT, name TEXT, review TEXT)
+    RETURNS TABLE(id INT, name TEXT, review TEXT, object_key TEXT, image_url TEXT)
     AS $$
     BEGIN
         RETURN QUERY(SELECT * FROM public.reviews);
@@ -47,7 +47,7 @@ def upgrade() -> None:
 
     op.execute("""
     CREATE OR REPLACE FUNCTION public.update_review(id_ INT, name_ TEXT, review_ TEXT)
-    RETURNS TABLE(id INT, name TEXT, review TEXT)
+    RETURNS TABLE(id INT, name TEXT, review TEXT, object_key TEXT, image_url TEXT)
     AS $$
     BEGIN
         UPDATE public.reviews SET 
