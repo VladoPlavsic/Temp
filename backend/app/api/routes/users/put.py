@@ -44,7 +44,7 @@ async def user_buy_grade_access(
             "capture": True,
             "description": plan_details.name
         }, uuid.uuid4())
-        await user_repo.create_payment_request(user_fk=user.id, offer_fk=offer_fk, payment_id=payment.id, level=0)
+        await user_repo.create_payment_request(user_fk=user.id, offer_fk=offer_fk, payment_id=payment.id, level=0, confirmation_token=payment["confirmation"]["confirmation_token"])
     else:
         request_details = await user_repo.get_payment_request(payment_id=payment_id)
         payment = Payment.find_one(payment_id)
@@ -80,7 +80,7 @@ async def user_buy_subject_access(
             "capture": True,
             "description": plan_details.name
         }, uuid.uuid4())
-        await user_repo.create_payment_request(user_fk=user.id, offer_fk=offer_fk, payment_id=payment.id, level=1)
+        await user_repo.create_payment_request(user_fk=user.id, offer_fk=offer_fk, payment_id=payment.id, level=1, confirmation_token=payment["confirmation"]["confirmation_token"])
     else:
         request_details = await user_repo.get_payment_request(payment_id=payment_id)
         payment = Payment.find_one(payment_id)
