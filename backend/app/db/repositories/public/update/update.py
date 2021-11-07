@@ -95,6 +95,18 @@ class PublicDBUpdateRepository(BaseDBRepository):
         links = list(quiz.values())
         await self._execute_one(query=update_quiz_links_query(keys=keys, links=links))
 
+    async def update_review_links(self, *, review) -> None:
+        """Updates public review presigned urls by keys.
+        
+        Keyword arguemts;
+        review -- dictionary with:
+            key   -- objecy_key
+            value -- presigned url 
+        """
+        keys = list(review.keys())
+        links = list(review.values())
+        await self._execute_one(query=update_review_links_query(keys=keys, links=links))
+
     async def update_presentation_part_links(self, *, prats, presentation: ContentType, media_type: ContentType) -> None:
         """Updates public presentation presigned urls by keys.
         

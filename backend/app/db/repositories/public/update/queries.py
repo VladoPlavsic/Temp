@@ -68,6 +68,12 @@ def update_quiz_links_query(keys, links) -> str:
     return \
         f"SELECT public.update_quiz_links('{{{keys}}}', '{{{links}}}')"
 
+def update_review_links_query(keys, links) -> str:
+    keys = list_to_string(keys)
+    links = list_to_string(links)
+    return \
+        f"SELECT public.update_review_links('{{{keys}}}', '{{{links}}}')"
+
 def update_presentation_part_links_query(keys, links, presentation, media_type) -> str:
     keys = list_to_string(keys)
     links = list_to_string(links)

@@ -114,6 +114,11 @@ class PublicDBSelectRepository(BaseDBRepository):
         records = await self._fetch_many(query=select_all_material_keys_query(table="quiz_question"))
         return [MaterialAllModel(**record) for record in records if record['object_key']]
 
+    async def select_all_review(self) -> List[MaterialAllModel]:
+        """Returns list of object_keys for all reviews in database, schema public"""
+        records = await self._fetch_many(query=select_all_material_keys_query(table="review"))
+        return [MaterialAllModel(**record) for record in records if record['object_key']]
+
     async def select_video(self) -> VideoInDB:
         """Returns VideInDB from schema public"""
         response = await self._fetch_one(query=select_material_query(table=ContentType.VIDEO.value))

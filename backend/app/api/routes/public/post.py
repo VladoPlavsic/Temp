@@ -30,6 +30,7 @@ from app.models.public import VideoCreateModel
 from app.models.public import IntroVideoCreateModel
 from app.models.public import QuizCreateModel
 from app.models.public import GameCreateModel
+from app.models.public import ReviewCreateModel
 
 # response models
 from app.models.public import PresentationInDB
@@ -256,8 +257,11 @@ async def create_faq(
 async def create_review(
     review: ReviewPostModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
+    cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
     ) -> ReviewInDB:
     
+    shared = cdn_repo.get_sharing_link_from_object_key(object_key=review.object_key)
+    review = ReviewCreateModel(**review.dict(), image_url=url)
     response = await db_repo.insert_review(review=review)
     return response

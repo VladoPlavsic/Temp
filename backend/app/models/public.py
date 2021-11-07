@@ -170,12 +170,12 @@ class FAQInDB(FAQCoreModel):
 class ReviewCoreModel(DBCoreModel):
     name: str
     review: str
+    object_key: str
 
 class ReviewPostModel(ReviewCoreModel):
     pass
-
 class ReviewCreateModel(ReviewCoreModel):
-    pass
+    image_url: str
 
 class UpdateReviewModel(DBCoreModel):
     id: int
@@ -184,6 +184,7 @@ class UpdateReviewModel(DBCoreModel):
 
 class ReviewInDB(ReviewCoreModel):
     id: int
+    image_url: str
 
 
 class InstructionCoreModel(DBCoreModel):
