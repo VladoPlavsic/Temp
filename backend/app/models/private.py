@@ -426,3 +426,9 @@ class PaymentRequestDetails(DBCoreModel):
     offer_fk: int
     payment_id: str
     level: bool
+
+class SubscriptionInformation(DBCoreModel):
+    for_life: bool
+    expiration_date: float
+    plan_name: str
+    

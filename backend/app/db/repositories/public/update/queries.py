@@ -32,9 +32,9 @@ def update_faq_query(id, question, answer) -> str:
     return \
         f"SELECT (public.update_faq({id}, {string_or_null(question, answer)})).*"
 
-def update_review_query(id, name, review) -> str:
+def update_review_query(id, name, review, object_key, image_url) -> str:
     return \
-        f"SELECT (public.update_review({id}, {string_or_null(name, review)})).*"
+        f"SELECT (public.update_review({id}, {string_or_null(name, review, object_key, image_url)})).*"
 
 
 # link updating

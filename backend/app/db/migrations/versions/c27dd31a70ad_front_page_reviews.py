@@ -46,13 +46,15 @@ def upgrade() -> None:
     """)
 
     op.execute("""
-    CREATE OR REPLACE FUNCTION public.update_review(id_ INT, name_ TEXT, review_ TEXT)
+    CREATE OR REPLACE FUNCTION public.update_review(id_ INT, name_ TEXT, review_ TEXT, object_key_ TEXT, image_url_ TEXT)
     RETURNS TABLE(id INT, name TEXT, review TEXT, object_key TEXT, image_url TEXT)
     AS $$
     BEGIN
         UPDATE public.reviews SET 
             name = COALESCE(name_, public.reviews.name),
-            review = COALESCE(review_, public.reviews.review)
+            review = COALESCE(review_, public.reviews.review),
+            object_key = COALESCE(object_key_, public.reviews.object_key),
+            image_url = COALESCE(image_url_, public.reviews.image_url)
         WHERE public.reviews.id = id_; 
         RETURN QUERY(SELECT * FROM public.reviews WHERE public.reviews.id = id_);
     END $$ LANGUAGE plpgsql;

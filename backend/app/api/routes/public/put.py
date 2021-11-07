@@ -141,5 +141,9 @@ async def update_review(
     allowed: bool = Depends(allowed_or_denied),
     ) -> ReviewInDB:
 
+    if review.object_key:
+        updated_key = cdn_repo.get_sharing_link_from_object_key(object_key=review.object_key)
+        review.image_key = updated_key[review.object_key]
+
     response = await db_repo.update_review(updated=review)
     return response

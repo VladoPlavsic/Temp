@@ -262,6 +262,6 @@ async def create_review(
     ) -> ReviewInDB:
     
     shared = cdn_repo.get_sharing_link_from_object_key(object_key=review.object_key)
-    review = ReviewCreateModel(**review.dict(), image_url=url)
+    review = ReviewCreateModel(**review.dict(), image_url=shared[review.object_key])
     response = await db_repo.insert_review(review=review)
     return response

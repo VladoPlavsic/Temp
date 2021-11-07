@@ -181,6 +181,8 @@ class UpdateReviewModel(DBCoreModel):
     id: int
     name: Optional[str]
     review: Optional[str]
+    object_key: Optional[str]
+    image_url: Optional[str]
 
 class ReviewInDB(ReviewCoreModel):
     id: int
