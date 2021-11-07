@@ -3,8 +3,10 @@ from fastapi import Depends, Body
 from starlette.status import HTTP_200_OK
 
 from app.db.repositories.public.public import PublicDBRepository
+from app.cdn.repositories.public.public import PublicYandexCDNRepository
 
 from app.api.dependencies.database import get_db_repository
+from app.api.dependencies.cdn import get_cdn_repository
 
 from app.db.repositories.parsers import parse_youtube_link
 
@@ -138,12 +140,13 @@ async def update_instruction(
 async def update_review(
     review: UpdateReviewModel = Body(...),
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
+    cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
     ) -> ReviewInDB:
 
     if review.object_key:
         updated_key = cdn_repo.get_sharing_link_from_object_key(object_key=review.object_key)
-        review.image_key = updated_key[review.object_key]
+        review.image_url = updated_key[review.object_key]
 
     response = await db_repo.update_review(updated=review)
     return response
