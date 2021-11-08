@@ -6,7 +6,7 @@ def get_user_by_email_query(email) -> str:
 
 def get_user_by_id_query(user_id) -> str:
     return \
-        f"SELECT (user.get_user_by_id({user_id})).*"
+        f"SELECT (users.get_user_by_id({user_id})).*"
 
 def get_user_by_username_query(username) -> str:
     return \

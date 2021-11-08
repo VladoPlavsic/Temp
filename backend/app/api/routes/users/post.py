@@ -175,7 +175,7 @@ async def subscription_notification_hnd(
         if not payment_object:
             background_tasks.add_task(send_message, subject="Payment confirmation failed. Required assistence.", message_text=f"There was error in confirming payment request. This might have happened because there was no recorded payment request with given payment ID when the notification was raised. Notification detail: {notification}")
             return None
-            
+        
         product = await user_repo.get_offer_details(level=int(payment_object.level), offer_fk=payment_object.offer_fk)
         # add product
         subscription_details = await user_repo.add_product_to_user(user_id=payment_object.user_fk, product_id=product.product_fk, subscription_fk=payment_object.offer_fk, level=int(payment_object.level))

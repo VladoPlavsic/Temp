@@ -27,7 +27,7 @@ def upgrade() -> None:
     RETURNS VOID
     AS $$
     BEGIN
-        INSERT INTO subscriptions.pending_subscriptions VALUES (i_user_fk, i_offer_fk, i_payment_id, i_level::boolean, i_confirmation_token);
+        INSERT INTO subscriptions.pending_subscriptions VALUES (i_user_fk, i_offer_fk, i_payment_id, i_level::boolean, i_confirmation_token) ON CONFLICT ON CONSTRAINT pending_subscriptions_user_fk_offer_fk_level_key DO UPDATE SET payment_id = i_payment_id;
     END $$ LANGUAGE plpgsql;
     """)
 
@@ -46,17 +46,6 @@ def upgrade() -> None:
     AS $$
     BEGIN
         RETURN QUERY (SELECT * FROM subscriptions.pending_subscriptions WHERE subscriptions.pending_subscriptions.payment_id = i_payment_id);
-    END $$ LANGUAGE plpgsql;
-    """)
-
-    op.execute("DROP FUNCTION subscriptions.check_subscription_pending")
-
-    op.execute("""
-    CREATE OR REPLACE FUNCTION subscriptions.check_subscription_pending(i_user_fk int, i_offer_fk int, i_level int)
-    RETURNS TABLE (payment_id INT, confirmation_token TEXT)
-    AS $$
-    BEGIN
-        RETURN QUERY(SELECT subscriptions.pending_subscriptions.payment_id, subscriptions.pending_subscriptions.confirmation_token FROM subscriptions.pending_subscriptions WHERE user_fk = i_user_fk AND offer_fk = i_offer_fk AND level = i_level::boolean);
     END $$ LANGUAGE plpgsql;
     """)
 

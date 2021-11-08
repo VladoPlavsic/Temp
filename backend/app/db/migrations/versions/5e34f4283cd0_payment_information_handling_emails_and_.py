@@ -22,7 +22,7 @@ def create_tables() -> None:
         sa.Column("user_fk", sa.Integer, nullable=False),
         sa.Column("price", sa.Integer, nullable=False),
         sa.Column("purchased_at",  sa.TIMESTAMP(timezone=True), nullable=False),
-        sa.Column("month_count",  sa.TIMESTAMP(timezone=True), nullable=False),
+        sa.Column("month_count",  sa.Integer, nullable=False),
         sa.ForeignKeyConstraint(['user_fk'], ['users.users.id'], onupdate='CASCADE', ondelete='CASCADE'),
         sa.ForeignKeyConstraint(['grade_fk'], ['private.grade.id'], onupdate='CASCADE', ondelete='NO ACTION'),
         schema='history'
@@ -36,7 +36,7 @@ def create_tables() -> None:
         sa.Column("user_fk", sa.Integer, nullable=False),
         sa.Column("price", sa.Integer, nullable=False),
         sa.Column("purchased_at",  sa.TIMESTAMP(timezone=True), nullable=False),
-        sa.Column("month_count",  sa.TIMESTAMP(timezone=True), nullable=False),
+        sa.Column("month_count",  sa.Integer, nullable=False),
         sa.ForeignKeyConstraint(['user_fk'], ['users.users.id'], onupdate='CASCADE', ondelete='CASCADE'),
         sa.ForeignKeyConstraint(['subject_fk'], ['private.subject.id'], onupdate='CASCADE', ondelete='NO ACTION'),
         schema='history'
@@ -72,7 +72,7 @@ def upgrade() -> None:
 
     op.execute("""
     CREATE OR REPLACE FUNCTION users.add_grade_to_user(i_user_id int, i_grade_id int, i_subscription_fk int)
-    RETURNS TABLE(for_life BOOLEAN, expiration_date TIMESTAMP, plan_name TEXT)
+    RETURNS TABLE(for_life BOOLEAN, expiration_date TIMESTAMP, plan_name VARCHAR(50))
     AS $$
     DECLARE
         temprow RECORD;
@@ -100,7 +100,7 @@ def upgrade() -> None:
     # add subject to user
     op.execute("""
     CREATE OR REPLACE FUNCTION users.add_subject_to_user(i_user_id int, i_subject_id int, i_subscription_fk int)
-    RETURNS TABLE(for_life BOOLEAN, expiration_date TIMESTAMP, plan_name TEXT)
+    RETURNS TABLE(for_life BOOLEAN, expiration_date TIMESTAMP, plan_name VARCHAR(50))
     AS $$
     BEGIN
         IF (SELECT month_count FROM subscriptions.subject_subscription_plans WHERE id = i_subscription_fk) > 0 THEN
@@ -113,7 +113,7 @@ def upgrade() -> None:
             INSERT INTO users.user_subjects(user_fk, subject_fk, expiration_date, for_life) VALUES (i_user_id, i_subject_id, now(), 't') ON CONFLICT ON CONSTRAINT user_subjects_user_fk_subject_fk_key DO UPDATE SET for_life = 't';
         END IF;
         INSERT INTO history.subject_subscriptions(subject_fk, user_fk, price, purchased_at, month_count) VALUES(i_subject_id, i_user_id, (SELECT price FROM subscriptions.subject_subscription_plans WHERE id = i_subscription_fk), now(), (SELECT month_count FROM subscriptions.subject_subscription_plans WHERE id = i_subscription_fk));
-        RETURN QUERY (SELECT users.user_subjects.for_life, users.user_subjects.expiration_date FROM users.user_subjects INNER JOIN subscriptions.grade_subscription_plans ON id = i_subscription_fk WHERE user_fk = i_user_id AND subject_fk = i_subject_id);
+        RETURN QUERY (SELECT users.user_subjects.for_life, users.user_subjects.expiration_date, subscriptions.grade_subscription_plans.name FROM users.user_subjects INNER JOIN subscriptions.grade_subscription_plans ON id = i_subscription_fk WHERE user_fk = i_user_id AND subject_fk = i_subject_id);
     END $$ LANGUAGE plpgsql;
     """)
     pass

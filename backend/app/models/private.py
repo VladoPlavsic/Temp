@@ -1,4 +1,5 @@
 from typing import List, Optional
+from datetime import datetime
 from app.models.core import DBCoreModel
 
 # ###
@@ -430,6 +431,6 @@ class PaymentRequestDetails(DBCoreModel):
 
 class SubscriptionInformation(DBCoreModel):
     for_life: bool
-    expiration_date: float
+    expiration_date: datetime
     plan_name: str
     
