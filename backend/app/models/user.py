@@ -12,7 +12,7 @@ class UserBase(BaseModel):
     city: str
     school: str
     email_verified: bool = False
-    is_active: bool = False
+    is_active: bool = True
     is_superuser: bool = False
 
 class UserCreate(BaseModel):

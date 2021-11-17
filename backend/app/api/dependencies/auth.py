@@ -28,6 +28,9 @@ async def get_user_from_token(
     if not user:
         raise HTTPException(status_code=404, detail="No user found!")
 
+    if not user.is_active:
+        raise HTTPException(status_code=406, detail="Account deactivated")
+
     return user
 
 async def is_superuser(
