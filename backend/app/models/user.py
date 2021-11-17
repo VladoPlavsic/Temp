@@ -25,8 +25,11 @@ class UserCreate(BaseModel):
     full_name: str
 
 class UserUpdate(BaseModel):
-    """Users are allowed to update their email"""
-    email: Optional[EmailStr]
+    """Users are allowed to update their personal data, except email"""
+    full_name: Optional[str]
+    phone_number: Optional[str]
+    city: Optional[str]
+    school: Optional[str]
 
 class UserPasswordUpdate(BaseModel):
     """Users can change their password"""

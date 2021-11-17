@@ -58,3 +58,12 @@ async def confirm_email(
         return PublicUserInDB(**user.dict(), access_token=access_token)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Unhandled exception raised in user. Exited with {e}")
+
+@router.get("/profile")
+async def get_user_information(
+    user: UserInDB = Depends(get_user_from_token),
+    db_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
+    ) -> PublicUserInDB:
+
+    response = await db_repo.get_user_by_id(user_id=user.id)
+    return PublicUserInDB(**response.dict())

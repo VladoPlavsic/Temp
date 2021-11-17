@@ -28,13 +28,11 @@ class UsersDBSelectRepository(BaseDBRepository):
         user_record = await self._fetch_one(query=get_user_by_username_query(username=username))
         return UserInDB(**user_record) if user_record else None
 
-
     async def authenticate_user(self, *, email: EmailStr, password:str) -> Optional[UserInDB]:
         user = await self.get_user_by_email(email=email)
         if user:
             if self.auth_service.verify_password(password=password, salt=user.salt, hashed_password=user.password):
                 return user
-        
         return None
 
     async def check_refresh_token(self, *, user: UserInDB, refresh_token: str) -> Optional[UserInDB]:
@@ -42,7 +40,6 @@ class UsersDBSelectRepository(BaseDBRepository):
         if user:
             if user.jwt == refresh_token:
                 return user
-        
         return None
 
     async def check_code(self, *, user_id: int, code: str) -> bool:
