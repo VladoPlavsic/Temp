@@ -46,6 +46,7 @@ class PublicUserInDB(UserBase):
     id: int
     access_token: Optional[AccessToken]
     refresh_token: Optional[RefreshToken]
+    full_name: Optional[str]
 
 # availble subjects/grades
 class UserAvailableGrades(BaseModel):
