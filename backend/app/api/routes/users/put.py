@@ -43,7 +43,8 @@ async def user_buy_grade_access(
             "type": "embedded",
         },
         "capture": True,
-        "description": plan_details.name
+        "description": plan_details.name,
+        "save_payment_method": False
     }, uuid.uuid4())
     await user_repo.create_payment_request(user_fk=user.id, offer_fk=offer_fk, payment_id=payment.id, level=0, confirmation_token=payment.confirmation.confirmation_token)
     #else:
@@ -79,7 +80,8 @@ async def user_buy_subject_access(
             "type": "embedded",
         },
         "capture": True,
-        "description": plan_details.name
+        "description": plan_details.name,
+        "save_payment_method": False
     }, uuid.uuid4())
     await user_repo.create_payment_request(user_fk=user.id, offer_fk=offer_fk, payment_id=payment.id, level=1, confirmation_token=payment.confirmation.confirmation_token)
     #else:
