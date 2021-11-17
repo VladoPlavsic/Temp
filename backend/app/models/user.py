@@ -63,3 +63,6 @@ class AdminAvailableData(BaseModel):
     AWS_SECRET_KEY_ID: Optional[str]
     AWS_SECRET_ACCESS_KEY: Optional[str]
     
+class UserDeletion(BaseModel):
+    id: int
+    email: Optional[EmailStr]

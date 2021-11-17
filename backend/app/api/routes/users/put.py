@@ -132,3 +132,43 @@ async def recover_password(
         raise HTTPException(status_code=400, detail="Ooops! Something went wrong. Please try creating new recovery request!")
 
     return response
+
+@router.put("/deactivate/profile")
+async def deactivate_profile(
+    password: str,
+    user = Depends(get_user_from_token),
+    user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
+    ) -> None:
+
+    user = await user_repo.authenticate_user(email=user.email, password=password)
+
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Authentication was unsuccessful.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    await user_repo.deactivate_profile(user_id=user.id)
+    return None
+    
+
+@router.put("/delete/profile")
+async def delete_profile(
+    password: str,
+    user = Depends(get_user_from_token),
+    user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
+    ) -> None:
+
+    user = await user_repo.authenticate_user(email=user.email, password=password)
+
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Authentication was unsuccessful.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    await user_repo.delete_profile(user_id=user.id)
+    return None
+ 
