@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import EmailStr
 
 from databases import Database
@@ -10,6 +10,8 @@ from app.db.repositories.users.select.queries import *
 from app.services import auth_service
 
 from app.models.user import UserInDB
+from app.models.private import SubscriptionHistoryUnit
+from app.models.private import SubscriptionHistory
 
 class UsersDBSelectRepository(BaseDBRepository):
     def __init__(self, db: Database) -> None:
@@ -45,3 +47,12 @@ class UsersDBSelectRepository(BaseDBRepository):
     async def check_code(self, *, user_id: int, code: str) -> bool:
         response = await self._fetch_one(query=check_confirmation_code_query(user_id=user_id, confirmation_code=code))
         return response["valid"]
+
+    async def get_subscription_history(self, *, user_id: int) -> List[SubscriptionHistory]:
+        grades_history = await self._fetch_many(query=get_grade_subscription_history_query(user_id=user_id))
+        subjects_history = await self._fetch_many(query=get_subject_subscription_history_query(user_id=user_id))
+
+        grades = [SubscriptionHistoryUnit(**grade) for grade in grades_history]
+        subjects = [SubscriptionHistoryUnit(**subject) for subject in subjects_history]
+
+        return SubscriptionHistory(grades=grades, subjects=subjects)
