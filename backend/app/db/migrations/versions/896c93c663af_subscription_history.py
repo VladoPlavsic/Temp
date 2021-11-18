@@ -19,19 +19,19 @@ def upgrade() -> None:
 
     op.execute("""
     CREATE OR REPLACE FUNCTION history.get_subject_subscription_history(user_id INT)
-    RETURNS TABLE(name_ru VARCHAR(100), price NUMERIC(20, 2), purchased_at TIMESTAMP, month_count INTEGER)
+    RETURNS TABLE(name_ru VARCHAR(100), price NUMERIC(20, 2), purchased_at TIMESTAMP WITH TIME ZONE, month_count INTEGER)
     AS $$
     BEGIN
-        RETURN QUERY(SELECT s.name_ru, h.price, h.purchased_at, h.month_count FROM history.subject_subscriptions INNER JOIN private.subject AS s ON s.id = h.subject_fk WHERE h.user_fk = user_id);
+        RETURN QUERY(SELECT s.name_ru, h.price, h.purchased_at, h.month_count FROM history.subject_subscriptions AS h INNER JOIN private.subject AS s ON s.id = h.subject_fk WHERE h.user_fk = user_id);
     END $$ LANGUAGE plpgsql;
     """)
 
     op.execute("""
     CREATE OR REPLACE FUNCTION history.get_grade_subscription_history(user_id INT)
-    RETURNS TABLE(name_ru VARCHAR(100), price NUMERIC(20, 2), purchased_at TIMESTAMP, month_count INTEGER)
+    RETURNS TABLE(name_ru VARCHAR(100), price NUMERIC(20, 2), purchased_at TIMESTAMP WITH TIME ZONE, month_count INTEGER)
     AS $$
     BEGIN
-        RETURN QUERY(SELECT g.name_ru, h.price, h.purchased_at, h.month_count FROM history.grade_subscriptions INNER JOIN private.grade AS g ON g.id = h.grade_fk WHERE h.user_fk = user_id);
+        RETURN QUERY(SELECT g.name_ru, h.price, h.purchased_at, h.month_count FROM history.grade_subscriptions AS h INNER JOIN private.grade AS g ON g.id = h.grade_fk WHERE h.user_fk = user_id);
     END $$ LANGUAGE plpgsql;
     """)
 
