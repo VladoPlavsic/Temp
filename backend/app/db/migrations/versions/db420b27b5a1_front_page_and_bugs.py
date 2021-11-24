@@ -257,12 +257,12 @@ def front_page_titles() -> None:
 def active_subscriptions() -> None:
     op.execute("""
     CREATE OR REPLACE FUNCTION subscriptions.get_subject_subscriptions(user_id INT)
-    RETURNS TABLE(class_name VARCHAR(100), subject_name VARCHAR(100), expiration_date TIMESTAMP WITH TIME ZONE, for_life BOOLEAN, price NUMERIC(20, 2))
+    RETURNS TABLE(class_name VARCHAR(100), subject_name VARCHAR(100), expiration_date TIMESTAMP, for_life BOOLEAN, price NUMERIC(20, 2))
     AS $$
     BEGIN
         RETURN QUERY(SELECT c.name_ru, s.name_ru, u.expiration_date, u.for_life, sp.price FROM users.user_subjects AS u 
-        INNER JOIN private.subjects AS s ON s.id = u.subject_fk 
-        INNER JOIN private.grades AS c ON c.id = s.fk 
+        INNER JOIN private.subject AS s ON s.id = u.subject_fk 
+        INNER JOIN private.grade AS c ON c.id = s.fk 
         INNER JOIN subscriptions.subject_subscription_plans AS sp ON sp.id = (SELECT subscription_fk FROM subscriptions.subject_offers WHERE subject_fk = u.subject_fk)
         WHERE user_fk = user_id);
     END $$ LANGUAGE plpgsql;
@@ -270,11 +270,11 @@ def active_subscriptions() -> None:
 
     op.execute("""
     CREATE OR REPLACE FUNCTION subscriptions.get_grade_subscriptions(user_id INT)
-    RETURNS TABLE(class_name VARCHAR(100), expiration_date TIMESTAMP WITH TIME ZONE, for_life BOOLEAN, price NUMERIC(20, 2))
+    RETURNS TABLE(class_name VARCHAR(100), expiration_date TIMESTAMP, for_life BOOLEAN, price NUMERIC(20, 2))
     AS $$
     BEGIN
         RETURN QUERY(SELECT c.name_ru, u.expiration_date, u.for_life, sp.price FROM users.user_grades AS u 
-        INNER JOIN private.grades AS c ON c.id = u.grade_fk
+        INNER JOIN private.grade AS c ON c.id = u.grade_fk
         INNER JOIN subscriptions.grade_subscription_plans AS sp ON sp.id = (SELECT subscription_fk FROM subscriptions.grade_offers WHERE grade_fk = u.grade_fk)
         WHERE user_fk = user_id);
     END $$ LANGUAGE plpgsql;
