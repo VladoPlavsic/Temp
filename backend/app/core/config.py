@@ -35,7 +35,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = config(
   default=15
 )
 JWT_ALGORITHM = config("JWT_ALGORITHM", cast=str, default="HS256")
-JWT_AUDIENCE = config("JWT_AUDIENCE", cast=str, default="mpei-kids:auth")
+JWT_AUDIENCE = config("JWT_AUDIENCE", cast=str, default="shkembridge:auth")
 JWT_TOKEN_PREFIX = config("JWT_TOKEN_PREFIX", cast=str, default="Bearer")
 
 # POSTGRES
@@ -60,3 +60,5 @@ YOOMONEY_SECRET_KEY = config("YOOMONEY_SECRET_KEY", cast=str)
 
 # SERVER INFO
 RESFUL_SERVER_URL = config("RESFUL_SERVER_URL", cast=str)
+
+LOG_FILE = config("LOG_FILE", default="/var/log/shkembridge/log.log")

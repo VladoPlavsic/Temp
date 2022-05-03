@@ -16,4 +16,6 @@ RUN set -eux \
   && pip install -r /backend/requirements.txt \
   && rm -rf /root/.cache/pip
 
-  COPY . /backend
+RUN mkdir /var/log/shkembridge/
+
+COPY . /backend

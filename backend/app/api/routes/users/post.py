@@ -1,5 +1,9 @@
+from typing import Optional
+
 from fastapi import APIRouter, Request
-from fastapi import Body, BackgroundTasks, Depends, HTTPException
+from fastapi import Body, Cookie, BackgroundTasks, Depends, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from fastapi.security import OAuth2PasswordRequestForm
 
 from starlette.status import HTTP_200_OK
@@ -10,7 +14,7 @@ from app.api.dependencies.email import send_message, create_confirm_code_msg, cr
 
 from app.db.repositories.users.users import UsersDBRepository
 from app.api.dependencies.database import get_db_repository
-from app.api.dependencies.auth import get_user_from_token, auth_service
+from app.api.dependencies.auth import get_user_from_token, auth_service, _get_user_from_token
 
 from app.api.dependencies.auth import generate_confirmation_code
 from app.api.dependencies.crons import handle_deactivated_profiles
@@ -132,16 +136,19 @@ async def user_login_with_email_and_password(
     refresh_token = RefreshToken(refresh_token=auth_service.create_refresh_token_for_user(user=user))
 
     await user_repo.set_jwt_token(user_id=user.id, token=refresh_token.refresh_token)
-
-    return PublicUserInDB(**user.dict(), access_token=access_token, refresh_token=refresh_token)
+    response_content = jsonable_encoder(PublicUserInDB(**user.dict()))
+    response = JSONResponse(content=response_content)
+    response.set_cookie(key="_shkembridge_tok", value=access_token.access_token)
+    response.set_cookie(key="_shkembridge_ref", value=refresh_token.refresh_token)
+    return response
 
 @router.post("/refresh/token", response_model=PublicUserInDB)
 async def refresh_jw_token(
-    refresh_token: str,
     user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
+    _shkembridge_ref: Optional[str] = Cookie(None),
     ) -> PublicUserInDB:
-    user = await get_user_from_token(token=refresh_token)
-    user = await user_repo.check_refresh_token(user=user, refresh_token=refresh_token)
+    user = await _get_user_from_token(token=_shkembridge_ref)
+    user = await user_repo.check_refresh_token(user=user, refresh_token=_shkembridge_ref)
 
     if not user:
         raise HTTPException(
@@ -155,7 +162,24 @@ async def refresh_jw_token(
 
     await user_repo.set_jwt_token(user_id=user.id, token=refresh_token.refresh_token)
 
-    return PublicUserInDB(**user.dict(), access_token=access_token, refresh_token=refresh_token)
+    response_content = jsonable_encoder(PublicUserInDB(**user.dict()))
+    response = JSONResponse(content=response_content)
+    response.set_cookie(key="_shkembridge_tok", value=access_token.access_token)
+    response.set_cookie(key="_shkembridge_ref", value=refresh_token.refresh_token)
+    return response
+
+@router.post("/logout", response_model=PublicUserInDB)
+async def logout(
+    user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
+    user: UserInDB = Depends(get_user_from_token),
+    ) -> PublicUserInDB:
+    await user_repo.remove_jwt(user_id=user.id)
+
+    response_content = jsonable_encoder({"Data": "OK"})
+    response = JSONResponse(content=response_content)
+    response.set_cookie(key="_shkembridge_tok", value="*")
+    response.set_cookie(key="_shkembridge_ref", value="*")
+    return response
 
 @router.post("/subscriptions/check/")
 async def user_check_expired_subscriptions(

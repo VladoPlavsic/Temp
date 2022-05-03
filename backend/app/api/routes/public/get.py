@@ -19,6 +19,9 @@ from app.models.public import ReviewResponse
 from app.models.public import TitlesResponseModel
 
 router = APIRouter()
+import logging
+
+logger = logging.getLogger(__name__)
 
 @router.get("/material", response_model=MaterialResponse, name="public:get-material", status_code=HTTP_200_OK)
 async def get_public_material(

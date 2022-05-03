@@ -9,13 +9,16 @@ from app.api.routes import router as api_router
 from app.core import config, tasks
 from app.api.dependencies.email import send_message
 import requests
-
 import logging
 
 logger = logging.getLogger(__name__)
 
+def setup_logger():
+    logging.basicConfig(filename=config.LOG_FILE, level=logging.INFO)
+
 def get_application():
-    
+    setup_logger()
+
     app = FastAPI(title=config.PROJECT_NAME, version=config.VERSION)
     
     app.add_middleware(

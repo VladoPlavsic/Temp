@@ -27,6 +27,9 @@ class UsersDBInsertRepository(BaseDBRepository):
     async def set_jwt_token(self, *, user_id: int, token: str):
         await self._execute_one(query=set_jwt_token_query(user_id=user_id, token=token))
 
+    async def remove_jwt(self, *, user_id: int):
+        await self._execute_one(query=remove_jwt_token_query(user_id=user_id))
+
     async def verify_email(self, *, user_id: int):
         await self._execute_one(query=verify_email_query(user_id=user_id))
 

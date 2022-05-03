@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Cookie, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from starlette.status import HTTP_403_FORBIDDEN
 
@@ -10,18 +10,36 @@ from app.api.dependencies.database import get_db_repository
 from app.db.repositories.users.users import UsersDBRepository
 from app.services import auth_service
 
+
 import logging
 
 logger = logging.getLogger(__name__)
 
-async def get_user_from_token(
-    *,
-    token: str,
-    user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)), # probably remove this!
+async def _get_user_from_token(
+    token: str
     ) -> Optional[UserInDB]:
     """Takes in JWT token. Returns UserInDB or raises 401 if token expired or not valid and 406 if account is deactivated"""
     try:
         user = auth_service.get_user_from_token(token=token, secret_key=str(SECRET_KEY))
+    except Exception as e:
+        raise e
+
+    if not user:
+        raise HTTPException(status_code=404, detail="No user found!")
+
+    if not user.is_active:
+        raise HTTPException(status_code=406, detail="Account deactivated")
+
+    return user
+
+async def get_user_from_token(
+    *,
+    user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)), # probably remove this!
+    _shkembridge_tok: Optional[str] = Cookie(None)
+    ) -> Optional[UserInDB]:
+    """Takes in JWT token. Returns UserInDB or raises 401 if token expired or not valid and 406 if account is deactivated"""
+    try:
+        user = auth_service.get_user_from_token(token=_shkembridge_tok, secret_key=str(SECRET_KEY))
     except Exception as e:
         raise e
 
