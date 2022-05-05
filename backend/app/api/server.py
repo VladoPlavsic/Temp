@@ -14,7 +14,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def setup_logger():
-    logging.basicConfig(filename=config.LOG_FILE, level=logging.INFO)
+    logging.basicConfig(filename=config.LOG_FILE, level=logging.DEBUG)
 
 def get_application():
     setup_logger()
@@ -23,10 +23,10 @@ def get_application():
     
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=[config.SITE_URL],
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"]
+        allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PUT"],
+        allow_headers=["Content-Type","Set-Cookie"],
     )
 
     # Send email on server error
@@ -36,7 +36,7 @@ def get_application():
         except Exception as e:
             send_message(subject="Server error", message_text=f"Error on server occured. {e}")
             logger.error("----- 500 INTERNAL SERVER ERROR -----")
-            logger.error(e)
+            logger.exception(e)
             logger.error("----- 500 INTERNAL SERVER ERROR -----")
             return Response("Internal server error", status_code=500)
     
@@ -68,11 +68,11 @@ def get_application():
         requests.post(f"{config.RESFUL_SERVER_URL}/api/users/deactivated/check/")
 
     # Keep server alive
-    @app.on_event("startup")
-    @repeat_every(seconds=60 * 25) # update every 25 minutes (Keep server alive, remove on paid version)
-    def keep_server_alive() -> None:
-        logger.warn(f"sending GET request to {config.RESFUL_SERVER_URL}/api/public/wake/")
-        requests.get(f"{config.RESFUL_SERVER_URL}/api/public/wake/")
+    # @app.on_event("startup")
+    # @repeat_every(seconds=60 * 25) # update every 25 minutes (Keep server alive, remove on paid version)
+    # def keep_server_alive() -> None:
+    #     logger.warn(f"sending GET request to {config.RESFUL_SERVER_URL}/api/public/wake/")
+    #     requests.get(f"{config.RESFUL_SERVER_URL}/api/public/wake/")
 
 
     app.include_router(api_router, prefix="/api")

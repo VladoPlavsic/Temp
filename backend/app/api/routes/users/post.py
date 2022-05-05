@@ -113,6 +113,7 @@ async def user_login_with_email_and_password_send_code(
 @router.post("/login/token/", response_model=PublicUserInDB)
 async def user_login_with_email_and_password(
     confirmation_code: str,
+    remember: bool,
     user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     form_data: OAuth2PasswordRequestForm = Depends(OAuth2PasswordRequestForm),
     ) -> PublicUserInDB:
@@ -135,10 +136,16 @@ async def user_login_with_email_and_password(
     access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), token_type="bearer")
     refresh_token = RefreshToken(refresh_token=auth_service.create_refresh_token_for_user(user=user))
 
+    # TODO
+    # if remember:
+    #   set session cookie token
+    # else;
+    #   set refresh token expires = 1 year
+
     await user_repo.set_jwt_token(user_id=user.id, token=refresh_token.refresh_token)
     response_content = jsonable_encoder(PublicUserInDB(**user.dict()))
     response = JSONResponse(content=response_content)
-    response.set_cookie(key="_shkembridge_tok", value=access_token.access_token)
+    response.set_cookie(key="_shkembridge_tok", expires=60*60, value=access_token.access_token)
     response.set_cookie(key="_shkembridge_ref", value=refresh_token.refresh_token)
     return response
 
@@ -162,9 +169,15 @@ async def refresh_jw_token(
 
     await user_repo.set_jwt_token(user_id=user.id, token=refresh_token.refresh_token)
 
+    # TODO
+    # if remember:
+    #   set session cookie token
+    # else;
+    #   set refresh token expires = 1 year
+
     response_content = jsonable_encoder(PublicUserInDB(**user.dict()))
     response = JSONResponse(content=response_content)
-    response.set_cookie(key="_shkembridge_tok", value=access_token.access_token)
+    response.set_cookie(key="_shkembridge_tok", expires=60*60, value=access_token.access_token)
     response.set_cookie(key="_shkembridge_ref", value=refresh_token.refresh_token)
     return response
 
