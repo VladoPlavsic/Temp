@@ -14,7 +14,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 def setup_logger():
-    logging.basicConfig(filename=config.LOG_FILE, level=logging.DEBUG)
+    logging.basicConfig(
+        filename=config.LOG_FILE,
+        format='%(asctime)s [%(levelname)-8s] %(message)s',
+        level=logging.DEBUG,
+        datefmt='%Y-%m-%d %H:%M:%S')
 
 def get_application():
     setup_logger()

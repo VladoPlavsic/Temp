@@ -3,9 +3,10 @@ from fastapi import Depends
 
 from starlette.status import HTTP_200_OK
 from fastapi import HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 
-from app.api.dependencies.auth import get_user_from_token, is_superuser
-
+from app.api.dependencies.auth import get_user_from_cookie_token, get_user_from_query_token, is_superuser, is_valid_confirmation_token
 
 from app.db.repositories.users.users import UsersDBRepository
 from app.api.dependencies.database import get_db_repository
@@ -14,7 +15,7 @@ from app.models.user import PublicUserInDB, UserInDB, AdminAvailableData
 from app.models.user import SubscriptionHistory
 from app.models.user import ActiveSubscriptions
 
-from app.models.token import AccessToken
+from app.models.token import AccessToken, RefreshToken
 from app.core.config import AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY_ID
 
 from app.services import auth_service
@@ -38,32 +39,37 @@ async def get_private_grades(
 
 @router.get("/email/confirm")
 async def confirm_email(
-    user: UserInDB = Depends(get_user_from_token),
+    user: UserInDB = Depends(is_valid_confirmation_token),
     db_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     ) -> PublicUserInDB:
     try:
-        if not user.email_verified:
-            await db_repo.verify_email(user_id=user.id)
+        user = await db_repo.get_user_by_id(user_id=user.user_id)
+
+        if user.email_verified:
+            return None
 
         if not user.is_active:
             return None
+        
+        await db_repo.verify_email(user_id=user.id)
 
-        # Create access token (app.services)
-        access_token = AccessToken(
-            access_token=auth_service.create_access_token_for_user(user=user), token_type='bearer'
-        )
+        access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), session=True, token_type="Bearer")
+        refresh_token = RefreshToken(refresh_token=auth_service.create_refresh_token_for_user(user=user, session=True))
 
-        await db_repo.set_jwt_token(user_id=user.id, token=access_token.access_token)
+        await db_repo.set_jwt_token(user_id=user.id, token=refresh_token.refresh_token)
 
-        user.jwt = access_token.access_token
+        response_content = jsonable_encoder(PublicUserInDB(**user.dict()))
+        response = JSONResponse(content=response_content)
+        response.set_cookie(key="_shkembridge_tok", value=access_token.access_token)
+        response.set_cookie(key="_shkembridge_ref", value=refresh_token.refresh_token)
 
-        return PublicUserInDB(**user.dict(), access_token=access_token)
+        return response
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Unhandled exception raised in user. Exited with {e}")
 
 @router.get("/profile")
 async def get_user_information(
-    user: UserInDB = Depends(get_user_from_token),
+    user: UserInDB = Depends(get_user_from_cookie_token),
     db_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     ) -> PublicUserInDB:
 
@@ -72,7 +78,7 @@ async def get_user_information(
 
 @router.get("/subscription/history")
 async def get_subscription_history(
-    user: UserInDB = Depends(get_user_from_token),
+    user: UserInDB = Depends(get_user_from_cookie_token),
     db_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     ) -> SubscriptionHistory:
 
@@ -80,7 +86,7 @@ async def get_subscription_history(
 
 @router.get("/active/subscriptions")
 async def get_active_subscriptions(
-    user: UserInDB = Depends(get_user_from_token),
+    user: UserInDB = Depends(get_user_from_cookie_token),
     db_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     ) -> ActiveSubscriptions:
 

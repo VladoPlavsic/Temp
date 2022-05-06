@@ -8,13 +8,15 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from starlette.status import HTTP_200_OK
 
+from app.core.config import ACCESS_TOKEN_EXPIRE_MINUTES
+
 from app.models.email import QuestionEmail
 
 from app.api.dependencies.email import send_message, create_confirm_code_msg, create_confirm_link, create_reactivate_profile_email
 
 from app.db.repositories.users.users import UsersDBRepository
 from app.api.dependencies.database import get_db_repository
-from app.api.dependencies.auth import get_user_from_token, auth_service, _get_user_from_token
+from app.api.dependencies.auth import get_user_from_cookie_token, auth_service, get_user_from_query_token_refresh
 
 from app.api.dependencies.auth import generate_confirmation_code
 from app.api.dependencies.crons import handle_deactivated_profiles
@@ -64,7 +66,7 @@ async def register_new_user(
             )
 
     access_token = AccessToken(
-        access_token=auth_service.create_access_token_for_user(user=registred), token_type='bearer'
+        access_token=auth_service.create_email_confirmation_token(user=registred), token_type='Bearer'
     )
 
     await db_repo.set_jwt_token(user_id=registred.id, token=access_token.access_token)
@@ -133,20 +135,18 @@ async def user_login_with_email_and_password(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), token_type="bearer")
-    refresh_token = RefreshToken(refresh_token=auth_service.create_refresh_token_for_user(user=user))
-
-    # TODO
-    # if remember:
-    #   set session cookie token
-    # else;
-    #   set refresh token expires = 1 year
+    access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), session=not remember, token_type="Bearer")
+    refresh_token = RefreshToken(refresh_token=auth_service.create_refresh_token_for_user(user=user, session=not remember))
 
     await user_repo.set_jwt_token(user_id=user.id, token=refresh_token.refresh_token)
     response_content = jsonable_encoder(PublicUserInDB(**user.dict()))
     response = JSONResponse(content=response_content)
-    response.set_cookie(key="_shkembridge_tok", expires=60*60, value=access_token.access_token)
-    response.set_cookie(key="_shkembridge_ref", value=refresh_token.refresh_token)
+    if remember:
+        response.set_cookie(key="_shkembridge_tok", expires=60 * ACCESS_TOKEN_EXPIRE_MINUTES, value=access_token.access_token)
+        response.set_cookie(key="_shkembridge_ref", expires=60 * 60 * 24 * 365, value=refresh_token.refresh_token)
+    else:
+        response.set_cookie(key="_shkembridge_tok", value=access_token.access_token)
+        response.set_cookie(key="_shkembridge_ref", value=refresh_token.refresh_token)
     return response
 
 @router.post("/refresh/token", response_model=PublicUserInDB)
@@ -154,8 +154,8 @@ async def refresh_jw_token(
     user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     _shkembridge_ref: Optional[str] = Cookie(None),
     ) -> PublicUserInDB:
-    user = await _get_user_from_token(token=_shkembridge_ref)
-    user = await user_repo.check_refresh_token(user=user, refresh_token=_shkembridge_ref)
+    payload = await get_user_from_query_token_refresh(token=_shkembridge_ref)
+    user = await user_repo.check_refresh_token(user=payload, refresh_token=_shkembridge_ref)
 
     if not user:
         raise HTTPException(
@@ -164,27 +164,26 @@ async def refresh_jw_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
         
-    access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), token_type="bearer")
-    refresh_token = RefreshToken(refresh_token=auth_service.create_refresh_token_for_user(user=user))
+    access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), session=payload.ses, token_type="Bearer")
+    refresh_token = RefreshToken(refresh_token=auth_service.create_refresh_token_for_user(user=user, session=payload.ses))
 
     await user_repo.set_jwt_token(user_id=user.id, token=refresh_token.refresh_token)
 
-    # TODO
-    # if remember:
-    #   set session cookie token
-    # else;
-    #   set refresh token expires = 1 year
-
     response_content = jsonable_encoder(PublicUserInDB(**user.dict()))
     response = JSONResponse(content=response_content)
-    response.set_cookie(key="_shkembridge_tok", expires=60*60, value=access_token.access_token)
-    response.set_cookie(key="_shkembridge_ref", value=refresh_token.refresh_token)
+    if not payload.ses:
+        response.set_cookie(key="_shkembridge_tok", expires=60 * ACCESS_TOKEN_EXPIRE_MINUTES, value=access_token.access_token)
+        response.set_cookie(key="_shkembridge_ref", expires=60 * 60 * 24 * 365, value=refresh_token.refresh_token)
+    else:
+        response.set_cookie(key="_shkembridge_tok", value=access_token.access_token)
+        response.set_cookie(key="_shkembridge_ref", value=refresh_token.refresh_token)
+
     return response
 
 @router.post("/logout", response_model=PublicUserInDB)
 async def logout(
     user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
-    user: UserInDB = Depends(get_user_from_token),
+    user: UserInDB = Depends(get_user_from_cookie_token),
     ) -> PublicUserInDB:
     await user_repo.remove_jwt(user_id=user.id)
 

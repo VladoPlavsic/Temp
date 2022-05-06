@@ -8,7 +8,7 @@ from fastapi import HTTPException, status
 from pydantic import ValidationError
 
 from app.core.config import SECRET_KEY, JWT_ALGORITHM, JWT_AUDIENCE, JWT_TOKEN_PREFIX, ACCESS_TOKEN_EXPIRE_MINUTES
-from app.models.token import JWTMeta, JWTCreds, JWTPayload, JWTUserMeta
+from app.models.token import JWTMeta, JWTCreds, JWTPayload, JWTUserMeta, JWTEmailConfirmation
 from app.models.user import UserPasswordUpdate, UserInDB
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
@@ -36,10 +36,20 @@ class AuthService:
     def verify_password(self, *, password: str, salt: str, hashed_password: str) -> bool:
         return pwd_context.verify(password + salt, hashed_password)
 
+    def create_email_confirmation_token(self, *, user: UserInDB, secret_key: str = str(SECRET_KEY)) -> str:
+        if not user or not isinstance(user, UserInDB):
+            return None
+
+        token_payload = JWTEmailConfirmation(user_id=user.id)
+
+        confirmation_token = jwt.encode(token_payload.dict(), secret_key, algorithm=JWT_ALGORITHM)
+        return confirmation_token
+
     def create_access_token_for_user(
         self,
         *,
         user: UserInDB,
+        session: bool = True,
         secret_key: str = str(SECRET_KEY),
         audience: str = JWT_AUDIENCE,
         expires_in: int = ACCESS_TOKEN_EXPIRE_MINUTES,
@@ -51,6 +61,8 @@ class AuthService:
             aud=audience,
             iat=datetime.timestamp(datetime.utcnow()),
             exp=datetime.timestamp(datetime.utcnow() + timedelta(minutes=expires_in)),
+            ses=session,
+            ref=False,
         )
         jwt_creds = JWTCreds(email=user.email, phone_number=user.phone_number)
         jwt_user_meta = JWTUserMeta(**user.dict())
@@ -67,6 +79,7 @@ class AuthService:
     def create_refresh_token_for_user(self,
         *,
         user: UserInDB,
+        session: bool = True,
         secret_key: str = str(SECRET_KEY),
         audience: str = JWT_AUDIENCE,
         expires_in: int = 60 * 24 * 365, # refresh token expires in a year
@@ -78,6 +91,8 @@ class AuthService:
             aud=audience,
             iat=datetime.timestamp(datetime.utcnow()),
             exp=datetime.timestamp(datetime.utcnow() + timedelta(minutes=expires_in)),
+            ses=session,
+            ref=True,
         )
         jwt_creds = JWTCreds(email=user.email, phone_number=user.phone_number)
         user.email_verified = False
@@ -92,8 +107,22 @@ class AuthService:
         refresh_token = jwt.encode(token_payload.dict(), secret_key, algorithm=JWT_ALGORITHM)
         return refresh_token
 
-    def get_user_from_token(self, *, token: str, secret_key: str) -> Optional[str]:
-        """Takes in JWT token. Returns user (encoded in token) || 401"""
+    def get_payload_from_confirmation_token(self, *, token: str, secret_key: str) -> Optional[JWTEmailConfirmation]:
+        """Takes in JWT token. Returns payload || 401"""
+        try:
+            decoded_token = jwt.decode(token, str(secret_key), audience=JWT_AUDIENCE, algorithms=[JWT_ALGORITHM])
+            payload = JWTEmailConfirmation(**decoded_token)
+        except (jwt.PyJWTError, ValidationError):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate token credientals",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        return payload
+
+    def get_payload_from_access_token(self, *, token: str, secret_key: str) -> Optional[JWTPayload]:
+        """Takes in JWT token. Returns payload || 401"""
         try:
             decoded_token = jwt.decode(token, str(secret_key), audience=JWT_AUDIENCE, algorithms=[JWT_ALGORITHM])
             payload = JWTPayload(**decoded_token)

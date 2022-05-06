@@ -6,7 +6,7 @@ from starlette.status import HTTP_200_OK
 from app.db.repositories.private.private import PrivateDBRepository
 
 from app.api.dependencies.database import get_db_repository
-from app.api.dependencies.auth import get_user_from_token, is_superuser, is_verified
+from app.api.dependencies.auth import get_user_from_cookie_token, is_superuser, is_verified
 
 # ###
 # response models
@@ -57,7 +57,7 @@ async def get_grade_offers(
 @router.get("/grade", response_model=GradeResponse, name="private:get-grades", status_code=HTTP_200_OK)
 async def get_private_grades(
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    user: UserInDB = Depends(get_user_from_token),
+    user: UserInDB = Depends(get_user_from_cookie_token),
     is_superuser = Depends(is_superuser),
     is_verified = Depends(is_verified),
     ) -> GradeResponse:
@@ -111,7 +111,7 @@ async def get_subject_offer(
 @router.get("/subject", response_model=SubjectResponse, name="private:get-subjects", status_code=HTTP_200_OK)
 async def get_private_subjects(
     grade_name_en: str,
-    user: UserInDB = Depends(get_user_from_token),
+    user: UserInDB = Depends(get_user_from_cookie_token),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     is_superuser = Depends(is_superuser),
     is_verified = Depends(is_verified),
@@ -162,7 +162,7 @@ async def get_private_branches(
 async def get_private_branches(
     grade_name_en: str,
     subject_name_en: str,
-    user = Depends(get_user_from_token),
+    user = Depends(get_user_from_cookie_token),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     is_superuser = Depends(is_superuser),
     is_verified = Depends(is_verified),
@@ -209,7 +209,7 @@ async def get_private_lectures(
     grade_name_en: str,
     subject_name_en: str,
     branch_name_en: str,
-    user = Depends(get_user_from_token),
+    user = Depends(get_user_from_cookie_token),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     is_superuser = Depends(is_superuser),
     is_verified = Depends(is_verified),
@@ -241,7 +241,7 @@ async def get_private_material(
     subject_name_en: str,
     branch_name_en: str,
     lecture_name_en: str,
-    user = Depends(get_user_from_token),
+    user = Depends(get_user_from_cookie_token),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     is_superuser = Depends(is_superuser),
     is_verified = Depends(is_verified),

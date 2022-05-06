@@ -6,7 +6,7 @@ from app.api.dependencies.email import send_message, create_reset_password_email
 from app.db.repositories.users.users import UsersDBRepository
 from app.api.dependencies.database import get_db_repository
 
-from app.api.dependencies.auth import get_user_from_token
+from app.api.dependencies.auth import get_user_from_cookie_token
 from app.models.user import UserUpdate, PublicUserInDB
 
 # YooMoney
@@ -21,7 +21,7 @@ router = APIRouter()
 @router.put("/buy/grade")
 async def user_buy_grade_access(
     offer_fk: int = Body(..., embed=True),
-    user = Depends(get_user_from_token),
+    user = Depends(get_user_from_cookie_token),
     user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     ) -> None:
 
@@ -58,7 +58,7 @@ async def user_buy_grade_access(
 @router.put("/buy/subject")
 async def user_buy_subject_access(
     offer_fk: int = Body(..., embed=True),
-    user = Depends(get_user_from_token),
+    user = Depends(get_user_from_cookie_token),
     user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     ) -> None:
 
@@ -139,7 +139,7 @@ async def recover_password(
 @router.put("/deactivate/profile")
 async def deactivate_profile(
     password: str = Body(..., embed=True),
-    user = Depends(get_user_from_token),
+    user = Depends(get_user_from_cookie_token),
     user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     ) -> None:
 
@@ -159,7 +159,7 @@ async def deactivate_profile(
 @router.put("/delete/profile")
 async def delete_profile(
     password: str = Body(..., embed=True),
-    user = Depends(get_user_from_token),
+    user = Depends(get_user_from_cookie_token),
     user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     ) -> None:
 
@@ -178,7 +178,7 @@ async def delete_profile(
 @router.put("/update")
 async def update_profile(
     updated: UserUpdate = Body(...),
-    user = Depends(get_user_from_token),
+    user = Depends(get_user_from_cookie_token),
     user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     ) -> PublicUserInDB:
 
