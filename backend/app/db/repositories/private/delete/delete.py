@@ -4,7 +4,6 @@ from app.db.repositories.base import BaseDBRepository
 
 from app.db.repositories.private.delete.queries import *
 
-
 from app.models.private import GradeInDB
 
 import logging

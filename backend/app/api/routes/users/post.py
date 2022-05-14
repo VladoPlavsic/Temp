@@ -75,7 +75,6 @@ async def register_new_user(
 
     return PublicUserInDB(**registred.dict())
 
-
 @router.post("/login/code", status_code=HTTP_200_OK)
 async def user_login_with_email_and_password_send_code(
     background_tasks: BackgroundTasks,
@@ -161,7 +160,10 @@ async def refresh_jw_token(
         raise HTTPException(
             status_code=401,
             detail="Could not refresh jwt. Refresh token not valid. Try logging in again",
-            headers={"WWW-Authenticate": "Bearer"},
+            headers={
+                "WWW-Authenticate": "Bearer", 
+                "set-cookie": ["_shkembridge_tok=""; expires=0; Max-Age=0; Path=/", "_shkembridge_ref=""; expires=0; Max-Age=0; Path=/"], 
+            },
         )
         
     access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), session=payload.ses, token_type="Bearer")
@@ -189,8 +191,8 @@ async def logout(
 
     response_content = jsonable_encoder({"Data": "OK"})
     response = JSONResponse(content=response_content)
-    response.set_cookie(key="_shkembridge_tok", value="*")
-    response.set_cookie(key="_shkembridge_ref", value="*")
+    response.delete_cookie("_shkembridge_tok")
+    response.delete_cookie("_shkembridge_ref")
     return response
 
 @router.post("/subscriptions/check/")

@@ -48,7 +48,6 @@ def delete_available_grade_plans_query(id: int) -> str:
     return \
         f"SELECT subscriptions.delete_available_grade_plans({id})"
 
-
 def delete_available_subject_plans_query(id: int) -> str:
     return \
         f"SELECT subscriptions.delete_available_subject_plans({id})"

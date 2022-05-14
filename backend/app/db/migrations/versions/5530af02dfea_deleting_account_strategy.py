@@ -6,13 +6,11 @@ Create Date: 2021-11-16 10:16:48.759358
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic
 revision = '5530af02dfea'
 down_revision = '0060361b63fe'
 branch_labels = None
 depends_on = None
-
 
 def profile_reactivation() -> None:
     op.create_table(
@@ -81,7 +79,6 @@ def remove_triggers_for_order_numbers() -> None:
     for proc in procedures:
         op.execute(f"DROP FUNCTION IF EXISTS public.{proc} CASCADE")
 
-
 def profile_deactivation() -> None:
     op.execute("""
     ALTER TABLE users.users ADD COLUMN deactivated TIMESTAMP;
@@ -95,7 +92,6 @@ def profile_deactivation() -> None:
         UPDATE users.users SET is_active = 'f', deactivated = now() WHERE id = id_;
     END $$ LANGUAGE plpgsql;
     """)
-
 
 def profile_deletion() -> None:
     op.execute("""
@@ -132,7 +128,6 @@ def drop_views() -> None:
 
     for view in views:
         op.execute(f"DROP VIEW users.{view}")
-
 
 def drop_functions() -> None:
     functions = [

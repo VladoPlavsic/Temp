@@ -27,7 +27,6 @@ from app.api.routes.news.get import router as news_get_router
 from app.api.routes.news.put import router as news_put_router
 from app.api.routes.news.delete import router as news_delete_router
 
-
 router = APIRouter()
 
 # private routes
@@ -47,7 +46,6 @@ router.include_router(users_post_router, prefix='/users', tags=['users'])
 router.include_router(users_get_router, prefix='/users', tags=['users'])
 router.include_router(users_put_router, prefix='/users', tags=['users'])
 
-
 # about routes
 router.include_router(about_post_router, prefix='/about', tags=['about'])
 router.include_router(about_get_router, prefix='/about', tags=['about'])
@@ -59,5 +57,3 @@ router.include_router(news_post_router, prefix="/news", tags=['news'])
 router.include_router(news_get_router, prefix="/news", tags=['news'])
 router.include_router(news_put_router, prefix="/news", tags=['news'])
 router.include_router(news_delete_router, prefix="/news", tags=['news'])
-
-

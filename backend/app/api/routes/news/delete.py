@@ -25,4 +25,3 @@ async def create_news(
         cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
 
     return None
-

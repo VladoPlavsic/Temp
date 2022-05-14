@@ -134,7 +134,6 @@ class QuizQuestionAnswerCorrectPair(DBCoreModel):
 class QuizResults(DBCoreModel):
     results: List[QuizQuestionAnswerCorrectPair]
 
-
 # AboutUs, FAQ, instruction
 class AboutUsCoreModel(DBCoreModel):
     order: int
@@ -150,8 +149,6 @@ class AboutUsPostModel(AboutUsCoreModel):
 
 class AboutUsInDB(AboutUsCoreModel):
     pass
-
-
 
 class FAQCoreModel(DBCoreModel):
     question: str
@@ -188,7 +185,6 @@ class ReviewInDB(ReviewCoreModel):
     id: int
     image_url: str
 
-
 class InstructionCoreModel(DBCoreModel):
     order: int
     title: str
@@ -215,7 +211,6 @@ class MaterialResponseModel(DBCoreModel):
 class MaterialResponse(DBCoreModel):
     material: MaterialResponseModel
 
-
 class AboutUsAllResponse(DBCoreModel):
     about_us: List[AboutUsInDB]
 
@@ -227,7 +222,6 @@ class ReviewResponse(DBCoreModel):
 
 class InstructionAllResponse(DBCoreModel):
     instructions: List[InstructionInDB]
-
 
 # update models
 class UpdateCoreModel(DBCoreModel):

@@ -79,7 +79,6 @@ async def get_private_grades(
 
     return GradeResponse(grades=response)
 
-
 # ###
 # SUBJECTS
 # ###
@@ -142,7 +141,6 @@ async def get_private_subjects(
 
     return SubjectResponse(subjects=response, fk=grade.id, path=grade.name_ru)
 
-
 # ###
 # BRANCHES
 # ###
@@ -187,7 +185,6 @@ async def get_private_branches(
 
     return BranchResponse(branches=response, fk=subject.id, path=path + '/' + subject.name_ru)
 
-
 # ###
 # LECTURES
 # ###
@@ -202,7 +199,6 @@ async def get_private_lectures(
     (branch, path) = await db_repo.get_branch_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en)
     response = await db_repo.select_lectures(fk=branch.id)
     return LectureResponse(lectures=response, fk=branch.id, path=path + '/' + branch.name_ru)
-
 
 @router.get("/lecture", response_model=LectureResponse, name="private:get-lectures", status_code=HTTP_200_OK)
 async def get_private_lectures(
@@ -234,7 +230,6 @@ async def get_private_lectures(
 
     return LectureResponse(lectures=response, fk=branch.id, path=path + '/' + branch.name_ru)
 
-
 @router.get("/material", response_model=MaterialResponse, name="private:get-material", status_code=HTTP_200_OK)
 async def get_private_material(
     grade_name_en: str,
@@ -264,4 +259,3 @@ async def get_private_material(
             raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
   
     return MaterialResponse(material=response, path=path, fk=lecture.id)
-

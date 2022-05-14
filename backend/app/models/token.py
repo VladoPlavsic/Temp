@@ -3,7 +3,6 @@ from pydantic import EmailStr
 from app.core.config import JWT_AUDIENCE, ACCESS_TOKEN_EXPIRE_MINUTES
 from app.models.core import BaseModel
 
-
 class JWTEmailConfirmation(BaseModel):
     iss: str = "shkembridge.ru"
     aud: str = JWT_AUDIENCE
@@ -33,7 +32,6 @@ class JWTUserMeta(BaseModel):
     email_verified: bool
     is_superuser: bool
     is_active: bool
-
 
 class JWTPayload(JWTMeta, JWTCreds, JWTUserMeta):
     """

@@ -74,7 +74,6 @@ async def create_private_practice(
 
     return response
 
-
 @router.post("/theory/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
 async def check_create_private_theory(
     presentation: PresentationCreateModelCheck = Body(...),
@@ -99,7 +98,6 @@ async def create_private_theory(
     response = await db_repo.insert_theory(presentation=presentation, images=images, audio=audio)
 
     return response
-
 
 @router.post("/book/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
 async def check_create_private_book(
@@ -140,7 +138,6 @@ async def create_private_video(
 
     return response
 
-
 @router.post("/video/cdn/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
 async def check_create_private_video(
     video: VideoPostModelCDNCheck = Body(...),
@@ -168,7 +165,6 @@ async def create_private_video(
 
     return response
 
-
 @router.post("/game/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
 async def check_create_private_game(
     game: GamePostModelCheck = Body(...),
@@ -194,7 +190,6 @@ async def create_private_game(
     response = await db_repo.insert_game(game=GameCreateModel(**game.dict(), url=url))
 
     return response
-
 
 @router.post("/quiz/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
 async def check_create_private_quiz(
@@ -237,7 +232,6 @@ async def get_quiz_results(
 
     return response
 
-
 # STRUCTURE
 @router.post("/grade/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
 async def check_create_private_grade(
@@ -262,7 +256,6 @@ async def create_private_grade(
 
     return response
 
-
 @router.post("/subject/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
 async def check_create_private_subject(
     subject: SubejctPostModelCheck = Body(...),
@@ -286,7 +279,6 @@ async def create_private_subject(
 
     return response
 
-
 @router.post("/branch/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
 async def check_create_private_branch(
     branch: BranchPostModelCheck = Body(...),
@@ -309,7 +301,6 @@ async def create_private_branch(
     response  = await db_repo.insert_branch(branch=BranchCreateModel(**branch.dict(), background=background))
 
     return response
-
 
 @router.post("/lecture/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
 async def check_create_private_lecture(

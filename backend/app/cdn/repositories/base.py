@@ -125,7 +125,6 @@ class BaseCDNRepository:
         for key in list_of_keys:
             self.client.put_object_acl(Bucket=BUCKET, Key=key, ACL="public-read")
 
-
     def __grant_public_access_to_folder_objects(self, *, folder, exclude = []) -> None:
         """Grants public access to all objects in a folder.
         
@@ -142,7 +141,6 @@ class BaseCDNRepository:
             ]
 
         self.__grant_public_access_to_list_of_keys(list_of_keys=object_to_grant_access_to)
-
 
     def __delete_keys(self, *, list_of_keys) -> Dict:
         """Delete all keys from s3 contained in list_of_keys."""

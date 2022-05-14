@@ -79,7 +79,6 @@ class PrivateDBUpdateRepository(BaseDBRepository):
         links = list(lectures.values())
         await self._execute_one(query=update_lecture_links_query(keys=keys, links=links))
 
-
     async def update_book_links(self, *, book) -> None:
         """Updates private book presigned urls by keys.
         
@@ -170,7 +169,6 @@ class PrivateDBUpdateRepository(BaseDBRepository):
         if not response:
             raise HTTPException(status_code=404, detail=f"Lecture not updated, nothing found for given id {updated.id}")
         return LectureInDB(**response)
-
 
     async def update_video(self, *, updated: UpdateVideoModel) -> VideoInDB:
         """Updates private video"""

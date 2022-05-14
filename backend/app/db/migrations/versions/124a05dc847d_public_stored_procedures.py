@@ -6,7 +6,6 @@ Create Date: 2021-03-31 08:36:12.946707
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic
 revision = '124a05dc847d'
 down_revision = '6e7bb8073b9f'
@@ -402,7 +401,6 @@ def create_quiz_handling_functions() -> None:
     END $$ LANGUAGE plpgsql;
     """)
 
-
 def create_update_public_procedures() -> None:
     # video
     op.execute("""
@@ -714,7 +712,6 @@ def drop_public_procedures() -> None:
     for proc in procedures:
         op.execute(f"DROP FUNCTION public.{proc} CASCADE")
 
-
 # Delete these triggers probably!
 def drop_triggers() -> None:
     triggers = [
@@ -724,7 +721,6 @@ def drop_triggers() -> None:
 
     for trigger in triggers:
         op.execute(f"DROP TRIGGER {trigger}")
-
 
 def upgrade() -> None:
     create_insert_public_procedures()

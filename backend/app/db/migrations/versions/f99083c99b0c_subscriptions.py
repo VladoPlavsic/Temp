@@ -7,7 +7,6 @@ from sqlalchemy import schema
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic
 revision = 'f99083c99b0c'
 down_revision = 'b88c1a85ee72'
@@ -72,7 +71,6 @@ def drop_tables() -> None:
     op.execute("DROP TABLE subscriptions.grade_subscription_plans")
     op.execute("DROP TABLE subscriptions.subject_subscription_plans")
 
-
 # triggers
 def create_triggers() -> None:
     # ###
@@ -118,7 +116,6 @@ def create_triggers() -> None:
     FOR EACH ROW EXECUTE PROCEDURE subscriptions.insert_plans_after_subject_trigger_function();
     """)
 
-
     # ###
     # PLANS
     # ###
@@ -159,9 +156,6 @@ def create_triggers() -> None:
     CREATE TRIGGER insert_subject_offers_after_plans_trigger AFTER INSERT ON subscriptions.subject_subscription_plans
     FOR EACH ROW EXECUTE PROCEDURE subscriptions.insert_offers_after_subject_plans_trigger_function();
     """)
-
-
-
 
 # functions
 def create_subscription_functions() -> None:
@@ -368,7 +362,6 @@ def create_subscription_functions() -> None:
     END $$ LANGUAGE plpgsql;
     """)
 
-
 def drop_functions() -> None:
     functions = [
         'get_subscription_pending',
@@ -393,7 +386,6 @@ def drop_functions() -> None:
 
     for function in functions:
         op.execute(f"DROP FUNCTION subscriptions.{function} CASCADE")
-
 
 def upgrade() -> None:
     create_tables()

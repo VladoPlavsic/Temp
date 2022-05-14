@@ -6,13 +6,11 @@ Create Date: 2021-11-24 07:04:44.933893
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic
 revision = 'db420b27b5a1'
 down_revision = '896c93c663af'
 branch_labels = None
 depends_on = None
-
 
 def quiz() -> None:
     op.execute("""
@@ -169,7 +167,6 @@ def subscriptions() -> None:
     END $$ LANGUAGE plpgsql;
     """)
 
-
 def front_page_titles() -> None:
     op.create_table('titles',
     sa.Column('main_title', sa.Text, nullable=True),
@@ -292,7 +289,6 @@ def drop_front_page_functions() -> None:
     for function in functions:
         op.execute(f"DROP FUNCTION public.{function}")
 
-
 def drop_active_subscriptions_functions() -> None:
     functions = [
         'get_subject_subscriptions',
@@ -301,7 +297,6 @@ def drop_active_subscriptions_functions() -> None:
 
     for function in functions:
         op.execute(f"DROP FUNCTION subscriptions.{function}")
-
 
 def upgrade() -> None:
     quiz()

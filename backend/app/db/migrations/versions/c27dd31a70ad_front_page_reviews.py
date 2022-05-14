@@ -6,7 +6,6 @@ Create Date: 2021-10-26 15:04:34.193027
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic
 revision = 'c27dd31a70ad'
 down_revision = '3ddd879e1720'
@@ -108,4 +107,3 @@ def drop_functions() -> None:
 def downgrade() -> None:
     op.execute("DROP TABLE public.reviews")
     drop_functions()
-

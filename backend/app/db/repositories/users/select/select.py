@@ -69,5 +69,3 @@ class UsersDBSelectRepository(BaseDBRepository):
         active_subjects = [ActiveSubscriptionInformationSubject(**subject) for subject in active_subjects]
 
         return ActiveSubscriptions(grades=active_grades, subjects=active_subjects)
-
-

@@ -6,7 +6,6 @@ Create Date: 2021-06-22 10:36:33.612101
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic
 revision = '125b3b86120a'
 down_revision = 'd101b634aae2'
@@ -464,7 +463,6 @@ def create_stored_procedures_select() -> None:
         END $$ LANGUAGE plpgsql;
     """)
 
-
 def drop_stored_procedures() -> None:
     procedure_list = [
     "select_all_grades",
@@ -552,7 +550,6 @@ def update_private_tables() -> None:
 
     # drop redundant table
     op.execute("DROP TABLE private.timestamp CASCADE")
-
 
 def remove_order_number() -> None:
     op.execute("ALTER TABLE private.grade DROP COLUMN order_number")
@@ -673,7 +670,6 @@ def remove_order_number_from_functions() -> None:
         RETURN QUERY (SELECT * FROM private.lecture WHERE private.lecture.name_en = $1 AND private.lecture.fk = $2);
         END $$ LANGUAGE plpgsql;
     """)
-
 
     # ###
     # INSERT
@@ -808,7 +804,6 @@ def create_stored_procedures_update() -> None:
         END $$ LANGUAGE plpgsql;
     """)
 
-
 # REMOVE UNIQUE CONSTRAINT FROM ABOUT_US -> OUR_TEAM ON order_number
 def remove_unique_constraint_our_team() -> None:
     op.execute('ALTER TABLE about.our_team ADD COLUMN id SERIAL PRIMARY KEY, DROP CONSTRAINT IF EXISTS our_team_order_key')
@@ -873,8 +868,6 @@ def remove_unique_constraint_our_team() -> None:
 def add_unique_constraint_our_team() -> None:
     op.execute('ALTER TABLE about.our_team DROP COLUMN id')
 
-
-
 # FIX PAYMENT PROCESS 
 def fix_payment_process() -> None:
     # check if user has already submited subscription request for given offer
@@ -890,7 +883,6 @@ def fix_payment_process() -> None:
         RETURN token;
     END $$ LANGUAGE plpgsql;
     """)
-
 
 def upgrade() -> None:
     drop_stored_procedures()

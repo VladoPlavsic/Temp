@@ -40,7 +40,6 @@ from app.models.user import UserInDB
 
 router = APIRouter()
 
-
 @router.put("/video", response_model=VideoInDB, name="public:update-video", status_code=HTTP_200_OK)
 async def update_video(
     updated: UpdateVideoModel = Body(...),
@@ -100,7 +99,6 @@ async def update_public_practice(
 
     response = await db_repo.update_presentation(updated=updated, presentation=ContentType.THEORY)
     return response
-
 
 @router.put("/about_us", response_model=AboutUsInDB, name="public:update-about_us", status_code=HTTP_200_OK)
 async def update_about_us(

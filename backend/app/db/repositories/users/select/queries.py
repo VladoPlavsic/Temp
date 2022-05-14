@@ -32,4 +32,3 @@ def get_active_grade_subscriptions_query(user_id: int) -> str:
 def get_active_subject_subscriptions_query(user_id: int) -> str:
     return \
         f"SELECT (subscriptions.get_subject_subscriptions({user_id})).*"
-

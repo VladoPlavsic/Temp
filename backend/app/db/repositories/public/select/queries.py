@@ -54,5 +54,3 @@ def select_all_reviews_query() -> str:
 def select_titles_query() -> str:
     return \
         f"SELECT (public.get_front_page_titles()).*"
-
-

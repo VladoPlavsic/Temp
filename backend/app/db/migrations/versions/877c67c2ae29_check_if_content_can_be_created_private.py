@@ -6,7 +6,6 @@ Create Date: 2021-07-14 10:14:02.431281
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic
 revision = '877c67c2ae29'
 down_revision = '000fc98ce9cf'
@@ -213,7 +212,6 @@ def drop_insert_check_functions() -> None:
 
     for function in functions:
         op.execute(f"DROP FUNCTION private.{function}")
-
 
 def upgrade() -> None:
     create_insert_check_functions()

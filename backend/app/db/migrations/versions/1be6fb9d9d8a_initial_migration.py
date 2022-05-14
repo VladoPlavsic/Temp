@@ -6,7 +6,6 @@ Create Date: 2021-03-21 13:33:39.373009
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic
 revision = '1be6fb9d9d8a'
 down_revision = None
@@ -464,7 +463,6 @@ def create_stored_procedures_select() -> None:
         END $$ LANGUAGE plpgsql;
     """)
 
-
 def drop_stored_procedures() -> None:
     procedure_list = [
     "select_all_grades",
@@ -708,8 +706,6 @@ def create_private_tables() -> None:
         FOR EACH ROW
         EXECUTE PROCEDURE update_timestamp_function()
     """)
-
-
 
 def drop_private_tables() -> None:
     op.drop_table("theory_image", schema="private")

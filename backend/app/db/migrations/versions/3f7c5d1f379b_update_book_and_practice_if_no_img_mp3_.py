@@ -6,7 +6,6 @@ Create Date: 2021-04-06 12:32:36.463981
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic
 revision = '3f7c5d1f379b'
 down_revision = 'dc0130a0b54b'
@@ -55,8 +54,6 @@ def create_update_s3_content_without_updating_s3_functions() -> None:
         RETURN QUERY (SELECT fk, private.theory.name_ru, private.theory.description FROM private.theory WHERE private.theory.fk = i_id);
         END $$ LANGUAGE plpgsql;
     """)
-
-
 
 def drop_update_functions() -> None:
     functions = [

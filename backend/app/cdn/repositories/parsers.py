@@ -26,7 +26,6 @@ def get_order_number_from_key(key) -> int:
 
     return order_number
 
-
 def get_format_from_key(key) -> str:
     """Accept any key and return format of file it's pointing to."""
     try:
@@ -38,7 +37,5 @@ def get_format_from_key(key) -> str:
 
     return type_
 
-
 def get_folder_by_inner_key(key: str) -> str:
     return key.replace(key.split("/")[-1], "")
-

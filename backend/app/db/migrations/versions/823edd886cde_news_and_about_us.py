@@ -6,7 +6,6 @@ Create Date: 2021-04-06 13:48:35.510913
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic
 revision = '823edd886cde'
 down_revision = '3f7c5d1f379b'
@@ -47,7 +46,6 @@ def drop_tables() -> None:
     op.execute("DROP TABLE about.our_team")
     op.execute("DROP TABLE about.contacts")
     op.execute("DROP TABLE about.about_project")
-
 
 def upgrade() -> None:
     create_contatcts_and_information_about_project()

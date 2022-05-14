@@ -8,7 +8,6 @@ from app.cdn.repositories.public.public import PublicYandexCDNRepository
 from app.api.dependencies.database import get_db_repository
 from app.api.dependencies.cdn import get_cdn_repository
 
-
 # response models
 from app.models.public import MaterialResponse
 from app.models.public import AboutUsAllResponse
@@ -75,7 +74,6 @@ async def get_reviews(
 
     response = await public_repo.select_reivew()
     return ReviewResponse(reviews=response)
-
 
 @router.get("/titles", response_model=TitlesResponseModel, name="public:get-titles", status_code=HTTP_200_OK)
 async def get_titles(

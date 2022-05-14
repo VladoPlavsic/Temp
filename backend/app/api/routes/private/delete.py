@@ -161,7 +161,6 @@ async def delete_private_quiz_questions(
 
     return None
 
-
 @router.delete('/game', response_model=None, name="private:delete-game", status_code=HTTP_200_OK)
 async def delete_private_game(
     id: int,
@@ -175,7 +174,6 @@ async def delete_private_game(
         cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
 
     return None
-
 
 # Subscription plans
 @router.delete("/grade/subscription/plans", response_model=None, name="private:delete-grade-subscription-plan", status_code=HTTP_200_OK)

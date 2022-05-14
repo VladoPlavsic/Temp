@@ -38,7 +38,6 @@ def run_migrations_online() -> None:
             default_conn.execute(f"DROP DATABASE IF EXISTS {POSTGRES_DB}_test")
             default_conn.execute(f"CREATE DATABASE {POSTGRES_DB}_test")
 
-
     # create private for testing
     default_engine = create_engine(str(DB_URL), isolation_level="AUTOCOMMIT")
     with default_engine.connect() as default_conn:
@@ -49,7 +48,6 @@ def run_migrations_online() -> None:
         default_conn.execute("CREATE SCHEMA IF NOT EXISTS news")
         default_conn.execute("CREATE SCHEMA IF NOT EXISTS subscriptions")
         default_conn.execute("CREATE SCHEMA IF NOT EXISTS history")
-
 
     # create private for live db
     if DB_URL != DATABASE_URL:
@@ -76,8 +74,6 @@ def run_migrations_online() -> None:
         
         with alembic.context.begin_transaction():
             alembic.context.run_migrations()
-
-
 
 def run_migrations_offline() -> None:
     """

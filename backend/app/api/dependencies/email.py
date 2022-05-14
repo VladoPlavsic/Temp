@@ -41,7 +41,6 @@ def send_message_int(service, user_id, message) -> EmailResponse:
     except Exception as e:
       raise HTTPException(status_code=500, detail=f"Unknown Error. Error raised trying to send message! Exited with {e}")
 
-
 import os
 import os.path
 from googleapiclient.discovery import build
@@ -92,7 +91,6 @@ def send_message(subject, message_text, to=ADMIN_EMAIL) -> EmailResponse:
     message = create_message(sender=SERVER_EMAIL, to=to, subject=subject, message_text=message_text)
 
     return send_message_int(service=service, user_id="me", message=message)
-
 
 def create_confirm_link(token: str, username: str) -> str:
     """Generates page with confirmation url."""

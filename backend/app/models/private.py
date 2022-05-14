@@ -351,7 +351,6 @@ class AudioImagesAllModel(DBCoreModel):
     order: int
     object_key: str
 
-
 # Update models
 class UpdateBaseModel(DBCoreModel):
     id: int
@@ -379,7 +378,6 @@ class UpdateBookModel(UpdateBaseModel):
 
 class UpdatePresentationModel(UpdateBaseModel):
     description: Optional[str]
-
 
 # ###
 # Subscriptions
@@ -420,7 +418,6 @@ class AvailableSubjectSubscriptionOffers(SubscriptionsBase):
     grade_id: int
     name_en: str
     name_ru: str
-
 
 class PaymentRequestDetails(DBCoreModel):
     user_fk: int

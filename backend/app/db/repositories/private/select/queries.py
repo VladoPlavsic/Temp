@@ -35,7 +35,6 @@ def get_subject_by_name_query(fk, subject_name) -> str:
     return \
         f"SELECT (private.select_subject_by_name('{subject_name}', {fk})).*"
 
-
 # branch
 def select_branch_query(fk) -> str:
     return \
@@ -49,7 +48,6 @@ def get_branch_by_name_query(fk, branch_name) -> str:
     return \
         f"SELECT (private.select_branch_by_name('{branch_name}', {fk})).*"
 
-
 # lecture
 def select_lecture_query(fk) -> str:
     return \
@@ -62,7 +60,6 @@ def select_all_lecture_keys_query() -> str:
 def get_lecture_by_name_query(fk, lecture_name) -> str:
     return \
         f"SELECT (private.select_lecture_by_name('{lecture_name}', {fk})).*"
-
 
 # ###
 # material queries
@@ -101,7 +98,6 @@ def select_material_parts_query(fk, presentation, media_type) -> str:
 def select_all_material_part_keys_query(presentation, media_type) -> str:
     return \
         f"SELECT (private.select_all_{presentation}_{media_type}_keys()).*"
-
 
 # users
 def select_all_user_available_grades_query(user_id: int) -> str:

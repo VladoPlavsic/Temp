@@ -26,7 +26,6 @@ from app.models.private import LectureCreateModel
 from app.models.private import CreateGradeSubscriptionPlan
 from app.models.private import CreateSubjectSubscriptionPlan
 
-
 # ###
 # response models
 # ###
@@ -71,7 +70,6 @@ class PrivateDBInsertRepository(BaseDBRepository):
         """Check if practice can be inserted"""
         response = await self._fetch_one(query=insert_practice_check_query(fk=fk))
         return response['yes']
-
 
     async def insert_practice(self, *, presentation: PresentationCreateModel, images: List[PresentationMediaCreate], audio: List[PresentationMediaCreate]) -> PresentationInDB:
         """Tries to insert practice. If successfull, returns formed PresentationInDB model.

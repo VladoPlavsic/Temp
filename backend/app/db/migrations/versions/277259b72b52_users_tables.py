@@ -32,7 +32,6 @@ def timestamps(indexed: bool = False) -> Tuple[sa.Column, sa.Column]:
         ),
     )
 
-
 def create_user_tables() -> None:
     op.create_table(
         "users",
@@ -81,12 +80,10 @@ def create_user_tables() -> None:
         schema='users'
     )
 
-
 def drop_users_tables() -> None:
     op.execute("DROP TABLE users.user_subjects")
     op.execute("DROP TABLE users.user_grades")
     op.execute("DROP TABLE users.users")
-
 
 def upgrade() -> None:
     create_user_tables()

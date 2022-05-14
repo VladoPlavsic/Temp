@@ -53,7 +53,6 @@ async def delete_book(
 
     return None
 
-
 @router.delete("/video", response_model=None, name="public:delete-video", status_code=HTTP_200_OK)
 async def delete_video(
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
@@ -116,7 +115,6 @@ async def delete_quiz_question(
         cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
 
     return None
-
 
 @router.delete("/game", response_model=None, name="public:delete-game", status_code=HTTP_200_OK)
 async def delete_game(

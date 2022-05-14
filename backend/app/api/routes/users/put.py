@@ -54,7 +54,6 @@ async def user_buy_grade_access(
 
     return payment
 
-
 @router.put("/buy/subject")
 async def user_buy_subject_access(
     offer_fk: int = Body(..., embed=True),
@@ -184,5 +183,3 @@ async def update_profile(
 
     response = await user_repo.update_user_information(id_=user.id, updated=updated)
     return response
-
-

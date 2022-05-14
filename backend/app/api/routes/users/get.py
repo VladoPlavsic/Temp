@@ -36,7 +36,6 @@ async def get_private_grades(
 
     return response
 
-
 @router.get("/email/confirm")
 async def confirm_email(
     user: UserInDB = Depends(is_valid_confirmation_token),

@@ -4,7 +4,6 @@ from app.db.repositories.base import BaseDBRepository
 
 from app.db.repositories.public.delete.queries import *
 
-
 import logging
 
 logger = logging.getLogger(__name__)

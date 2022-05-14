@@ -6,7 +6,6 @@ Create Date: 2021-04-06 14:17:16.493829
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic
 revision = '91c0fe2ebacf'
 down_revision = '823edd886cde'
@@ -176,7 +175,6 @@ def create_delete_functions() -> None:
         END $$ LANGUAGE plpgsql;
     ''')
 
-
 def drop_functions() -> None:
     functions = [
         'insert_our_team',
@@ -195,7 +193,6 @@ def drop_functions() -> None:
 
     for function in functions:
         op.execute(f"DROP FUNCTION about.{function}")
-
 
 def upgrade() -> None:
     create_insert_functions()

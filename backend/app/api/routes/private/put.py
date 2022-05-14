@@ -12,7 +12,6 @@ from app.api.dependencies.updating import update_sharing_links_function
 
 from app.api.dependencies.auth import allowed_or_denied 
 
-
 # import update models
 from app.models.private import UpdateStructureModel
 from app.models.private import UpdateLectureModel
@@ -35,14 +34,12 @@ from app.db.repositories.types import ContentType
 
 router = APIRouter()
 
-
 # force update all links
 @router.put("/update")
 async def update_sharing_links(
     update = Depends(update_sharing_links_function),
     ) -> None:
     pass
-
 
 @router.put("/grade", response_model=GradeInDB, name="private:put-grade", status_code=HTTP_200_OK)
 async def update_private_grade(

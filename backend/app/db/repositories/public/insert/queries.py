@@ -46,7 +46,6 @@ def insert_quiz_question_query(order_number: int, question: str, object_key: str
     return \
         f"SELECT (public.insert_quiz_question({order_number}, {string_or_null(question, object_key, image_url)}, '{{{answers}}}', '{{{is_true}}}')).*"
 
-
 # AboutUs, FAQ, Instructions
 def insert_about_us_query(order, title, description, svg) -> str:
     return \
@@ -67,6 +66,3 @@ def insert_review_query(name: str, review: str, object_key: str, image_url: str)
 def insert_title_query(main_title: str, example_title: str, subscription_instruction_title: str, questions_title: str, questions_sub_title: str) -> str:
     return \
         f"SELECT (public.insert_title({string_or_null(main_title, example_title, subscription_instruction_title, questions_title, questions_sub_title)})).*"
-
-
-

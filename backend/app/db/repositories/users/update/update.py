@@ -7,7 +7,6 @@ from app.models.user import PublicUserInDB
 
 from app.db.repositories.users.update.queries import *
 
-
 class UsersDBUpdateRepository(BaseDBRepository):
     
     async def update_user_information(self, *, id_: int, updated: UserUpdate) -> PublicUserInDB:

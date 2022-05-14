@@ -12,11 +12,9 @@ def select_deactivated_profiles_for_warning_month_query() -> str:
     return \
         f"SELECT * FROM users.profiles_for_warning_month_view"
 
-
 def select_deactivated_profiles_for_warning_week_query() -> str:
     return \
         f"SELECT * FROM users.profiles_for_warning_week_view"
-
 
 def select_deactivated_profiles_for_deletion_query() -> str:
     return \

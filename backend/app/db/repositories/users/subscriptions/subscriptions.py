@@ -9,7 +9,6 @@ from app.models.private import PaymentRequestDetails
 
 from app.db.repositories.users.subscriptions.queries import *
 
-
 class UsersDBSubscriptionsRepository(BaseDBRepository):
     async def create_payment_request(self, *, user_fk: int, offer_fk: int, payment_id: str, level: int, confirmation_token: str) -> None:
         await self._fetch_one(query=create_payment_request_query(user_fk=user_fk, offer_fk=offer_fk, payment_id=payment_id, level=level, confirmation_token=confirmation_token))

@@ -36,7 +36,6 @@ def update_review_query(id, name, review, object_key, image_url) -> str:
     return \
         f"SELECT (public.update_review({id}, {string_or_null(name, review, object_key, image_url)})).*"
 
-
 # link updating
 def update_book_links_query(keys, links) -> str:
     keys = list_to_string(keys)

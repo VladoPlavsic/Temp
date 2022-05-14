@@ -17,4 +17,3 @@ def insert_news_slave_query(fk, medium) -> str:
 
     return \
         f"SELECT (news.insert_news_slave({fk}, '{{{orders}}}'::int[], '{{{keys}}}', '{{{urls}}}')).*"
-

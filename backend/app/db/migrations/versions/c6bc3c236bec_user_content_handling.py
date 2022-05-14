@@ -6,13 +6,11 @@ Create Date: 2021-05-26 09:29:16.929172
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic
 revision = 'c6bc3c236bec'
 down_revision = 'f99083c99b0c'
 branch_labels = None
 depends_on = None
-
 
 def drop_old_functions() -> None:
     # ###
@@ -36,7 +34,6 @@ def drop_old_functions() -> None:
     
     for function in functions:
         op.execute(f"DROP FUNCTION IF EXISTS users.{function} CASCADE")
-
 
 def alter_user_tables() -> None:
     # grades
@@ -225,7 +222,6 @@ def alter_back_user_tables() -> None:
     DROP COLUMN expiration_date,
     ADD COLUMN days_left int;
     """)
-
 
 def upgrade() -> None:
     drop_old_functions()

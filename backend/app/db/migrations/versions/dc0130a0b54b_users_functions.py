@@ -6,7 +6,6 @@ Create Date: 2021-04-02 11:25:10.407333
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic
 revision = 'dc0130a0b54b'
 down_revision = '277259b72b52'
@@ -140,7 +139,6 @@ def create_user_authentication_functions() -> None:
     END $$ LANGUAGE plpgsql;
     """
     )
-
 
 def delete_users_functions() -> None:
     functions = [

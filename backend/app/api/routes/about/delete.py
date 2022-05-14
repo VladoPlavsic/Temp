@@ -29,7 +29,6 @@ async def delete_team_member(
 
     return None
 
-
 @router.delete("/contacts/{order}", response_model=None, name="delete:about-contact", status_code=HTTP_200_OK)
 async def delete_contact(
     order: int = Path(...),
@@ -49,4 +48,3 @@ async def delete_about_project(
 
     await db_repo.delete_about_project(id=order)
     return None
-

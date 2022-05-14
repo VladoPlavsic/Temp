@@ -11,7 +11,6 @@ from app.api.dependencies.database import get_db_repository
 from app.db.repositories.users.users import UsersDBRepository
 from app.services import auth_service
 
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -20,8 +19,19 @@ async def __validate_token_payload(payload, should_be_refresh: bool = False):
     if not payload:
         raise HTTPException(status_code=404, detail="No user found!")
 
-    if payload.ref != should_be_refresh or payload.typ != "access":
-        raise HTTPException(status_code=403, detail="Invalid token!")
+    if should_be_refresh:
+        if not payload.ref or payload.typ != "access":
+            raise HTTPException(
+                status_code=403,
+                detail="Invalid token!",
+                headers={
+                    "WWW-Authenticate": "Bearer",
+                    "set-cookie": "_shkembridge_ref=""; expires=0; Max-Age=0; Path=/",
+                },
+            )
+    else:
+        if payload.ref or payload.typ != "access":
+            raise HTTPException(status_code=403, detail="Invalid token!")
 
     if not payload.is_active:
         raise HTTPException(status_code=406, detail="Account deactivated")

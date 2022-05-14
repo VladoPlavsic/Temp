@@ -6,7 +6,6 @@ Create Date: 2021-04-08 15:50:08.915693
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic
 revision = '8afe04192cca'
 down_revision = '91c0fe2ebacf'
@@ -200,7 +199,6 @@ def create_news_functions() -> None:
     END $$ LANGUAGE plpgsql;
     """)
 
-
 def drop_tables() -> None:
     op.execute('DROP TABLE news.news_images')
     op.execute('DROP TABLE news.news')
@@ -224,7 +222,6 @@ def drop_functions() -> None:
 
     for function in functions:
         op.execute(f"DROP FUNCTION news.{function}")
-
 
 def upgrade() -> None:
     create_tables()

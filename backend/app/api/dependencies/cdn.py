@@ -9,7 +9,6 @@ from app.cdn.repositories.base import BaseCDNRepository
 import logging
 logger = logging.getLogger(__name__)
 
-
 def get_cdn(requests: Request) -> boto3.client:
     return requests.app.state._cdn_client
 

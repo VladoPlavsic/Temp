@@ -6,7 +6,6 @@ Create Date: 2021-06-09 09:57:27.215402
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic
 revision = 'd101b634aae2'
 down_revision = 'c6bc3c236bec'
@@ -141,7 +140,6 @@ def update_login_logic() -> None:
     END $$ LANGUAGE plpgsql;
     """)
 
-
     # check confirmation code function
     op.execute("""
     CREATE OR REPLACE FUNCTION users.check_confirmation_code(user_id INT, i_confirmation_code VARCHAR(6))
@@ -161,7 +159,6 @@ def update_login_logic() -> None:
         RETURN 't';
     END $$ LANGUAGE plpgsql;
     """)
-
 
 def downgrade_login_logic() -> None:
     op.execute("""
@@ -260,7 +257,6 @@ def recovery_functions() -> None:
         END IF;
     END $$ LANGUAGE plpgsql;
     """)
-
 
 def drop_recovery_functions() -> None:
     functions = [
