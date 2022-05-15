@@ -68,7 +68,7 @@ class BaseCDNRepository:
         If the key doesn't exist in s3 warning will be logged and None returned.
         """
         try:
-            self.client.head_object(Bucket=BUCKET, Key=key) # if element doesn't exist this will raise ClientErro exception
+            self.client.head_object(Bucket=BUCKET, Key=key) # if element doesn't exist this will raise ClientError exception
             presigned_url = self.client.generate_presigned_url('get_object', Params={'Bucket': BUCKET, 'Key': key}, ExpiresIn=CDN_LINK_LIFESPAN)
         except ClientError:
             logger.warn("--- EXCEPTION GENERATING PRESIGNED URL ---")

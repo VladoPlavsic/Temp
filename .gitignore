@@ -150,4 +150,4 @@ docker/docker-compose/docker-compose.yaml
 token.json
 
 #Scripts for extracting code
-*.sh
+extras/

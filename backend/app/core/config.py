@@ -62,3 +62,6 @@ YOOMONEY_SECRET_KEY = config("YOOMONEY_SECRET_KEY", cast=str)
 RESFUL_SERVER_URL = config("RESFUL_SERVER_URL", cast=str)
 
 LOG_FILE = config("LOG_FILE", default="/var/log/shkembridge/log.log")
+
+BOTO3_CONNECTION_MAX_ATTEMPTS = config("BOTO3_CONNECTION_MAX_ATTEMPTS", cast=int, default=0)
+BOTO3_CONNECTION_TIMEOUT = config("BOTO3_CONNECTION_TIMEOUT", cast=int, default=20)
