@@ -162,7 +162,7 @@ async def refresh_jw_token(
             detail="Could not refresh jwt. Refresh token not valid. Try logging in again",
             headers={
                 "WWW-Authenticate": "Bearer", 
-                "set-cookie": ["_shkembridge_tok=""; expires=0; Max-Age=0; Path=/", "_shkembridge_ref=""; expires=0; Max-Age=0; Path=/"], 
+                "set-cookie": "_shkembridge_ref=""; expires=0; Max-Age=0; Path=/", 
             },
         )
         
