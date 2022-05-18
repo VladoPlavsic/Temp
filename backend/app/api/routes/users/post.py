@@ -134,8 +134,8 @@ async def user_login_with_email_and_password(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), session=not remember, token_type="Bearer")
-    refresh_token = RefreshToken(refresh_token=auth_service.create_refresh_token_for_user(user=user, session=not remember))
+    access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), shold_be_session=not remember, token_type="Bearer")
+    refresh_token = RefreshToken(refresh_token=auth_service.create_refresh_token_for_user(user=user, shold_be_session=not remember))
 
     await user_repo.set_jwt_token(user_id=user.id, token=refresh_token.refresh_token)
     response_content = jsonable_encoder(PublicUserInDB(**user.dict()))
@@ -166,8 +166,8 @@ async def refresh_jw_token(
             },
         )
         
-    access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), session=payload.ses, token_type="Bearer")
-    refresh_token = RefreshToken(refresh_token=auth_service.create_refresh_token_for_user(user=user, session=payload.ses))
+    access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), shold_be_session=payload.ses, token_type="Bearer")
+    refresh_token = RefreshToken(refresh_token=auth_service.create_refresh_token_for_user(user=user, shold_be_session=payload.ses))
 
     await user_repo.set_jwt_token(user_id=user.id, token=refresh_token.refresh_token)
 

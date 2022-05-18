@@ -17,7 +17,7 @@ def setup_logger():
     logging.basicConfig(
         filename=config.LOG_FILE,
         format='%(asctime)s [%(levelname)-8s] %(message)s',
-        level=logging.DEBUG,
+        level=config.LOG_LEVEL,
         datefmt='%Y-%m-%d %H:%M:%S')
 
 def get_application():

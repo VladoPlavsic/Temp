@@ -52,8 +52,8 @@ async def confirm_email(
         
         await db_repo.verify_email(user_id=user.id)
 
-        access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), session=True, token_type="Bearer")
-        refresh_token = RefreshToken(refresh_token=auth_service.create_refresh_token_for_user(user=user, session=True))
+        access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), shold_be_session=True, token_type="Bearer")
+        refresh_token = RefreshToken(refresh_token=auth_service.create_refresh_token_for_user(user=user, shold_be_session=True))
 
         await db_repo.set_jwt_token(user_id=user.id, token=refresh_token.refresh_token)
 

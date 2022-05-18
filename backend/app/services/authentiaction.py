@@ -49,40 +49,48 @@ class AuthService:
         self,
         *,
         user: UserInDB,
-        session: bool = True,
+        shold_be_session: bool = True,
         secret_key: str = str(SECRET_KEY),
         audience: str = JWT_AUDIENCE,
         expires_in: int = ACCESS_TOKEN_EXPIRE_MINUTES,
         ) -> str:
-        if not user or not isinstance(user, UserInDB):
-            return None
-
-        jwt_meta = JWTMeta(
-            aud=audience,
-            iat=datetime.timestamp(datetime.utcnow()),
-            exp=datetime.timestamp(datetime.utcnow() + timedelta(minutes=expires_in)),
-            ses=session,
-            ref=False,
-        )
-        jwt_creds = JWTCreds(email=user.email, phone_number=user.phone_number)
-        jwt_user_meta = JWTUserMeta(**user.dict())
-
-        token_payload = JWTPayload(
-            **jwt_meta.dict(),
-            **jwt_creds.dict(),
-            **jwt_user_meta.dict(),
+        
+        return self.__create_token(
+            user=user,
+            shold_be_session=shold_be_session,
+            secret_key=secret_key,
+            audience=audience,
+            expires_in=expires_in,
+            ref=False
         )
 
-        access_token = jwt.encode(token_payload.dict(), secret_key, algorithm=JWT_ALGORITHM)
-        return access_token
 
     def create_refresh_token_for_user(self,
         *,
         user: UserInDB,
-        session: bool = True,
+        shold_be_session: bool = True,
         secret_key: str = str(SECRET_KEY),
         audience: str = JWT_AUDIENCE,
         expires_in: int = 60 * 24 * 365, # refresh token expires in a year
+        ) -> str:
+
+        return self.__create_token(
+            user=user,
+            shold_be_session=shold_be_session,
+            secret_key=secret_key,
+            audience=audience,
+            expires_in=expires_in,
+            ref=True
+        )
+
+    def __create_token(self,
+        *,
+        user: UserInDB,
+        shold_be_session: bool = True,
+        secret_key: str = str(SECRET_KEY),
+        audience: str = JWT_AUDIENCE,
+        expires_in: int = 60 * 24 * 365, # refresh token expires in a year
+        ref=True
         ) -> str:
         if not user or not isinstance(user, UserInDB):
             return None
@@ -91,11 +99,10 @@ class AuthService:
             aud=audience,
             iat=datetime.timestamp(datetime.utcnow()),
             exp=datetime.timestamp(datetime.utcnow() + timedelta(minutes=expires_in)),
-            ses=session,
-            ref=True,
+            ses=shold_be_session,
+            ref=ref,
         )
         jwt_creds = JWTCreds(email=user.email, phone_number=user.phone_number)
-        user.email_verified = False
         jwt_user_meta = JWTUserMeta(**user.dict())
 
         token_payload = JWTPayload(
@@ -104,8 +111,9 @@ class AuthService:
             **jwt_user_meta.dict(),
         )
 
-        refresh_token = jwt.encode(token_payload.dict(), secret_key, algorithm=JWT_ALGORITHM)
-        return refresh_token
+        token = jwt.encode(token_payload.dict(), secret_key, algorithm=JWT_ALGORITHM)
+        return token
+
 
     def get_payload_from_confirmation_token(self, *, token: str, secret_key: str) -> Optional[JWTEmailConfirmation]:
         """Takes in JWT token. Returns payload || 401"""
