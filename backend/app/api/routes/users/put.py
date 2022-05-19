@@ -123,7 +123,7 @@ async def confirm_password_recovery(
 
 @router.put("/recover/password")
 async def recover_password(
-    recovery_hash: str = Body(..., embed=True),
+    recovery_hash: str,
     password: str = Body(..., embed=True),
     user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
     ) -> None:
