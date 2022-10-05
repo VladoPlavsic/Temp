@@ -148,6 +148,3 @@ docker/docker-compose/docker-compose.yaml
 
 #Gmail API token
 token.json
-
-#Scripts for extracting code
-extras/
