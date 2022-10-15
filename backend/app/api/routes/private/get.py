@@ -12,17 +12,14 @@ from app.api.dependencies.auth import get_user_from_cookie_token, is_superuser, 
 # response models
 # ###
 # structure
-from app.models.private import GradeResponse
 from app.models.private import SubjectResponse
 from app.models.private import BranchResponse
 from app.models.private import LectureResponse
 # material
 from app.models.private import MaterialResponse
 # offers
-from app.models.private import AvailableGradeSubscriptionOffers
 from app.models.private import AvailableSubjectSubscriptionOffers
 # plans
-from app.models.private import AvailableGradeSubscriptionPlans
 from app.models.private import AvailableSubjectSubscriptionPlans
 
 from app.models.user import UserInDB
@@ -30,60 +27,10 @@ from app.models.user import UserInDB
 router = APIRouter()
 
 # ###
-# GRADES
-# ###
-@router.get("/grade/subscription/plans", response_model=List[AvailableGradeSubscriptionPlans], name="privete:get-grade-subscription-offers", status_code=HTTP_200_OK)
-async def get_grade_subscription_plans(
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> List[AvailableGradeSubscriptionPlans]:
-
-    return await db_repo.select_all_grade_subscription_plans()
-
-@router.get("/grade/subscription/offers", response_model=List[AvailableGradeSubscriptionOffers], name="privete:get-grade-subscription-offers", status_code=HTTP_200_OK)
-async def get_grade_subscription_offers(
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> List[AvailableGradeSubscriptionOffers]:
-
-    return await db_repo.select_all_grade_subscription_offers()
-
-@router.get("/grade/available", response_model=GradeResponse, name="private:get-grades-offer", status_code=HTTP_200_OK)
-async def get_grade_offers(
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> GradeResponse:
-
-    response = await db_repo.select_grades()
-    return GradeResponse(grades=response)
-
-@router.get("/grade", response_model=GradeResponse, name="private:get-grades", status_code=HTTP_200_OK)
-async def get_private_grades(
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    user: UserInDB = Depends(get_user_from_cookie_token),
-    is_superuser = Depends(is_superuser),
-    is_verified = Depends(is_verified),
-    ) -> GradeResponse:
-    """We decide what content to provide based on JWT.
-    
-    If JWT contains user who has not confirmed their email  -- Raise 401
-    If JWT contains superuser                               -- Grant access to all content
-    If JWT contains any other use but superuser             -- Grant access based on user available grades
-    """
-    if is_superuser:
-        response = await db_repo.select_grades()
-    else:
-        available_grades = await db_repo.select_user_available_grades(user_id=user.id)
-        identifications  = [grade.grade_id for grade in available_grades]
-        if identifications:
-            response = await db_repo.select_grades(identifications=identifications)
-        else:
-            response = []
-
-    return GradeResponse(grades=response)
-
-# ###
 # SUBJECTS
 # ###
 @router.get("/subject/subscription/plans", response_model=List[AvailableSubjectSubscriptionPlans], name="privete:get-subject-subscription-plans", status_code=HTTP_200_OK)
-async def get_grade_subscription_plans(
+async def get_subject_subscription_plans(
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     ) -> List[AvailableSubjectSubscriptionPlans]:
 
@@ -116,7 +63,7 @@ async def get_private_subjects(
     is_verified = Depends(is_verified),
     ) -> SubjectResponse:
     """We decide what content to provide based on JWT.
-    
+
     If JWT contains user who has not confirmed their email  -- Raise 401
     If JWT contains superuser                               -- Grant access to all content
     If JWT contains any other use but superuser             -- Grant access based on user available subjects
@@ -167,7 +114,7 @@ async def get_private_branches(
     ) -> BranchResponse:
 
     """We decide what content to provide based on JWT.
-    
+
     If JWT contains user who has not confirmed their email  -- Raise 401
     If JWT contains superuser                               -- Grant access to all content
     If JWT contains any other use but superuser             -- Grant access based on user available subjects
@@ -211,7 +158,7 @@ async def get_private_lectures(
     is_verified = Depends(is_verified),
     ) -> LectureResponse:
     """We decide what content to provide based on JWT.
-    
+
     If JWT contains user who has not confirmed their email  -- Raise 401
     If JWT contains superuser                               -- Grant access to all content
     If JWT contains any other use but superuser             -- Grant access based on user available subjects
@@ -226,7 +173,7 @@ async def get_private_lectures(
             response = await db_repo.select_material(fk=branch.id)
         else:
             raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
-   
+
 
     return LectureResponse(lectures=response, fk=branch.id, path=path + '/' + branch.name_ru)
 
@@ -242,7 +189,7 @@ async def get_private_material(
     is_verified = Depends(is_verified),
     ) -> MaterialResponse:
     """We decide what content to provide based on JWT.
-    
+
     If JWT contains user who has not confirmed their email  -- Raise 401
     If JWT contains superuser                               -- Grant access to all content
     If JWT contains any other use but superuser             -- Grant access based on user available subjects
@@ -257,5 +204,5 @@ async def get_private_material(
             response = await db_repo.select_material(fk=lecture.id)
         else:
             raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
-  
+
     return MaterialResponse(material=response, path=path, fk=lecture.id)

@@ -23,18 +23,14 @@ from app.services import auth_service
 router = APIRouter()
 
 @router.get("/admin", name="users:check-if-admin", status_code=HTTP_200_OK)
-async def get_private_grades(
+async def admin(
     is_superuser = Depends(is_superuser),
-    ) -> bool:
-
-    """If user is superuser, send them secrets for accessing YC s3"""
-    response = AdminAvailableData(is_superuser=is_superuser, AWS_SECRET_ACCESS_KEY=None, AWS_SECRET_KEY_ID=None)
-
-    if is_superuser:
-        response.AWS_SECRET_ACCESS_KEY = AWS_SECRET_ACCESS_KEY
-        response.AWS_SECRET_KEY_ID = AWS_SECRET_KEY_ID
-
-    return response
+) -> bool:
+    return AdminAvailableData(
+        is_superuser=is_superuser,
+        AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY if is_superuser else None,
+        AWS_SECRET_KEY_ID=AWS_SECRET_KEY_ID if is_superuser else None,
+    )
 
 @router.get("/email/confirm")
 async def confirm_email(
@@ -49,7 +45,7 @@ async def confirm_email(
 
         if not user.is_active:
             return None
-        
+
         await db_repo.verify_email(user_id=user.id)
 
         access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), shold_be_session=True, token_type="Bearer")

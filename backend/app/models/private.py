@@ -4,7 +4,7 @@ from app.models.core import DBCoreModel
 
 # ###
 # Presentation models
-# ### 
+# ###
 
 class PresentationModelCore(DBCoreModel):
     name_ru: str
@@ -115,7 +115,7 @@ class GameInDB(GameModelCore):
 # ###
 class AnswerCoreModel(DBCoreModel):
     answer: str
-    is_true: Optional[bool]    
+    is_true: Optional[bool]
 
 class AnswersInDB(AnswerCoreModel):
     question_id: int
@@ -127,7 +127,7 @@ class QuizModelCore(DBCoreModel):
     question: Optional[str]
     object_key: Optional[str]
     answers: List[AnswerCoreModel]
-    
+
 class QuizPostModelCheck(DBCoreModel):
     fk: int
     order_number: int
@@ -176,30 +176,6 @@ class QuizResults(DBCoreModel):
 # ###
 # Structure models
 # ###
-
-# grades
-class GradeCoreModel(DBCoreModel):
-    name_en: str
-    name_ru: str
-    object_key: str
-    order_number: int
-
-class GradePostModelCheck(DBCoreModel):
-    name_en: str
-
-class GradePostModel(GradeCoreModel):
-    pass
-
-class GradeCreateModel(GradeCoreModel):
-    background: str
-
-class GradeInDB(GradeCoreModel):
-    id: int
-    background: str
-
-# grade response
-class GradeResponse(DBCoreModel):
-    grades: List[GradeInDB]
 
 # subjects
 class SubjectGetModel(DBCoreModel):
@@ -392,24 +368,11 @@ class OfferDetails(DBCoreModel):
     product_fk: int
     subscription_fk: int
 
-class CreateGradeSubscriptionPlan(SubscriptionsBase):
-    pass
-
 class CreateSubjectSubscriptionPlan(SubscriptionsBase):
     pass
 
-class AvailableGradeSubscriptionPlans(SubscriptionsBase):
-    id: int
-
 class AvailableSubjectSubscriptionPlans(SubscriptionsBase):
     id: int
-
-class AvailableGradeSubscriptionOffers(SubscriptionsBase):
-    id: int
-    plan_id: int
-    grade_id: int
-    name_en: str
-    name_ru: str
 
 class AvailableSubjectSubscriptionOffers(SubscriptionsBase):
     id: int

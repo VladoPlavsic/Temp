@@ -18,7 +18,6 @@ from app.models.private import GameCreateModel
 from app.models.private import AnswersInDB
 from app.models.private import QuizCreateModel
 # structure
-from app.models.private import GradeCreateModel
 from app.models.private import SubjectCreateModel
 from app.models.private import BranchCreateModel
 from app.models.private import LectureCreateModel
@@ -58,7 +57,7 @@ class PrivateDBInsertRepository(BaseDBRepository):
 
     async def insert_theory(self, *, presentation: PresentationCreateModel, images: List[PresentationMediaCreate], audio: List[PresentationMediaCreate]) -> PresentationInDB:
         """Tries to insert theory. If successfull, returns formed PresentationInDB model.
-        
+
         Keyword arguments:
         presentation -- PresentationCreateModel
         images       -- List of PresentationMediaCreate, must be not None
@@ -73,7 +72,7 @@ class PrivateDBInsertRepository(BaseDBRepository):
 
     async def insert_practice(self, *, presentation: PresentationCreateModel, images: List[PresentationMediaCreate], audio: List[PresentationMediaCreate]) -> PresentationInDB:
         """Tries to insert practice. If successfull, returns formed PresentationInDB model.
-        
+
         Keyword arguments:
         presentation -- PresentationCreateModel
         images       -- List of PresentationMediaCreate, must be not None
@@ -83,7 +82,7 @@ class PrivateDBInsertRepository(BaseDBRepository):
 
     async def __insert_presentation(self, *, presentation: PresentationCreateModel, images: List[PresentationMediaCreate], audio: List[PresentationMediaCreate] = None, table: ContentType) -> PresentationInDB:
         """This function inserts all presentation prats.
-        
+
         Keyword arguments:
         presentation -- PresentationCreateModel
         images       -- List of PresentationMediaCreate, must be not None
@@ -125,7 +124,7 @@ class PrivateDBInsertRepository(BaseDBRepository):
 
     async def insert_video(self, *, video: VideoCreateModel, parse_link=False) -> VideoInDB:
         """Tries to insert video. If successful returns VideoInDB models else None.
-        
+
         Keyword arguments:
         video      -- VideoCreateModel
         parse_link -- (default=False). If you are inserting YouTube video, the link should be parsed using parse_youtube_link function.
@@ -165,16 +164,6 @@ class PrivateDBInsertRepository(BaseDBRepository):
         return QuizQuestionInDB(**response[0], answers=answers) if response else None
 
     # STRUCTURE
-    async def insert_grade_check(self, *, name_en: str) -> bool:
-        """Check if grade can be inserted"""
-        response = await self._fetch_one(query=insert_grade_check_query(name_en=name_en))
-        return response['yes']
-
-    async def insert_grade(self, *, grade: GradeCreateModel) -> GradeInDB:
-        """ """
-        response = await self._fetch_one(query=insert_grades_query(**grade.dict()))
-        return GradeInDB(**response) if response else None
-
     async def insert_subject_check(self, *, fk: int, name_en: str) -> bool:
         """Check if subject can be inserted"""
         response = await self._fetch_one(query=insert_subject_check_query(fk=fk, name_en=name_en))
@@ -205,7 +194,7 @@ class PrivateDBInsertRepository(BaseDBRepository):
         response = await self._fetch_one(query=insert_lecture_query(**lecture.dict()))
         return LectureInDB(**response) if response else None
 
-        
+
     # PLANS
     async def insert_available_grade_plan(self, *, grade_plan: CreateGradeSubscriptionPlan) -> None:
         """ """

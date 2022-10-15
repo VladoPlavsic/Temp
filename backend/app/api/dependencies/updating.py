@@ -30,11 +30,6 @@ async def update_sharing_links_function(
 
     # private content update
     async def update():
-        grades = await private_db_repo.select_all_grades()
-        if grades:
-            updated = cdn_repo.get_sharing_links_from_objects(list_of_objects=grades)
-            await private_db_repo.update_grade_links(grades=updated)
-
         subjects = await private_db_repo.select_all_subjects()
         if subjects:
             updated = cdn_repo.get_sharing_links_from_objects(list_of_objects=subjects)
@@ -124,7 +119,7 @@ async def update_sharing_links_function(
         if public_review:
             updated = cdn_repo.get_sharing_links_from_objects(list_of_objects=public_review)
             await public_db_repo.update_review_links(review=updated)
-        
+
         """
         END NEW
         """
@@ -138,7 +133,7 @@ async def update_sharing_links_function(
         if public_theory_audio:
             updated = cdn_repo.get_sharing_links_from_objects(list_of_objects=public_theory_audio)
             await public_db_repo.update_presentation_part_links(prats=updated, presentation=ContentType.THEORY, media_type=ContentType.AUDIO)
-    
+
         public_practice_images = await public_db_repo.select_all_presentation_parts(presentation=ContentType.PRACTICE, media_type=ContentType.IMAGE)
         if public_practice_images:
             updated = cdn_repo.get_sharing_links_from_objects(list_of_objects=public_practice_images)

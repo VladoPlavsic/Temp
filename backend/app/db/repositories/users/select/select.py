@@ -52,20 +52,16 @@ class UsersDBSelectRepository(BaseDBRepository):
         return response["valid"]
 
     async def get_subscription_history(self, *, user_id: int) -> List[SubscriptionHistory]:
-        grades_history = await self._fetch_many(query=get_grade_subscription_history_query(user_id=user_id))
         subjects_history = await self._fetch_many(query=get_subject_subscription_history_query(user_id=user_id))
 
-        grades = [SubscriptionHistoryUnit(**grade) for grade in grades_history]
         subjects = [SubscriptionHistoryUnit(**subject) for subject in subjects_history]
 
-        return SubscriptionHistory(grades=grades, subjects=subjects)
+        return SubscriptionHistory(subjects=subjects)
 
     async def get_active_subscriptions(self, *, user_id: int) -> ActiveSubscriptions:
         """Return active user grade subscriptions"""
-        active_grades = await self._fetch_many(query=get_active_grade_subscriptions_query(user_id=user_id))
         active_subjects = await self._fetch_many(query=get_active_subject_subscriptions_query(user_id=user_id))
 
-        active_grades = [ActiveSubscriptionInformationGrade(**grade) for grade in active_grades]
         active_subjects = [ActiveSubscriptionInformationSubject(**subject) for subject in active_subjects]
 
-        return ActiveSubscriptions(grades=active_grades, subjects=active_subjects)
+        return ActiveSubscriptions(subjects=active_subjects)

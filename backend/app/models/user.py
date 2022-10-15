@@ -49,12 +49,7 @@ class PublicUserInDB(UserBase):
     id: int
     full_name: Optional[str]
 
-# availble subjects/grades
-class UserAvailableGrades(BaseModel):
-    grade_id: int
-    crated_at: Any
-    updated_at: Any
-
+# availble subjects
 class UserAvailableSubjects(BaseModel):
     subject_id: int
     created_at: datetime
@@ -64,7 +59,7 @@ class AdminAvailableData(BaseModel):
     is_superuser: bool
     AWS_SECRET_KEY_ID: Optional[str]
     AWS_SECRET_ACCESS_KEY: Optional[str]
-    
+
 class UserDeletion(BaseModel):
     id: int
     email: Optional[EmailStr]
@@ -74,25 +69,21 @@ class ActiveSubscriptionInformationCore(DBCoreModel):
     expiration_date: datetime
     for_life: bool
 
-class ActiveSubscriptionInformationGrade(ActiveSubscriptionInformationCore):
-    pass
-
 class ActiveSubscriptionInformationSubject(ActiveSubscriptionInformationCore):
     subject_name: str
 
 class ActiveSubscriptions(DBCoreModel):
-    grades: List[ActiveSubscriptionInformationGrade]
     subjects: List[ActiveSubscriptionInformationSubject]
 
 class SubscriptionHistoryUnit(DBCoreModel):
     name_ru: str
     price: float
     purchased_at: datetime
-    month_count: int    
+    month_count: int
 
 class SubscriptionHistory(DBCoreModel):
-    grades: List[SubscriptionHistoryUnit]
     subjects: List[SubscriptionHistoryUnit]
+
 class SubscriptionInformation(DBCoreModel):
     for_life: bool
     expiration_date: datetime

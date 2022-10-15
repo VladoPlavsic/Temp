@@ -10,7 +10,7 @@ from app.api.dependencies.cdn import get_cdn_repository
 
 from app.api.dependencies.updating import update_sharing_links_function
 
-from app.api.dependencies.auth import allowed_or_denied 
+from app.api.dependencies.auth import allowed_or_denied
 
 # import update models
 from app.models.private import UpdateStructureModel
@@ -21,7 +21,6 @@ from app.models.private import UpdateBookModel
 from app.models.private import UpdatePresentationModel
 
 # import response models
-from app.models.private import GradeInDB
 from app.models.private import SubjectInDB
 from app.models.private import BranchInDB
 from app.models.private import LectureInDB
@@ -41,22 +40,8 @@ async def update_sharing_links(
     ) -> None:
     pass
 
-@router.put("/grade", response_model=GradeInDB, name="private:put-grade", status_code=HTTP_200_OK)
-async def update_private_grade(
-    updated: UpdateStructureModel = Body(...),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
-    allowed: bool = Depends(allowed_or_denied),
-    ) -> GradeInDB:
-
-    if updated.object_key:
-        background_url = cdn_repo.get_background_url(object_key=updated.object_key)
-
-    response = await db_repo.update_grade(updated=updated, background_url=background_url)
-    return response
-
 @router.put("/subject", response_model=SubjectInDB, name="private:put-subject", status_code=HTTP_200_OK)
-async def update_private_subject( 
+async def update_private_subject(
     updated: UpdateStructureModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),

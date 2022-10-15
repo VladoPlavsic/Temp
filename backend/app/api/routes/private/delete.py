@@ -11,20 +11,6 @@ from app.api.dependencies.auth import allowed_or_denied
 
 router = APIRouter()
 
-@router.delete('/grade', response_model=None, name="private:delete-grade", status_code=HTTP_200_OK)
-async def delete_private_grade(
-    id: int,
-    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
-
-    deleted_key = await db_repo.delete_grade(id=id)
-    if deleted_key:
-        cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
-
-    return None
-
 @router.delete('/subject', response_model=None, name="private:delete-subject", status_code=HTTP_200_OK)
 async def delete_private_subject(
     id: int,
@@ -133,8 +119,8 @@ async def delete_private_quiz(
 
     deleted_keys = await db_repo.delete_quiz(fk=fk)
     if deleted_keys:
-        """We have a inconsistency here and in delete_private_quiz_questions function. 
-    
+        """We have a inconsistency here and in delete_private_quiz_questions function.
+
         In delete_private_quiz_questions we are deleting folder containing object key is refering to,
         here we are deleting only the object.
         """
@@ -152,8 +138,8 @@ async def delete_private_quiz_questions(
 
     deleted_key = await db_repo.delete_quiz_question(id=id)
     if deleted_key:
-        """We have a inconsistency here and in delete_private_quiz function. 
-    
+        """We have a inconsistency here and in delete_private_quiz function.
+
         In delete_private_quiz we are deleting only the object that key is refering to,
         here we are deleting folder containing that object.
         """
@@ -176,15 +162,6 @@ async def delete_private_game(
     return None
 
 # Subscription plans
-@router.delete("/grade/subscription/plans", response_model=None, name="private:delete-grade-subscription-plan", status_code=HTTP_200_OK)
-async def delete_grade_subscription_plan(
-    id: int,
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
-
-    return await db_repo.delete_grade_subscription_plan(id=id)
-
 @router.delete("/subject/subscription/plans", response_model=None, name="private:delete-subject-subscription-plan", status_code=HTTP_200_OK)
 async def delete_subject_subscription_plan(
     id: int,

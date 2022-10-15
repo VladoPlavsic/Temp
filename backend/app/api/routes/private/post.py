@@ -22,12 +22,11 @@ from app.models.private import VideoPostModelYT, VideoPostModelCDN, VideoCreateM
 from app.models.private import GamePostModel, GameCreateModel, GamePostModelCheck
 from app.models.private import QuizPostModel, QuizCreateModel, QuizGetResultsModel, QuizPostModelCheck
 # structure
-from app.models.private import GradePostModel, GradeCreateModel, GradePostModelCheck
 from app.models.private import SubejctPostModel, SubjectCreateModel, SubejctPostModelCheck
 from app.models.private import BranchPostModel, BranchCreateModel, BranchPostModelCheck
 from app.models.private import LecturePostModel, LectureCreateModel, LecturePostModelCheck
 
-# ### 
+# ###
 # Response models
 # ###
 from app.models.core import AllowCreate
@@ -38,12 +37,10 @@ from app.models.private import VideoInDB
 from app.models.private import GameInDB
 from app.models.private import QuizQuestionInDB, QuizResults
 # structure
-from app.models.private import GradeInDB
 from app.models.private import SubjectInDB
 from app.models.private import BranchInDB
 from app.models.private import LectureInDB
 # subscriptions
-from app.models.private import CreateGradeSubscriptionPlan
 from app.models.private import CreateSubjectSubscriptionPlan
 
 router = APIRouter()
@@ -56,7 +53,7 @@ async def check_create_private_practice(
     ) -> AllowCreate:
     """Try creating practice. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
     response = await db_repo.insert_practice_check(fk=presentation.fk)
-    
+
     return AllowCreate(OK=response)
 
 @router.post("/practice", response_model=PresentationInDB, name="private:post-practice", status_code=HTTP_201_CREATED)
@@ -66,7 +63,7 @@ async def create_private_practice(
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
     ) -> PresentationInDB:
-    
+
     images = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.IMAGES)
     audio = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.AUDIO)
 
@@ -132,7 +129,7 @@ async def create_private_video(
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
     ) -> VideoInDB:
- 
+
     video = VideoCreateModel(**video.dict(), object_key=None)
     response = await db_repo.insert_video(video=video, parse_link=True)
 
@@ -233,29 +230,6 @@ async def get_quiz_results(
     return response
 
 # STRUCTURE
-@router.post("/grade/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
-async def check_create_private_grade(
-    grade: GradePostModelCheck = Body(...),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> AllowCreate:
-    """Try creating grade. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
-    response = await db_repo.insert_grade_check(**grade.dict())
-
-    return AllowCreate(OK=response)
-
-@router.post("/grade", response_model=GradeInDB, name="private:post-grade", status_code=HTTP_201_CREATED)
-async def create_private_grade(
-    grade: GradePostModel = Body(...),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
-    allowed: bool = Depends(allowed_or_denied),
-    ) -> GradeInDB:
-
-    background = cdn_repo.get_background_url(object_key=grade.object_key)
-    response  = await db_repo.insert_grade(grade=GradeCreateModel(**grade.dict(), background=background))
-
-    return response
-
 @router.post("/subject/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
 async def check_create_private_subject(
     subject: SubejctPostModelCheck = Body(...),
@@ -297,7 +271,7 @@ async def create_private_branch(
     allowed: bool = Depends(allowed_or_denied),
     ) -> BranchInDB:
 
-    background = cdn_repo.get_background_url(object_key=branch.object_key) 
+    background = cdn_repo.get_background_url(object_key=branch.object_key)
     response  = await db_repo.insert_branch(branch=BranchCreateModel(**branch.dict(), background=background))
 
     return response
@@ -320,26 +294,17 @@ async def create_private_lecture(
     allowed: bool = Depends(allowed_or_denied),
     ) -> LectureInDB:
 
-    background = cdn_repo.get_background_url(object_key=lecture.object_key)  
+    background = cdn_repo.get_background_url(object_key=lecture.object_key)
     response  = await db_repo.insert_lecture(lecture=LectureCreateModel(**lecture.dict(), background=background))
 
     return response
 
 # SUBSCRIPTION
-@router.post("/grade/subscription/plans")
-async def create_grade_subscription_plan(
-    grade_plan: CreateGradeSubscriptionPlan = Body(...),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
-
-    return await db_repo.insert_available_grade_plan(grade_plan=grade_plan)
-
 @router.post("/subject/subscription/plans")
-async def create_grade_subscription_plan(
+async def create_subject_subscription_plan(
     subject_plan: CreateSubjectSubscriptionPlan = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
     ) -> None:
-    
+
     return await db_repo.insert_available_subject_plan(subject_plan=subject_plan)
