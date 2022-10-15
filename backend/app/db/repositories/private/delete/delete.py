@@ -4,8 +4,6 @@ from app.db.repositories.base import BaseDBRepository
 
 from app.db.repositories.private.delete.queries import *
 
-from app.models.private import GradeInDB
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -49,13 +47,6 @@ class PrivateDBDeleteRepository(BaseDBRepository):
         """Deletes quiz. Quiz does not have to have object_key!"""
         response = await self._fetch_one(query=delete_quiz_question_query(id=id))
         return response['object_key'] if response else None
-
-    # subscription plans
-    async def delete_grade_subscription_plan(self, *, id) -> None:
-        await self._execute_one(query=delete_available_grade_plans_query(id=id))
-
-    async def delete_subject_subscription_plan(self, *, id) -> None:
-        await self._execute_one(query=delete_available_subject_plans_query(id=id))
 
     async def __delete(self, *, query):
         """Executes query and tries to return deleted object_key or raise HTTPException"""

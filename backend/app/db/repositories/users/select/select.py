@@ -12,7 +12,6 @@ from app.services import auth_service
 from app.models.user import UserInDB
 from app.models.user import SubscriptionHistoryUnit
 from app.models.user import SubscriptionHistory
-from app.models.user import ActiveSubscriptionInformationGrade
 from app.models.user import ActiveSubscriptionInformationSubject
 from app.models.user import ActiveSubscriptions
 

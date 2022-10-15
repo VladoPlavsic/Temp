@@ -111,23 +111,3 @@ def select_all_user_available_subjects_query(user_id: int) -> str:
 def check_if_content_available_query(user_id: int, grade_name: str, subject_name: str) -> str:
     return \
         f"SELECT users.check_if_content_available({user_id}, {string_or_null(grade_name, subject_name)}) AS available"
-
-# subscriptions
-# plans
-def get_available_grade_plans_query() -> str:
-    return \
-        f"SELECT (subscriptions.get_available_grade_plans()).*"
-
-def get_available_subject_plans_query() -> str:
-    return \
-        f"SELECT (subscriptions.get_available_subject_plans()).*"
-
-# offers
-def get_available_grade_offers_query() -> str:
-    return \
-        f"SELECT (subscriptions.get_available_grade_offers()).*"
-
-def get_available_subject_offers_query() -> str:
-    return \
-        f"SELECT (subscriptions.get_available_subject_offers()).*"
-        

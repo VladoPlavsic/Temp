@@ -59,7 +59,7 @@ async def delete_video(
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
     ) -> None:
-    
+
     deleted_key = await db_repo.delete_video()
     if deleted_key:
         cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
@@ -72,7 +72,7 @@ async def delete_intro_video(
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
     ) -> None:
-    
+
     deleted_key = await db_repo.delete_intro_video()
     if deleted_key:
         cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
@@ -88,8 +88,8 @@ async def delete_quiz(
 
     deleted_keys = await db_repo.delete_quiz()
     if deleted_keys:
-        """We have a inconsistency here and in delete_quiz_question function. 
-    
+        """We have a inconsistency here and in delete_quiz_question function.
+
         In delete_quiz_question we are deleting folder containing object key is refering to,
         here we are deleting only the object.
         """
@@ -107,8 +107,8 @@ async def delete_quiz_question(
 
     deleted_key = await db_repo.delete_quiz_question(id=id)
     if deleted_key:
-        """We have a inconsistency here and in delete_quiz function. 
-    
+        """We have a inconsistency here and in delete_quiz function.
+
         In delete_quiz we are deleting only the object that key is refering to,
         here we are deleting folder containing that object.
         """
@@ -120,13 +120,13 @@ async def delete_quiz_question(
 async def delete_game(
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
-    allowed: bool = Depends(allowed_or_denied),   
+    allowed: bool = Depends(allowed_or_denied),
     ) -> None:
 
     deleted_key = await db_repo.delete_game()
     if deleted_key:
         cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
-    
+
     return None
 
 @router.delete("/about_us", response_model=None, name="public:delete-about_us", status_code=HTTP_200_OK)
@@ -185,15 +185,6 @@ async def delete_example_title(
     ) -> None:
 
     await db_repo.delete_example_title()
-    return None
-
-@router.delete("/title/subscriptions", response_model=None, name="public:delete-subscriptions-title", status_code=HTTP_200_OK)
-async def delete_subscriptions_title(
-    db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
-    allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
-
-    await db_repo.delete_subscriptions_title()
     return None
 
 @router.delete("/title/questions", response_model=None, name="public:delete-questions-title", status_code=HTTP_200_OK)

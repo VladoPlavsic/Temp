@@ -176,6 +176,15 @@ class QuizResults(DBCoreModel):
 # ###
 # Structure models
 # ###
+class GradeCoreModel(DBCoreModel):
+    name_en: str
+    name_ru: str
+    object_key: str
+    order_number: int
+
+class GradeInDB(GradeCoreModel):
+    id: int
+    background: str
 
 # subjects
 class SubjectGetModel(DBCoreModel):

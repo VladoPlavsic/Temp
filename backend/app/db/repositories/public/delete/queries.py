@@ -32,7 +32,7 @@ def delete_quiz_query() -> str:
 
 def delete_about_us_query(order_number) -> str:
     return \
-        f"SELECT public.delete_about_us({order_number})" 
+        f"SELECT public.delete_about_us({order_number})"
 
 def delete_faq_query(id) -> str:
     return \
@@ -49,14 +49,10 @@ def delete_review_query(id) -> str:
 def delete_main_title_query() -> str:
     return \
         f"SELECT public.delete_main_title()"
-        
+
 def delete_example_title_query() -> str:
     return \
         f"SELECT public.delete_example_title()"
-
-def delete_subscriptions_title_query() -> str:
-    return \
-        f"SELECT public.delete_subscriptions_title()"
 
 def delete_questions_title_query() -> str:
     return \

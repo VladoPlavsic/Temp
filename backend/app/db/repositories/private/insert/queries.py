@@ -119,12 +119,3 @@ def insert_quiz_question_answers_query(question_id: int, answers: List[str], is_
     is_true = list_to_string(is_true)
     return \
         f"SELECT (private.insert_quiz_answers({question_id}, '{{{answers}}}', '{{{is_true}}}')).*"
-
-# SUBSCRIPTION queries
-def insert_available_grade_plans_query(name: str, price: float, month_count: int) -> str:
-    return \
-        f"SELECT subscriptions.insert_available_grade_plans({string_or_null(name)}, {price}, {month_count})"
-
-def insert_available_subject_plans_query(name: str, price: float, month_count: int) -> str:
-    return \
-        f"SELECT subscriptions.insert_available_subject_plans({string_or_null(name)}, {price}, {month_count})"

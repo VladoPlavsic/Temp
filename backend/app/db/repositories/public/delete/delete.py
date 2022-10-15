@@ -60,9 +60,6 @@ class PublicDBDeleteRepository(BaseDBRepository):
     async def delete_example_title(self) -> bool:
         await self._execute_one(query=delete_example_title_query())
 
-    async def delete_subscriptions_title(self) -> bool:
-        await self._execute_one(query=delete_subscriptions_title_query())
-
     async def delete_questions_title(self) -> bool:
         await self._execute_one(query=delete_questions_title_query())
 

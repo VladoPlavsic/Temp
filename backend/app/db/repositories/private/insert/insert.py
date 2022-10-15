@@ -21,9 +21,6 @@ from app.models.private import QuizCreateModel
 from app.models.private import SubjectCreateModel
 from app.models.private import BranchCreateModel
 from app.models.private import LectureCreateModel
-# offers
-from app.models.private import CreateGradeSubscriptionPlan
-from app.models.private import CreateSubjectSubscriptionPlan
 
 # ###
 # response models
@@ -35,7 +32,6 @@ from app.models.private import VideoInDB
 from app.models.private import GameInDB
 from app.models.private import QuizQuestionInDB
 # structure
-from app.models.private import GradeInDB
 from app.models.private import SubjectInDB
 from app.models.private import BranchInDB
 from app.models.private import LectureInDB
@@ -193,13 +189,3 @@ class PrivateDBInsertRepository(BaseDBRepository):
         """ """
         response = await self._fetch_one(query=insert_lecture_query(**lecture.dict()))
         return LectureInDB(**response) if response else None
-
-
-    # PLANS
-    async def insert_available_grade_plan(self, *, grade_plan: CreateGradeSubscriptionPlan) -> None:
-        """ """
-        await self._execute_one(query=insert_available_grade_plans_query(**grade_plan.dict()))
-
-    async def insert_available_subject_plan(self, *, subject_plan: CreateSubjectSubscriptionPlan) -> None:
-        """ """
-        await self._execute_one(query=insert_available_subject_plans_query(**subject_plan.dict()))

@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException
 from starlette.status import HTTP_200_OK
 
@@ -17,10 +15,6 @@ from app.models.private import BranchResponse
 from app.models.private import LectureResponse
 # material
 from app.models.private import MaterialResponse
-# offers
-from app.models.private import AvailableSubjectSubscriptionOffers
-# plans
-from app.models.private import AvailableSubjectSubscriptionPlans
 
 from app.models.user import UserInDB
 
@@ -29,20 +23,6 @@ router = APIRouter()
 # ###
 # SUBJECTS
 # ###
-@router.get("/subject/subscription/plans", response_model=List[AvailableSubjectSubscriptionPlans], name="privete:get-subject-subscription-plans", status_code=HTTP_200_OK)
-async def get_subject_subscription_plans(
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> List[AvailableSubjectSubscriptionPlans]:
-
-    return await db_repo.select_all_subject_subscription_plans()
-
-@router.get("/subject/subscription/offers", response_model=List[AvailableSubjectSubscriptionOffers], name="privete:get-subject-subscription-offers", status_code=HTTP_200_OK)
-async def get_subject_subscription_offers(
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> List[AvailableSubjectSubscriptionOffers]:
-
-    return await db_repo.select_all_subject_subscription_offers()
-
 @router.get("/subject/available", response_model=SubjectResponse, name="private:get-subjects-offer", status_code=HTTP_200_OK)
 async def get_subject_offer(
     grade_name_en: str,

@@ -26,13 +26,6 @@ from app.models.private import StructureAllModel
 from app.models.private import MaterialAllModel
 from app.models.private import AudioImagesAllModel
 
-# offers
-from app.models.private import AvailableGradeSubscriptionOffers
-from app.models.private import AvailableSubjectSubscriptionOffers
-# plans
-from app.models.private import AvailableGradeSubscriptionPlans
-from app.models.private import AvailableSubjectSubscriptionPlans
-
 from app.db.repositories.types import ContentType
 
 import logging
@@ -79,12 +72,12 @@ class PrivateDBSelectRepository(BaseDBRepository):
     async def select_grades(self, *, identifications=None) -> List[GradeInDB]:
         """Returns list of grades available to customer based on grade ID's"""
         response_data = await self._fetch_many(query=select_grades_query(identifications=identifications))
-        return [GradeInDB(**data) for data in response_data]        
+        return [GradeInDB(**data) for data in response_data]
 
     async def select_all_grades(self) -> List[StructureAllModel]:
         """Returns list of id, object_keys for all grades in database"""
         records = await self._fetch_many(query=select_all_grade_keys_query())
-        return [StructureAllModel(**record) for record in records] 
+        return [StructureAllModel(**record) for record in records]
 
     async def select_subjects(self, *, fk, identifications=None) -> List[SubjectInDB]:
         """Returns list of subjects available to customer based on subject ID's"""
@@ -94,7 +87,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
     async def select_all_subjects(self) -> List[StructureAllModel]:
         """Returns list of id, object_keys for all subjects in database"""
         records = await self._fetch_many(query=select_all_subject_keys_query())
-        return [StructureAllModel(**record) for record in records]        
+        return [StructureAllModel(**record) for record in records]
 
     async def select_branches(self, *, fk) -> List[BranchInDB]:
         """Returns all branches based on fk they refer to"""
@@ -114,7 +107,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
     async def select_all_lectures(self) -> List[StructureAllModel]:
         """Returns list of id, object_keys for all lectures in database"""
         records = await self._fetch_many(query=select_all_lecture_keys_query())
-        return [StructureAllModel(**record) for record in records]     
+        return [StructureAllModel(**record) for record in records]
 
     # MATERIAL
     async def select_material(self, *, fk) -> MaterialResponseModel:
@@ -174,7 +167,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
     async def select_all_books(self) -> List[MaterialAllModel]:
         """Returns list of id, object_keys for all books in database"""
         records = await self._fetch_many(query=select_all_material_keys_query(table=ContentType.BOOK.value))
-        return [MaterialAllModel(**record) for record in records]        
+        return [MaterialAllModel(**record) for record in records]
 
     async def select_game(self, *, fk) -> GameInDB:
         """Returns GameInDB for a given lecture. Or None if there is none."""
@@ -196,7 +189,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
     async def select_all_presentation_parts(self, presentation: ContentType, media_type: ContentType) -> List[AudioImagesAllModel]:
         """Returns list of order, object_keys for all presentation (theory || practice) parts (images|| audio) in database"""
         records = await self._fetch_many(query=select_all_material_part_keys_query(presentation=presentation.value, media_type=media_type.value))
-        return [AudioImagesAllModel(**record) for record in records]      
+        return [AudioImagesAllModel(**record) for record in records]
 
     # USERS AVAILABLE CONTENT
     async def select_user_available_grades(self, *, user_id: int) -> List[UserAvailableGrades]:
@@ -208,28 +201,6 @@ class PrivateDBSelectRepository(BaseDBRepository):
         """Return all user available subjects - UserAvaialableSubjects - based on user_id."""
         records = await self._fetch_many(query=select_all_user_available_subjects_query(user_id=user_id))
         return [UserAvailableSubjects(**record) for record in records]
-
-    # SUBSCRIPTION PLANS
-    async def select_all_grade_subscription_plans(self) -> List[AvailableGradeSubscriptionPlans]:
-        """Return all grade subscription plans"""
-        records = await self._fetch_many(query=get_available_grade_plans_query())
-        return [AvailableGradeSubscriptionPlans(**record) for record in records]
-
-    async def select_all_subject_subscription_plans(self) -> List[AvailableSubjectSubscriptionPlans]:
-        """Return all subject subscription plans"""
-        records = await self._fetch_many(query=get_available_subject_plans_query())
-        return [AvailableGradeSubscriptionPlans(**record) for record in records]
-
-    # SUBSCRIPTION OFFERS
-    async def select_all_grade_subscription_offers(self) -> List[AvailableGradeSubscriptionOffers]:
-        """Return all grade subscription offers"""
-        records = await self._fetch_many(query=get_available_grade_offers_query())
-        return [AvailableGradeSubscriptionOffers(**record) for record in records]
-        
-    async def select_all_subject_subscription_offers(self) -> List[AvailableSubjectSubscriptionOffers]:
-        """Return all subject subscription offers"""
-        records = await self._fetch_many(query=get_available_subject_offers_query())
-        return [AvailableSubjectSubscriptionOffers(**record) for record in records]
 
     # QUIZ RESULTS
     async def check_quiz_results(self, *, quiz_results: QuizGetResultsModel) -> QuizResults:
@@ -258,7 +229,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
 
     async def check_if_content_available(self, *, user_id: int, grade_name: str, subject_name: str) -> bool:
         """Checks if requested content is available to user requesting it.
-        
+
         Keyword arguments:
         user_id      -- ID of user requesting given content
         grade_name   -- english name of a grade content belongs to

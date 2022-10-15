@@ -161,11 +161,11 @@ async def refresh_jw_token(
             status_code=401,
             detail="Could not refresh jwt. Refresh token not valid. Try logging in again",
             headers={
-                "WWW-Authenticate": "Bearer", 
-                "set-cookie": "_shkembridge_ref=""; expires=0; Max-Age=0; Path=/", 
+                "WWW-Authenticate": "Bearer",
+                "set-cookie": "_shkembridge_ref=""; expires=0; Max-Age=0; Path=/",
             },
         )
-        
+
     access_token = AccessToken(access_token=auth_service.create_access_token_for_user(user=user), shold_be_session=payload.ses, token_type="Bearer")
     refresh_token = RefreshToken(refresh_token=auth_service.create_refresh_token_for_user(user=user, shold_be_session=payload.ses))
 
@@ -195,15 +195,6 @@ async def logout(
     response.delete_cookie("_shkembridge_ref")
     return response
 
-@router.post("/subscriptions/check/")
-async def user_check_expired_subscriptions(
-    background_task: BackgroundTasks,
-    user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
-    ) -> None:
-
-    background_task.add_task(user_repo.check_expired_subscriptions)
-    return None
-
 @router.post("/deactivated/check")
 async def users_check_deactivated_profiles(
     background_task: BackgroundTasks,
@@ -215,12 +206,12 @@ async def users_check_deactivated_profiles(
     deletion_profiles = await user_repo.select_deactivated_profiles_for_deletion()
 
     background_task.add_task(handle_deactivated_profiles, one_month_warning=one_month_warning, one_week_warning=one_week_warning, deletion_profiles=deletion_profiles)
-    
+
     for profile in deletion_profiles:
         await user_repo.delete_profile(user_id=profile.id)
     return None
 
-   
+
 @router.post("/request/profile/reactivate", status_code=HTTP_200_OK)
 async def reactivate_profile_request(
     email: str,
@@ -236,7 +227,7 @@ async def reactivate_profile_request(
             detail="User not found with given email!",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     reactivate_hash = await user_repo.create_confirmation_hash_for_reactivation(user_id=user.id)
     if not reactivate_hash:
         raise HTTPException(
@@ -262,39 +253,5 @@ async def reactivate_profile(
             detail="Reactivation failed!",
             headers={"WWW-Authenticate": "Bearer"},
         )
-
-    return None
-
-# YooKassa Confirmation Notifications
-@router.post("/subscriptions/notifications", status_code=HTTP_200_OK)
-async def subscription_notification_hnd(
-    background_tasks: BackgroundTasks,
-    notification_object: Request = Body(...),
-    user_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
-    ) -> None:
-
-    notification = await notification_object.json()
-
-    if notification["event"] == "payment.succeeded":
-        payment_object = await user_repo.get_payment_request(payment_id=notification["object"]["id"])
-
-        # in case we didn't find any payment object for given id send email to administrator with given payment confirmation data
-        if not payment_object:
-            background_tasks.add_task(send_message, subject="Payment confirmation failed. Required assistence.", message_text=f"There was error in confirming payment request. This might have happened because there was no recorded payment request with given payment ID when the notification was raised. Notification detail: {notification}")
-            return None
-        
-        product = await user_repo.get_offer_details(level=int(payment_object.level), offer_fk=payment_object.offer_fk)
-        # add product
-        subscription_details = await user_repo.add_product_to_user(user_id=payment_object.user_fk, product_id=product.product_fk, subscription_fk=payment_object.offer_fk, level=int(payment_object.level))
-        user = await user_repo.get_user_by_id(user_id=payment_object.user_fk)
-        if subscription_details.for_life:
-            background_tasks.add_task(send_message, subject="Payment confirmation.", message_text=f"Payment successfully processed. You have access to {subscription_details.plan_name} for life.", to=user.email)
-        else:
-            background_tasks.add_task(send_message, subject="Payment confirmation.", message_text=f"Payment successfully processed. You have access to {subscription_details.plan_name} until {subscription_details.expiration_date}", to=user.email)
-
-        await user_repo.delete_pending_subscription(payment_id=notification["object"]["id"])
-   
-    elif notification["event"] == "payment.canceled":
-        await user_repo.delete_pending_subscription(payment_id=notification["object"]["id"])
 
     return None

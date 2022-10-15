@@ -160,13 +160,3 @@ async def delete_private_game(
         cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
 
     return None
-
-# Subscription plans
-@router.delete("/subject/subscription/plans", response_model=None, name="private:delete-subject-subscription-plan", status_code=HTTP_200_OK)
-async def delete_subject_subscription_plan(
-    id: int,
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
-
-    return await db_repo.delete_subject_subscription_plan(id=id)

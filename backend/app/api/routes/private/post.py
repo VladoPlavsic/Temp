@@ -1,6 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from fastapi import Depends, Body
-from starlette.status import HTTP_201_CREATED, HTTP_403_FORBIDDEN, HTTP_200_OK
+from starlette.status import HTTP_201_CREATED, HTTP_200_OK
 
 from app.db.repositories.private.private import PrivateDBRepository
 from app.cdn.repositories.private.private import PrivateYandexCDNRepository
@@ -40,8 +40,6 @@ from app.models.private import QuizQuestionInDB, QuizResults
 from app.models.private import SubjectInDB
 from app.models.private import BranchInDB
 from app.models.private import LectureInDB
-# subscriptions
-from app.models.private import CreateSubjectSubscriptionPlan
 
 router = APIRouter()
 
@@ -298,13 +296,3 @@ async def create_private_lecture(
     response  = await db_repo.insert_lecture(lecture=LectureCreateModel(**lecture.dict(), background=background))
 
     return response
-
-# SUBSCRIPTION
-@router.post("/subject/subscription/plans")
-async def create_subject_subscription_plan(
-    subject_plan: CreateSubjectSubscriptionPlan = Body(...),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
-
-    return await db_repo.insert_available_subject_plan(subject_plan=subject_plan)

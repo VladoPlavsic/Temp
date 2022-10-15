@@ -49,6 +49,12 @@ class PublicUserInDB(UserBase):
     id: int
     full_name: Optional[str]
 
+# availble grades
+class UserAvailableGrades(BaseModel):
+    grade_id: int
+    crated_at: Any
+    updated_at: Any
+
 # availble subjects
 class UserAvailableSubjects(BaseModel):
     subject_id: int

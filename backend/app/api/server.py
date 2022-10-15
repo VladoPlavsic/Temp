@@ -24,7 +24,7 @@ def get_application():
     setup_logger()
 
     app = FastAPI(title=config.PROJECT_NAME, version=config.VERSION)
-    
+
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[config.SITE_URL],
@@ -43,7 +43,7 @@ def get_application():
             logger.exception(e)
             logger.error("----- 500 INTERNAL SERVER ERROR -----")
             return Response("Internal server error", status_code=500)
-    
+
     # Add middleware for sending error email
     app.middleware('http')(catch_exceptions_middleware)
 
@@ -56,20 +56,6 @@ def get_application():
     def update_cdn_sharing_links() -> None:
         logger.warn(f"sending PUT request to {config.RESFUL_SERVER_URL}/api/public/update/")
         requests.put(f"{config.RESFUL_SERVER_URL}/api/private/update/")
-
-    # Daily check for expired subscriptions
-    @app.on_event("startup")
-    @repeat_every(seconds=24 * 60 * 60)
-    def expired_subscriptions_check():
-        logger.warn(f"sending POST request to {config.RESFUL_SERVER_URL}/api/users/subscriptions/check/")
-        requests.post(f"{config.RESFUL_SERVER_URL}/api/users/subscriptions/check/")
-
-    # Daily check for deactivated profiles
-    @app.on_event("startup")
-    @repeat_every(seconds=24 * 60 * 60)
-    def deactivated_profiles_check():
-        logger.warn(f"sending POST request to {config.RESFUL_SERVER_URL}/api/users/deactivated/check/")
-        requests.post(f"{config.RESFUL_SERVER_URL}/api/users/deactivated/check/")
 
     # Keep server alive
     # @app.on_event("startup")

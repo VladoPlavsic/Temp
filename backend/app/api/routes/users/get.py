@@ -12,8 +12,6 @@ from app.db.repositories.users.users import UsersDBRepository
 from app.api.dependencies.database import get_db_repository
 
 from app.models.user import PublicUserInDB, UserInDB, AdminAvailableData
-from app.models.user import SubscriptionHistory
-from app.models.user import ActiveSubscriptions
 
 from app.models.token import AccessToken, RefreshToken
 from app.core.config import AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY_ID
@@ -70,19 +68,3 @@ async def get_user_information(
 
     response = await db_repo.get_user_by_id(user_id=user.id)
     return PublicUserInDB(**response.dict())
-
-@router.get("/subscription/history")
-async def get_subscription_history(
-    user: UserInDB = Depends(get_user_from_cookie_token),
-    db_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
-    ) -> SubscriptionHistory:
-
-    return await db_repo.get_subscription_history(user_id=user.id)
-
-@router.get("/active/subscriptions")
-async def get_active_subscriptions(
-    user: UserInDB = Depends(get_user_from_cookie_token),
-    db_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
-    ) -> ActiveSubscriptions:
-
-    return await db_repo.get_active_subscriptions(user_id=user.id)
