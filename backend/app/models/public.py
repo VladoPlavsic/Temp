@@ -1,10 +1,21 @@
 from typing import List, Optional
 from app.models.core import DBCoreModel
 
-# ###
-# Material models
-# ###
 
+# Cources
+class CourceModel(DBCoreModel):
+    id: int
+    title: str
+    image: str
+    object_key: str
+
+class CourceUserModel(CourceModel):
+    percentage: int
+
+class CourceResponse(DBCoreModel):
+    cources: List[CourceUserModel]
+
+# Other
 class MaterialCoreModel(DBCoreModel):
     name_ru: str
     description: str
@@ -258,7 +269,7 @@ class UpdateInstructionModel(DBCoreModel):
     order: int
     title: Optional[str]
     description: Optional[str]
-    
+
 # select all models
 class MaterialAllModel(DBCoreModel):
     object_key: str

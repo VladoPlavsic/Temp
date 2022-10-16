@@ -1,5 +1,9 @@
 from app.db.repositories.parsers import list_to_string
 
+
+def get_cources_query() -> str:
+    return f"SELECT * FROM public.cources"
+
 def select_material_query(table) -> str:
     return \
         f"SELECT (public.select_{table}()).*"

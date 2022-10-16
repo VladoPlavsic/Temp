@@ -1,4 +1,5 @@
 .DS_Store
+backend/alembic
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,35 +1,41 @@
-from typing import List, Union
-from fastapi import HTTPException
+from typing import List
 
 from app.db.repositories.base import BaseDBRepository
-
 from app.db.repositories.public.select.queries import *
-
+from app.db.repositories.types import ContentType
 from app.models.public import MaterialResponseModel
-from app.models.public import MaterialResponse
 from app.models.public import BookInDB
 from app.models.public import GameInDB
 from app.models.public import PresentationInDB
 from app.models.public import VideoInDB
 from app.models.public import IntroVideoInDB
-from app.models.public import QuizInDB, QuizQuestionInDB, AnswersInDB, QuizGetResultsModel, QuizResults, QuizQuestionAnswerCorrectPair
+from app.models.public import (
+    QuizInDB, QuizQuestionInDB, AnswersInDB, QuizGetResultsModel, QuizResults,
+    QuizQuestionAnswerCorrectPair,
+)
 from app.models.public import PresentationMediaInDB
 from app.models.public import AboutUsInDB
 from app.models.public import FAQInDB
 from app.models.public import InstructionInDB
 from app.models.public import ReviewInDB
 from app.models.public import TitlesInDB
-
+from app.models.public import CourceUserModel
 from app.models.public import MaterialAllModel
 from app.models.public import AudioImagesAllModel
-
-from app.db.repositories.types import ContentType
 
 import logging
 
 logger = logging.getLogger(__name__)
 
 class PublicDBSelectRepository(BaseDBRepository):
+    async def get_cources(self) -> List[CourceUserModel]:
+        response_data = await self._fetch_many(
+            query=get_cources_query(),
+        )
+        return [CourceUserModel(**{
+            **data,
+            'percentage': 0,
+        }) for data in response_data]
 
     async def select_material(self) -> MaterialResponseModel:
         """Returns all material from schema public."""
@@ -56,7 +62,7 @@ class PublicDBSelectRepository(BaseDBRepository):
 
     async def select_faq(self, offset=0, limit=None) -> List[FAQInDB]:
         """Returns frequently asked questions.
-        
+
         Keyword arguments:
         offset -- offset from which we should start listing questions
         limi   -- limit how much questions to list
@@ -68,7 +74,7 @@ class PublicDBSelectRepository(BaseDBRepository):
         """Returns all instructions."""
         records = await self._fetch_many(query=select_instruction_query())
         return [InstructionInDB(**record) for record in records]
-    
+
     async def select_reivew(self) -> List[ReviewInDB]:
         """Returns all reviews"""
         records = await self._fetch_many(query=select_all_reviews_query())
@@ -77,7 +83,7 @@ class PublicDBSelectRepository(BaseDBRepository):
     async def select_all_presentation_parts(self, presentation: ContentType, media_type:ContentType) -> List[AudioImagesAllModel]:
         """Returns list of order, object_keys for all presentation (theory || practice) parts (images|| audio) in database schema public"""
         records = await self._fetch_many(query=select_all_material_part_keys_query(presentation=presentation.value, media_type=media_type.value))
-        return [AudioImagesAllModel(**record) for record in records]      
+        return [AudioImagesAllModel(**record) for record in records]
 
     async def select_book(self) -> BookInDB:
         """Returns a BookInDB from schema public"""
@@ -87,7 +93,7 @@ class PublicDBSelectRepository(BaseDBRepository):
     async def select_all_books(self) -> List[MaterialAllModel]:
         """Returns list of object_keys for all books in database schema public"""
         records = await self._fetch_many(query=select_all_material_keys_query(table=ContentType.BOOK.value))
-        return [MaterialAllModel(**record) for record in records]        
+        return [MaterialAllModel(**record) for record in records]
 
     async def select_game(self) -> GameInDB:
         """Returns GameInDB from schema public"""
