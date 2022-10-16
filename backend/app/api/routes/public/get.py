@@ -1,12 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from fastapi import Depends
 from starlette.status import HTTP_200_OK
 
 from app.db.repositories.public.public import PublicDBRepository
-from app.cdn.repositories.public.public import PublicYandexCDNRepository
+from app.db.repositories.private.private import PrivateDBRepository
 
 from app.api.dependencies.database import get_db_repository
-from app.api.dependencies.cdn import get_cdn_repository
 
 # response models
 from app.models.public import MaterialResponse
@@ -16,11 +15,26 @@ from app.models.public import InstructionAllResponse
 from app.models.public import IntroVideoAllResponse
 from app.models.public import ReviewResponse
 from app.models.public import TitlesResponseModel
+from app.models.private import SubjectResponse2
 
 router = APIRouter()
 import logging
 
 logger = logging.getLogger(__name__)
+
+# ###
+# SUBJECTS
+# ###
+@router.get("/subject",
+    response_model=SubjectResponse2,
+    name="public:get-subjects",
+    status_code=HTTP_200_OK,
+)
+async def get_subjects(
+    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+) -> SubjectResponse2:
+    response = await db_repo.select_subjects()
+    return SubjectResponse2(subjects=response)
 
 @router.get("/material", response_model=MaterialResponse, name="public:get-material", status_code=HTTP_200_OK)
 async def get_public_material(

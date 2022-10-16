@@ -46,7 +46,7 @@ async def register_new_user(
     background_tasks: BackgroundTasks,
     new_user: UserCreate = Body(...),
     db_repo: UsersDBRepository = Depends(get_db_repository(UsersDBRepository)),
-    ) -> PublicUserInDB:
+) -> PublicUserInDB:
     registred = await db_repo.register_new_user(new_user=new_user)
 
     if registred and not isinstance(registred, UserInDB):

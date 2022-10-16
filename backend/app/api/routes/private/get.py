@@ -16,56 +16,22 @@ from app.models.private import LectureResponse
 # material
 from app.models.private import MaterialResponse
 
-from app.models.user import UserInDB
-
 router = APIRouter()
 
 # ###
 # SUBJECTS
 # ###
-@router.get("/subject/available", response_model=SubjectResponse, name="private:get-subjects-offer", status_code=HTTP_200_OK)
-async def get_subject_offer(
+@router.get("/subject",
+    response_model=SubjectResponse,
+    name="private:get-subjects",
+    status_code=HTTP_200_OK,
+)
+async def get_subjects(
     grade_name_en: str,
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> SubjectResponse:
-
+) -> SubjectResponse:
     grade = await db_repo.get_grade_by_name(grade_name=grade_name_en)
     response = await db_repo.select_subjects(fk=grade.id)
-
-    return SubjectResponse(subjects=response, fk=grade.id, path=grade.name_ru)
-
-@router.get("/subject", response_model=SubjectResponse, name="private:get-subjects", status_code=HTTP_200_OK)
-async def get_private_subjects(
-    grade_name_en: str,
-    user: UserInDB = Depends(get_user_from_cookie_token),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    is_superuser = Depends(is_superuser),
-    is_verified = Depends(is_verified),
-    ) -> SubjectResponse:
-    """We decide what content to provide based on JWT.
-
-    If JWT contains user who has not confirmed their email  -- Raise 401
-    If JWT contains superuser                               -- Grant access to all content
-    If JWT contains any other use but superuser             -- Grant access based on user available subjects
-                                                            or grades if specific subject is not available
-    """
-    grade = await db_repo.get_grade_by_name(grade_name=grade_name_en)
-
-    if is_superuser:
-        response = await db_repo.select_subjects(fk=grade.id)
-    else:
-        available_grades = await db_repo.select_user_available_grades(user_id=user.id)
-        identifications = [grade.grade_id for grade in available_grades]
-        if grade.id in identifications:
-            available_subjects = await db_repo.select_user_available_subjects(user_id=user.id)
-            identifications = [subject.subject_id for subject in available_subjects]
-            if identifications:
-                response = await db_repo.select_subjects(fk=grade.id, identifications=identifications)
-            else:
-                response = []
-        else:
-            raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
-
     return SubjectResponse(subjects=response, fk=grade.id, path=grade.name_ru)
 
 # ###
