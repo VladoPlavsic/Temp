@@ -32,9 +32,7 @@ class UsersDBInsertRepository(BaseDBRepository):
             'school': new_user.organization,
             'full_name': f"{new_user.firstName} {new_user.lastName}"
         }
-        if password_data.get('jwt_token'):
-            new_user_params['jwt_token'] = password_data['jwt_token']
-        registred = await self._fetch_one(query=register_new_user_query(**new_user_params.dict()))
+        registred = await self._fetch_one(query=register_new_user_query(**new_user_params))
 
         return UserInDB(**registred)
 
