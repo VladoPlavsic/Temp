@@ -47,7 +47,6 @@ class UserInDB(UserBase):
 
 class PublicUserInDB(UserBase):
     id: int
-    full_name: Optional[str]
 
 # availble grades
 class UserAvailableGrades(BaseModel):
