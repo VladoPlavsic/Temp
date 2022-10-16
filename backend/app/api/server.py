@@ -27,10 +27,10 @@ def get_application():
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[config.SITE_URL],
+        allow_origins=['*'],
         allow_credentials=True,
-        allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PUT"],
-        allow_headers=["Content-Type","Set-Cookie"],
+        allow_methods=['*'],
+        allow_headers=['*'],
     )
 
     # Send email on server error
