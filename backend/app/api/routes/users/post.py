@@ -54,7 +54,7 @@ async def register_new_user(
         # If we enter here, we need to check if we can get user from JWT if the error sais expired -> create new JWT for user, and update in db!
 
         # if email is taken but not confirmed, resend confirmation email
-        background_tasks.add_task(send_message, subject="Email confirmation. MPEI kids", message_text=create_confirm_link(token=registred, username=new_user.full_name), to=new_user.email)
+        background_tasks.add_task(send_message, subject="Email confirmation. MPEI kids", message_text=create_confirm_link(token=registred, username=new_user.firstName), to=new_user.email)
         raise HTTPException(
                 status_code=409,
                 detail="This email is already taken but email not confirmed. Confirmation email resent!"
