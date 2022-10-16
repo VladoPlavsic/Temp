@@ -71,7 +71,7 @@ async def register_new_user(
 
     await db_repo.set_jwt_token(user_id=registred.id, token=access_token.access_token)
 
-    background_tasks.add_task(send_message, subject="Подтверждение электронной почты", message_text=create_confirm_link(token=access_token.access_token, username=new_user.full_name), to=registred.email)
+    background_tasks.add_task(send_message, subject="Подтверждение электронной почты", message_text=create_confirm_link(token=access_token.access_token, username=new_user.firstName), to=registred.email)
 
     return PublicUserInDB(**registred.dict())
 
