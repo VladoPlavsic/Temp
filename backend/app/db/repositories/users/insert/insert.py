@@ -1,3 +1,5 @@
+import random
+
 from app.db.repositories.base import BaseDBRepository
 
 from app.db.repositories.users.insert.queries import *
@@ -17,9 +19,21 @@ class UsersDBInsertRepository(BaseDBRepository):
                 return user.jwt
             else:
                 return None
-                        
+
         user_password_update = self.auth_service.create_salt_and_hash_password(plaintext_password=new_user.password)
-        new_user_params = new_user.copy(update=user_password_update.dict())
+        password_data = user_password_update.dict()
+        # FIXME
+        new_user_params = {
+            'email': new_user.email,
+            'salt': password_data['salt'],
+            'password': password_data['password'],
+            'phone_number': f"7{random.randint(1000000000, 9999999999)}",
+            'city': new_user.country,
+            'school': new_user.organization,
+            'full_name': f"{new_user.firstName} {new_user.lastName}"
+        }
+        if password_data.get('jwt_token'):
+            new_user_params['jwt_token'] = password_data['jwt_token']
         registred = await self._fetch_one(query=register_new_user_query(**new_user_params.dict()))
 
         return UserInDB(**registred)

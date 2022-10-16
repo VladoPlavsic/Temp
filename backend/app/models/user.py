@@ -17,12 +17,12 @@ class UserBase(BaseModel):
 
 class UserCreate(BaseModel):
     """Email, username, and password are required for registering a new user"""
+    firstName: str
+    lastName: str
+    country: str
+    organization: str
     email: EmailStr
-    phone_number: str
-    city: str
-    school: str
     password: constr(min_length=7, max_length=100)
-    full_name: str
 
 class UserUpdate(BaseModel):
     """Users are allowed to update their personal data, except email"""
