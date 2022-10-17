@@ -212,12 +212,12 @@ class InstructionInDB(InstructionCoreModel):
 
 # material response
 class MaterialResponseModel(DBCoreModel):
-    video: Optional[VideoInDB]
-    game: Optional[GameInDB]
-    book: Optional[BookInDB]
-    quiz: Optional[QuizInDB]
-    practice: Optional[PresentationInDB]
-    theory: Optional[PresentationInDB]
+    video: Optional[VideoInDB] = None
+    game: Optional[GameInDB] = None
+    book: Optional[BookInDB] = None
+    quiz: Optional[QuizInDB] = None
+    practice: Optional[PresentationInDB] = None
+    theory: Optional[PresentationInDB] = None
 
 class MaterialResponse(DBCoreModel):
     material: MaterialResponseModel

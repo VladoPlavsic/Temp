@@ -20,7 +20,7 @@ class UserCreate(BaseModel):
     firstName: str
     lastName: str
     country: str
-    organization: str = ''
+    organization: str = None
     email: EmailStr
     password: constr(min_length=7, max_length=100)
 
