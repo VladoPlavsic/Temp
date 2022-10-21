@@ -191,11 +191,8 @@ class SubjectGetModel(DBCoreModel):
     grade_name_en: str
 
 class SubjectCoreModel(DBCoreModel):
-    fk: int
-    name_en: str
     name_ru: str
     object_key: str
-    order_number: int
 
 class SubejctPostModelCheck(DBCoreModel):
     fk: int
@@ -244,18 +241,16 @@ class BranchInDB(BranchCoreModel):
 # branch response
 class BranchResponse(DBCoreModel):
     fk: int
-    path: str
     branches: List[BranchInDB]
 
 # lectures
 class LectureGetModel(DBCoreModel):
-    grade_name_en: str
     subject_name_en: str
     branch_name_en: str
 
 class LectureCoreModel(DBCoreModel):
     fk: int
-    name_en: str
+    # name_en: str
     name_ru: str
     description: str
     object_key: str
@@ -278,7 +273,7 @@ class LectureInDB(LectureCoreModel):
 # lecture response
 class LectureResponse(DBCoreModel):
     fk: int
-    path: str
+    # path: str
     lectures: List[LectureInDB]
 
 # material response
@@ -316,7 +311,7 @@ class MaterialBulk(DBCoreModel):
 
 class MaterialResponse(DBCoreModel):
     fk: int
-    path: str
+    # path: str
     material: MaterialResponseModel
 
 # ###

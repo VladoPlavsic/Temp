@@ -35,27 +35,26 @@ async def get_subjects(
 # ###
 # BRANCHES
 # ###
-@router.get("/branch/available", response_model=BranchResponse, name="private:get-branches", status_code=HTTP_200_OK)
-async def get_private_branches(
-    grade_name_en: str,
-    subject_name_en: str,
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> BranchResponse:
+# @router.get("/branch/available", response_model=BranchResponse, name="private:get-branches", status_code=HTTP_200_OK)
+# async def get_private_branches(
+#     subject_name_en: str,
+#     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+#     ) -> BranchResponse:
 
-    (subject, path) = await db_repo.get_subject_by_name(grade_name=grade_name_en, subject_name=subject_name_en)
-    response = await db_repo.select_branches(fk=subject.id)
+#     subject = await db_repo.get_subject_by_name(subject_name=subject_name_en)
+#     response = await db_repo.select_branches(fk=subject.id)
 
-    return BranchResponse(branches=response, fk=subject.id, path=path + '/' + subject.name_ru)
+#     return BranchResponse(branches=response, fk=subject.id)
 
 @router.get("/branch", response_model=BranchResponse, name="private:get-branches", status_code=HTTP_200_OK)
 async def get_private_branches(
-    grade_name_en: str,
-    subject_name_en: str,
-    user = Depends(get_user_from_cookie_token),
+    subject_id: int,
+    # subject_name_en: str,
+    # user = Depends(get_user_from_cookie_token),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    is_superuser = Depends(is_superuser),
-    is_verified = Depends(is_verified),
-    ) -> BranchResponse:
+    # is_superuser = Depends(is_superuser),
+    # is_verified = Depends(is_verified),
+) -> BranchResponse:
 
     """We decide what content to provide based on JWT.
 
@@ -64,43 +63,42 @@ async def get_private_branches(
     If JWT contains any other use but superuser             -- Grant access based on user available subjects
                                                             or grades if specific subject is not available
     """
-    if is_superuser:
-        (subject, path) = await db_repo.get_subject_by_name(grade_name=grade_name_en, subject_name=subject_name_en)
-        response = await db_repo.select_branches(fk=subject.id)
-    else:
-        if await db_repo.check_if_content_available(user_id=user.id ,grade_name=grade_name_en, subject_name=subject_name_en):
-            (subject, path) = await db_repo.get_subject_by_name(grade_name=grade_name_en, subject_name=subject_name_en)
-            response = await db_repo.select_branches(fk=subject.id)
-        else:
-            raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
+    # if is_superuser:
+    #     subject = await db_repo.get_subject_by_name(subject_name=subject_name_en)
+    #     response = await db_repo.select_branches(fk=subject.id)
+    # else:
+    #     if await db_repo.check_if_content_available(user_id=user.id, subject_name=subject_name_en):
+    #         subject = await db_repo.get_subject_by_name(subject_name=subject_name_en)
+    response = await db_repo.select_branches(fk=subject_id)
+    #     else:
+    #         raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
 
-    return BranchResponse(branches=response, fk=subject.id, path=path + '/' + subject.name_ru)
+    return BranchResponse(branches=response, fk=subject_id)
 
 # ###
 # LECTURES
 # ###
-@router.get("/lecture/available", response_model=LectureResponse, name="private:get-lectures", status_code=HTTP_200_OK)
-async def get_private_lectures(
-    grade_name_en: str,
-    subject_name_en: str,
-    branch_name_en: str,
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> LectureResponse:
+# @router.get("/lecture/available", response_model=LectureResponse, name="private:get-lectures", status_code=HTTP_200_OK)
+# async def get_private_lectures(
+#     subject_name_en: str,
+#     branch_name_en: str,
+#     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+#     ) -> LectureResponse:
 
-    (branch, path) = await db_repo.get_branch_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en)
-    response = await db_repo.select_lectures(fk=branch.id)
-    return LectureResponse(lectures=response, fk=branch.id, path=path + '/' + branch.name_ru)
+#     (branch, path) = await db_repo.get_branch_by_name(subject_name=subject_name_en, branch_name=branch_name_en)
+#     response = await db_repo.select_lectures(fk=branch.id)
+#     return LectureResponse(lectures=response, fk=branch.id, path=path + '/' + branch.name_ru)
 
 @router.get("/lecture", response_model=LectureResponse, name="private:get-lectures", status_code=HTTP_200_OK)
 async def get_private_lectures(
-    grade_name_en: str,
-    subject_name_en: str,
-    branch_name_en: str,
-    user = Depends(get_user_from_cookie_token),
+    branch_id: int,
+    # subject_name_en: str,
+    # branch_name_en: str,
+    # user = Depends(get_user_from_cookie_token),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    is_superuser = Depends(is_superuser),
-    is_verified = Depends(is_verified),
-    ) -> LectureResponse:
+    # is_superuser = Depends(is_superuser),
+    # is_verified = Depends(is_verified),
+) -> LectureResponse:
     """We decide what content to provide based on JWT.
 
     If JWT contains user who has not confirmed their email  -- Raise 401
@@ -108,29 +106,29 @@ async def get_private_lectures(
     If JWT contains any other use but superuser             -- Grant access based on user available subjects
                                                             or grades if specific subject is not available
     """
-    if is_superuser:
-        (branch, path) = await db_repo.get_branch_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en)
-        response = await db_repo.select_material(fk=branch.id)
-    else:
-        if await db_repo.check_if_content_available(user_id=user.id ,grade_name=grade_name_en, subject_name=subject_name_en):
-            (branch, path) = await db_repo.get_branch_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en)
-            response = await db_repo.select_material(fk=branch.id)
-        else:
-            raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
+    # if is_superuser:
+    #     (branch, path) = await db_repo.get_branch_by_name(subject_name=subject_name_en, branch_name=branch_name_en)
+    #     response = await db_repo.select_material(fk=branch.id)
+    # else:
+    #     if await db_repo.check_if_content_available(user_id=user.id, subject_name=subject_name_en):
+    #         (branch, path) = await db_repo.get_branch_by_name(subject_name=subject_name_en, branch_name=branch_name_en)
+    response = await db_repo.select_lectures(fk=branch_id)
+    #     else:
+    #         raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
 
-
-    return LectureResponse(lectures=response, fk=branch.id, path=path + '/' + branch.name_ru)
+    return LectureResponse(lectures=response, fk=branch_id) # path=path + '/' + branch.name_ru
 
 @router.get("/material", response_model=MaterialResponse, name="private:get-material", status_code=HTTP_200_OK)
 async def get_private_material(
-    grade_name_en: str,
-    subject_name_en: str,
-    branch_name_en: str,
-    lecture_name_en: str,
-    user = Depends(get_user_from_cookie_token),
+    lecture_id: int,
+    # grade_name_en: str,
+    # subject_name_en: str,
+    # branch_name_en: str,
+    # lecture_name_en: str,
+    # user = Depends(get_user_from_cookie_token),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    is_superuser = Depends(is_superuser),
-    is_verified = Depends(is_verified),
+    # is_superuser = Depends(is_superuser),
+    # is_verified = Depends(is_verified),
     ) -> MaterialResponse:
     """We decide what content to provide based on JWT.
 
@@ -139,14 +137,14 @@ async def get_private_material(
     If JWT contains any other use but superuser             -- Grant access based on user available subjects
                                                             or grades if specific subject is not available
     """
-    if is_superuser:
-        (lecture, path) = await db_repo.get_lecture_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en, lecture_name=lecture_name_en)
-        response = await db_repo.select_material(fk=lecture.id)
-    else:
-        if await db_repo.check_if_content_available(user_id=user.id ,grade_name=grade_name_en, subject_name=subject_name_en):
-            (lecture, path) = await db_repo.get_lecture_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en, lecture_name=lecture_name_en)
-            response = await db_repo.select_material(fk=lecture.id)
-        else:
-            raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
+    # if is_superuser:
+    #     (lecture, path) = await db_repo.get_lecture_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en, lecture_name=lecture_name_en)
+    #     response = await db_repo.select_material(fk=lecture.id)
+    # else:
+    #     if await db_repo.check_if_content_available(user_id=user.id, subject_name=subject_name_en):
+    #         (lecture, path) = await db_repo.get_lecture_by_name(grade_name=grade_name_en, subject_name=subject_name_en, branch_name=branch_name_en, lecture_name=lecture_name_en)
+    response = await db_repo.select_material(fk=lecture_id)
+    #     else:
+    #         raise HTTPException(status_code=402, detail="Ooops! Looks like you don't have access to this content. Check our offers to gain access!")
 
-    return MaterialResponse(material=response, path=path, fk=lecture.id)
+    return MaterialResponse(material=response, fk=lecture_id) # path=path

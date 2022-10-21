@@ -1,7 +1,5 @@
 from fastapi import APIRouter
 
-# cources routes
-from app.api.routes.cources.get import router as cources_get_router
 # private routes
 from app.api.routes.private.post import router as private_post_router
 from app.api.routes.private.get import router as private_get_router
@@ -30,9 +28,6 @@ from app.api.routes.news.put import router as news_put_router
 from app.api.routes.news.delete import router as news_delete_router
 
 router = APIRouter()
-
-# cources routes
-router.include_router(cources_get_router, prefix='/cources', tags=["cources"])
 
 # private routes
 router.include_router(private_post_router, prefix='/private', tags=["private"])

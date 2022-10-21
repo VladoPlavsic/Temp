@@ -42,18 +42,15 @@ class PrivateDBSelectRepository(BaseDBRepository):
             raise HTTPException(status_code=404, detail="Didn't find any grades with given name.")
         return GradeInDB(**response)
 
-    async def get_subject_by_name(self, *, grade_name, subject_name) -> Tuple[SubjectInDB, str]:
-        """Returns (SubjectInDB, grades name_ru) based on subject name_en and grades name_en."""
-        grade = await self.get_grade_by_name(grade_name=grade_name)
-
-        response = await self._fetch_one(query=get_subject_by_name_query(fk=grade.id, subject_name=subject_name))
+    async def get_subject_by_name(self, *, subject_name) -> Tuple[SubjectInDB, str]:
+        response = await self._fetch_one(query=get_subject_by_name_query(subject_name=subject_name))
         if not response:
             raise HTTPException(status_code=404, detail="Didn't find any subjects with given name.")
-        return SubjectInDB(**response), grade.name_ru
+        return SubjectInDB(**response)
 
-    async def get_branch_by_name(self, *, grade_name, subject_name, branch_name) -> Tuple[BranchInDB, str]:
+    async def get_branch_by_name(self, *, subject_name, branch_name) -> Tuple[BranchInDB, str]:
         """Returns (BranchInDB, grades name_ru concatinated with subjects name_ru via / [path])"""
-        (subject, path) = await self.get_subject_by_name(grade_name=grade_name, subject_name=subject_name)
+        (subject, path) = await self.get_subject_by_name(subject_name=subject_name)
 
         response = await self._fetch_one(query=get_branch_by_name_query(fk=subject.id, branch_name=branch_name))
         if not response:
@@ -227,7 +224,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
 
         return QuizResults(results=response, lecture_id=quiz_results.lecture_id)
 
-    async def check_if_content_available(self, *, user_id: int, grade_name: str, subject_name: str) -> bool:
+    async def check_if_content_available(self, *, user_id: int, subject_name: str) -> bool:
         """Checks if requested content is available to user requesting it.
 
         Keyword arguments:
@@ -235,5 +232,5 @@ class PrivateDBSelectRepository(BaseDBRepository):
         grade_name   -- english name of a grade content belongs to
         subject_name -- english name of a subject content belongs to
         """
-        available = await self._fetch_one(query=check_if_content_available_query(user_id=user_id, grade_name=grade_name, subject_name=subject_name))
+        available = await self._fetch_one(query=check_if_content_available_query(user_id=user_id, subject_name=subject_name))
         return available['available']

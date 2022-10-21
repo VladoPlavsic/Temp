@@ -1,5 +1,3 @@
-import random
-
 from app.db.repositories.base import BaseDBRepository
 
 from app.db.repositories.users.insert.queries import *
@@ -27,9 +25,9 @@ class UsersDBInsertRepository(BaseDBRepository):
             'email': new_user.email,
             'salt': password_data['salt'],
             'password': password_data['password'],
-            'phone_number': f"7{random.randint(1000000000, 9999999999)}",
+            'phone_number': "-",
             'city': new_user.country,
-            'school': new_user.organization or "123",
+            'school': new_user.organization or "-",
             'full_name': f"{new_user.firstName} {new_user.lastName}"
         }
         registred = await self._fetch_one(query=register_new_user_query(**new_user_params))

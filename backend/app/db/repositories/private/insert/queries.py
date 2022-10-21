@@ -20,7 +20,7 @@ def insert_subject_check_query(fk, name_en) -> str:
     return \
         f"SELECT private.subject_can_be_created({fk}, {string_or_null(name_en)}) AS yes"
 
-def insert_subject_query(fk, name_en, name_ru, object_key, background, order_number) -> str:
+def insert_subject_query(fk, name_en='-', name_ru='-', object_key='-', background='-', order_number=1) -> str:
     return \
         f"SELECT (private.insert_subject({fk}, {string_or_null(name_en, name_ru, object_key, background)}, {order_number})).*"
 

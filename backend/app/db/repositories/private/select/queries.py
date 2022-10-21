@@ -31,7 +31,7 @@ def select_all_subject_keys_query() -> str:
     return \
         f"SELECT (private.select_all_subject_keys()).*"
 
-def get_subject_by_name_query(fk, subject_name) -> str:
+def get_subject_by_name_query(fk=1, subject_name=None) -> str:
     return \
         f"SELECT (private.select_subject_by_name('{subject_name}', {fk})).*"
 
@@ -108,6 +108,6 @@ def select_all_user_available_subjects_query(user_id: int) -> str:
     return \
         f"SELECT (users.select_all_user_available_subjects({user_id})).*"
 
-def check_if_content_available_query(user_id: int, grade_name: str, subject_name: str) -> str:
+def check_if_content_available_query(user_id: int, grade_name: str = 'Fix', subject_name: str = None) -> str:
     return \
         f"SELECT users.check_if_content_available({user_id}, {string_or_null(grade_name, subject_name)}) AS available"
