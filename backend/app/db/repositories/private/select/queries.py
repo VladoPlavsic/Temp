@@ -18,17 +18,14 @@ def get_grade_by_name_query(grade_name) -> str:
         f"SELECT (private.select_grade_by_name('{grade_name}')).*"
 
 # subject
-def select_subject_query(fk=None, identifications=[]) -> str:
-    if fk is not None:
-        if identifications:
-            available = ','.join(map(str,identifications))
-            return \
-                f"SELECT (private.select_subjects_by_ids('{available}', {fk})).*"
-        else:
-            return \
+def select_subject_query(fk=1, identifications=[]) -> str:
+    if identifications:
+        available = ','.join(map(str,identifications))
+        return \
+            f"SELECT (private.select_subjects_by_ids('{available}', {fk})).*"
+    else:
+        return \
                 f"SELECT (private.select_all_subjects({fk})).*"
-
-    return f"SELECT (private.select_all_subjects2()).*"
 
 def select_all_subject_keys_query() -> str:
     return \

@@ -79,15 +79,9 @@ class PrivateDBSelectRepository(BaseDBRepository):
         records = await self._fetch_many(query=select_all_grade_keys_query())
         return [StructureAllModel(**record) for record in records]
 
-    async def select_subjects(self, *, fk=None, identifications=None) -> List[SubjectInDB]:
+    async def select_subjects(self, *, fk=1, identifications=None) -> List[SubjectInDB]:
         """Returns list of subjects available to customer based on subject ID's"""
-        if fk is not None:
-            response_data = await self._fetch_many(query=select_subject_query(fk=fk, identifications=identifications))
-            return [SubjectInDB(**data) for data in response_data]
-
-        response_data = await self._fetch_many(
-            query=select_subject_query(identifications=identifications),
-        )
+        response_data = await self._fetch_many(query=select_subject_query(fk=fk, identifications=identifications))
         return [SubjectInDB(**data) for data in response_data]
 
     async def select_all_subjects(self) -> List[StructureAllModel]:

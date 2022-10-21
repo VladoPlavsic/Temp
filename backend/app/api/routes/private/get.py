@@ -27,12 +27,10 @@ router = APIRouter()
     status_code=HTTP_200_OK,
 )
 async def get_subjects(
-    grade_name_en: str,
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
 ) -> SubjectResponse:
-    grade = await db_repo.get_grade_by_name(grade_name=grade_name_en)
-    response = await db_repo.select_subjects(fk=grade.id)
-    return SubjectResponse(subjects=response, fk=grade.id, path=grade.name_ru)
+    response = await db_repo.select_subjects()
+    return SubjectResponse(subjects=response)
 
 # ###
 # BRANCHES

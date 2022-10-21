@@ -213,10 +213,6 @@ class SubjectInDB(SubjectCoreModel):
 
 # subject response
 class SubjectResponse(DBCoreModel):
-    fk: int
-    path: str
-    subjects: List[SubjectInDB]
-class SubjectResponse2(DBCoreModel):
     subjects: List[SubjectInDB]
 
 # branches
