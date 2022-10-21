@@ -160,9 +160,9 @@ class PrivateDBInsertRepository(BaseDBRepository):
         return QuizQuestionInDB(**response[0], answers=answers) if response else None
 
     # STRUCTURE
-    async def insert_subject_check(self, *, fk: int, name_en: str) -> bool:
+    async def insert_subject_check(self, *, name_ru: str) -> bool:
         """Check if subject can be inserted"""
-        response = await self._fetch_one(query=insert_subject_check_query(fk=fk, name_en=name_en))
+        response = await self._fetch_one(query=insert_subject_check_query(name_en=name_ru))
         return response['yes']
 
     async def insert_subject(self, *, subject: SubjectCreateModel) -> SubjectInDB:
@@ -170,9 +170,9 @@ class PrivateDBInsertRepository(BaseDBRepository):
         response = await self._fetch_one(query=insert_subject_query(**subject.dict()))
         return SubjectInDB(**response) if response else None
 
-    async def insert_branch_check(self, *, fk: int, name_en: str) -> bool:
+    async def insert_branch_check(self, *, fk: int, name_ru: str) -> bool:
         """Check if branch can be inserted"""
-        response = await self._fetch_one(query=insert_branch_check_query(fk=fk, name_en=name_en))
+        response = await self._fetch_one(query=insert_branch_check_query(fk=fk, name_en=name_ru))
         return response['yes']
 
     async def insert_branch(self, *, branch: BranchCreateModel) -> BranchInDB:
@@ -180,9 +180,9 @@ class PrivateDBInsertRepository(BaseDBRepository):
         response = await self._fetch_one(query=insert_branch_query(**branch.dict()))
         return BranchInDB(**response) if response else None
 
-    async def insert_lecture_check(self, *, fk: int, name_en: str) -> bool:
+    async def insert_lecture_check(self, *, fk: int, name_ru: str) -> bool:
         """Check if lecture can be inserted"""
-        response = await self._fetch_one(query=insert_lecture_check_query(fk=fk, name_en=name_en))
+        response = await self._fetch_one(query=insert_lecture_check_query(fk=fk, name_en=name_ru))
         return response['yes']
 
     async def insert_lecture(self, *, lecture: LectureCreateModel) -> LectureInDB:

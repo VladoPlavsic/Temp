@@ -33,7 +33,7 @@ SECRET_KEY = config("SECRET_KEY", cast=Secret)
 ACCESS_TOKEN_EXPIRE_MINUTES = config(
   "ACCESS_TOKEN_EXPIRE_MINUTES",
   cast=int,
-  default=15
+  default=9999
 )
 JWT_ALGORITHM = config("JWT_ALGORITHM", cast=str, default="HS256")
 JWT_AUDIENCE = config("JWT_AUDIENCE", cast=str, default="shkembridge:auth")
@@ -63,7 +63,7 @@ YOOMONEY_SECRET_KEY = config("YOOMONEY_SECRET_KEY", cast=str)
 RESFUL_SERVER_URL = config("RESFUL_SERVER_URL", cast=str)
 
 LOG_FILE = config("LOG_FILE", default="/var/log/shkembridge/log.log")
-LOG_LEVEL = logging.DEBUG 
+LOG_LEVEL = logging.DEBUG
 
 BOTO3_CONNECTION_MAX_ATTEMPTS = config("BOTO3_CONNECTION_MAX_ATTEMPTS", cast=int, default=0)
 BOTO3_CONNECTION_TIMEOUT = config("BOTO3_CONNECTION_TIMEOUT", cast=int, default=20)

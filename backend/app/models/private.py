@@ -195,8 +195,7 @@ class SubjectCoreModel(DBCoreModel):
     object_key: str
 
 class SubejctPostModelCheck(DBCoreModel):
-    fk: int
-    name_en: str
+    name_ru: str
 
 class SubejctPostModel(SubjectCoreModel):
     pass
@@ -219,14 +218,13 @@ class BranchGetModel(DBCoreModel):
 
 class BranchCoreModel(DBCoreModel):
     fk: int
-    name_en: str
     name_ru: str
     object_key: str
     order_number: int
 
 class BranchPostModelCheck(DBCoreModel):
     fk: int
-    name_en: str
+    name_ru: str
 
 class BranchPostModel(BranchCoreModel):
     pass
@@ -258,7 +256,7 @@ class LectureCoreModel(DBCoreModel):
 
 class LecturePostModelCheck(DBCoreModel):
     fk: int
-    name_en: str
+    name_ru: str
 
 class LecturePostModel(LectureCoreModel):
     pass

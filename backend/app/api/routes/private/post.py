@@ -43,6 +43,77 @@ from app.models.private import LectureInDB
 
 router = APIRouter()
 
+
+# STRUCTURE
+@router.post("/subject/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
+async def check_create_private_subject(
+    subject: SubejctPostModelCheck = Body(...),
+    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    ) -> AllowCreate:
+    """Try creating subject. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
+    response = await db_repo.insert_subject_check(**subject.dict())
+
+    return AllowCreate(OK=response)
+
+@router.post("/subject", response_model=SubjectInDB, name="private:post-subject", status_code=HTTP_201_CREATED)
+async def create_private_subject(
+    subject: SubejctPostModel = Body(...),
+    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
+    allowed: bool = Depends(allowed_or_denied),
+    ) -> SubjectInDB:
+
+    background = cdn_repo.get_background_url(object_key=subject.object_key)
+    response  = await db_repo.insert_subject(subject=SubjectCreateModel(**subject.dict(), background=background))
+
+    return response
+
+@router.post("/branch/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
+async def check_create_private_branch(
+    branch: BranchPostModelCheck = Body(...),
+    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    ) -> AllowCreate:
+    """Try creating branch. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
+    response = await db_repo.insert_branch_check(**branch.dict())
+
+    return AllowCreate(OK=response)
+
+@router.post("/branch", response_model=BranchInDB, name="private:post-branch", status_code=HTTP_201_CREATED)
+async def create_private_branch(
+    branch: BranchPostModel = Body(...),
+    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
+    allowed: bool = Depends(allowed_or_denied),
+    ) -> BranchInDB:
+
+    background = cdn_repo.get_background_url(object_key=branch.object_key)
+    response  = await db_repo.insert_branch(branch=BranchCreateModel(**branch.dict(), background=background))
+
+    return response
+
+@router.post("/lecture/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
+async def check_create_private_lecture(
+    lecture: LecturePostModelCheck = Body(...),
+    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    ) -> AllowCreate:
+    """Try creating lecture. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
+    response = await db_repo.insert_lecture_check(**lecture.dict())
+
+    return AllowCreate(OK=response)
+
+@router.post("/lecture", response_model=LectureInDB, name="private:post-lecture", status_code=HTTP_201_CREATED)
+async def create_private_lecture(
+    lecture: LecturePostModel = Body(...),
+    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
+    allowed: bool = Depends(allowed_or_denied),
+    ) -> LectureInDB:
+
+    background = cdn_repo.get_background_url(object_key=lecture.object_key)
+    response  = await db_repo.insert_lecture(lecture=LectureCreateModel(**lecture.dict(), background=background))
+
+    return response
+
 # CONTENT
 @router.post("/practice/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
 async def check_create_private_practice(
@@ -224,75 +295,5 @@ async def get_quiz_results(
     ) -> QuizResults:
 
     response = await db_repo.check_quiz_results(quiz_results=quiz_results)
-
-    return response
-
-# STRUCTURE
-@router.post("/subject/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
-async def check_create_private_subject(
-    subject: SubejctPostModelCheck = Body(...),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> AllowCreate:
-    """Try creating subject. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
-    response = await db_repo.insert_subject_check(**subject.dict())
-
-    return AllowCreate(OK=response)
-
-@router.post("/subject", response_model=SubjectInDB, name="private:post-subject", status_code=HTTP_201_CREATED)
-async def create_private_subject(
-    subject: SubejctPostModel = Body(...),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
-    allowed: bool = Depends(allowed_or_denied),
-    ) -> SubjectInDB:
-
-    background = cdn_repo.get_background_url(object_key=subject.object_key)
-    response  = await db_repo.insert_subject(subject=SubjectCreateModel(**subject.dict(), background=background))
-
-    return response
-
-@router.post("/branch/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
-async def check_create_private_branch(
-    branch: BranchPostModelCheck = Body(...),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> AllowCreate:
-    """Try creating branch. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
-    response = await db_repo.insert_branch_check(**branch.dict())
-
-    return AllowCreate(OK=response)
-
-@router.post("/branch", response_model=BranchInDB, name="private:post-branch", status_code=HTTP_201_CREATED)
-async def create_private_branch(
-    branch: BranchPostModel = Body(...),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
-    allowed: bool = Depends(allowed_or_denied),
-    ) -> BranchInDB:
-
-    background = cdn_repo.get_background_url(object_key=branch.object_key)
-    response  = await db_repo.insert_branch(branch=BranchCreateModel(**branch.dict(), background=background))
-
-    return response
-
-@router.post("/lecture/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
-async def check_create_private_lecture(
-    lecture: LecturePostModelCheck = Body(...),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> AllowCreate:
-    """Try creating lecture. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
-    response = await db_repo.insert_lecture_check(**lecture.dict())
-
-    return AllowCreate(OK=response)
-
-@router.post("/lecture", response_model=LectureInDB, name="private:post-lecture", status_code=HTTP_201_CREATED)
-async def create_private_lecture(
-    lecture: LecturePostModel = Body(...),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
-    allowed: bool = Depends(allowed_or_denied),
-    ) -> LectureInDB:
-
-    background = cdn_repo.get_background_url(object_key=lecture.object_key)
-    response  = await db_repo.insert_lecture(lecture=LectureCreateModel(**lecture.dict(), background=background))
 
     return response
