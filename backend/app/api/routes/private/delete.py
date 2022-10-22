@@ -19,7 +19,7 @@ async def delete_private_branch(
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
+) -> None:
 
     deleted_key = await db_repo.delete_branch(id=id)
     if deleted_key:
@@ -33,12 +33,8 @@ async def delete_private_lecture(
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
-
-    deleted_key = await db_repo.delete_lecture(id=id)
-    if deleted_key:
-        cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
-
+) -> None:
+    await db_repo.delete_lecture(id=id)
     return None
 
 @router.delete('/theory', response_model=None, name="private:delete-theory", status_code=HTTP_200_OK)
@@ -47,7 +43,7 @@ async def delete_private_theory(
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
+) -> None:
 
     deleted_key = await db_repo.delete_theory(id=id)
     if deleted_key:
@@ -61,7 +57,7 @@ async def delete_private_practice(
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
+) -> None:
 
     deleted_key = await db_repo.delete_practice(id=id)
     if deleted_key:
@@ -75,7 +71,7 @@ async def delete_private_book(
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
+) -> None:
 
     deleted_key = await db_repo.delete_book(id=id)
     if deleted_key:
@@ -89,7 +85,7 @@ async def delete_private_video(
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
+) -> None:
 
     deleted_key = await db_repo.delete_video(id=id)
     if deleted_key:
@@ -103,7 +99,7 @@ async def delete_private_quiz(
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
+) -> None:
 
     deleted_keys = await db_repo.delete_quiz(fk=fk)
     if deleted_keys:
@@ -122,7 +118,7 @@ async def delete_private_quiz_questions(
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
+) -> None:
 
     deleted_key = await db_repo.delete_quiz_question(id=id)
     if deleted_key:
@@ -141,7 +137,7 @@ async def delete_private_game(
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
+) -> None:
 
     deleted_key = await db_repo.delete_game(id=id)
     if deleted_key:
