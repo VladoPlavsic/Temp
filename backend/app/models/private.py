@@ -217,7 +217,6 @@ class BranchGetModel(DBCoreModel):
     subject_name_en: str
 
 class BranchCoreModel(DBCoreModel):
-    fk: int
     name_ru: str
     object_key: str
     order_number: int
