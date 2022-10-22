@@ -24,11 +24,11 @@ def insert_subject_query(fk=1, name_en='-', name_ru='-', object_key='-', backgro
     return \
         f"SELECT (private.insert_subject({fk}, {string_or_null(name_ru, name_ru, object_key, background)}, {order_number})).*"
 
-def insert_branch_check_query(fk, name_en) -> str:
+def insert_branch_check_query(fk=1, name_en=None) -> str:
     return \
         f"SELECT private.branch_can_be_created({fk}, {string_or_null(name_en)}) AS yes"
 
-def insert_branch_query(fk, name_en='-', name_ru='-', object_key='-', background='-', order_number=1) -> str:
+def insert_branch_query(fk=1, name_en='-', name_ru='-', object_key='-', background='-', order_number=1) -> str:
     return \
         f"SELECT (private.insert_branch({fk}, {string_or_null(name_ru, name_ru, object_key, background)}, {order_number})).*"
 

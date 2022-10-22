@@ -166,7 +166,6 @@ class PrivateDBInsertRepository(BaseDBRepository):
         return response['yes']
 
     async def insert_subject(self, *, subject: SubjectCreateModel) -> SubjectInDB:
-        """ """
         response = await self._fetch_one(query=insert_subject_query(**subject.dict()))
         return SubjectInDB(**response) if response else None
 
@@ -176,7 +175,6 @@ class PrivateDBInsertRepository(BaseDBRepository):
         return response['yes']
 
     async def insert_branch(self, *, branch: BranchCreateModel) -> BranchInDB:
-        """ """
         response = await self._fetch_one(query=insert_branch_query(**branch.dict()))
         return BranchInDB(**response) if response else None
 

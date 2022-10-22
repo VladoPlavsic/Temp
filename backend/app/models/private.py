@@ -223,7 +223,6 @@ class BranchCoreModel(DBCoreModel):
     order_number: int
 
 class BranchPostModelCheck(DBCoreModel):
-    fk: int
     name_ru: str
 
 class BranchPostModel(BranchCoreModel):
@@ -238,7 +237,6 @@ class BranchInDB(BranchCoreModel):
 
 # branch response
 class BranchResponse(DBCoreModel):
-    fk: int
     branches: List[BranchInDB]
 
 # lectures

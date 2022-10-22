@@ -40,28 +40,13 @@ async def update_sharing_links(
     ) -> None:
     pass
 
-@router.put("/subject", response_model=SubjectInDB, name="private:put-subject", status_code=HTTP_200_OK)
-async def update_private_subject(
-    updated: UpdateStructureModel = Body(...),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
-    allowed: bool = Depends(allowed_or_denied),
-    ) -> SubjectInDB:
-
-    if updated.object_key:
-        background_url = cdn_repo.get_background_url(object_key=updated.object_key)
-
-    response = await db_repo.update_subject(updated=updated, background_url=background_url)
-    return response
-
 @router.put("/branch", response_model=BranchInDB, name="private:put-branch", status_code=HTTP_200_OK)
 async def update_private_branch(
     updated: UpdateStructureModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> BranchInDB:
-
+) -> BranchInDB:
     if updated.object_key:
         background_url = cdn_repo.get_background_url(object_key=updated.object_key)
 

@@ -45,34 +45,11 @@ router = APIRouter()
 
 
 # STRUCTURE
-@router.post("/subject/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
-async def check_create_private_subject(
-    subject: SubejctPostModelCheck = Body(...),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> AllowCreate:
-    """Try creating subject. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
-    response = await db_repo.insert_subject_check(**subject.dict())
-
-    return AllowCreate(OK=response)
-
-@router.post("/subject", response_model=SubjectInDB, name="private:post-subject", status_code=HTTP_201_CREATED)
-async def create_private_subject(
-    subject: SubejctPostModel = Body(...),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
-    allowed: bool = Depends(allowed_or_denied),
-    ) -> SubjectInDB:
-
-    background = cdn_repo.get_background_url(object_key=subject.object_key)
-    response  = await db_repo.insert_subject(subject=SubjectCreateModel(**subject.dict(), background=background))
-
-    return response
-
 @router.post("/branch/check", response_model=AllowCreate, name="private:post-practice-check", status_code=HTTP_200_OK)
 async def check_create_private_branch(
     branch: BranchPostModelCheck = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> AllowCreate:
+) -> AllowCreate:
     """Try creating branch. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
     response = await db_repo.insert_branch_check(**branch.dict())
 
@@ -84,8 +61,7 @@ async def create_private_branch(
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> BranchInDB:
-
+) -> BranchInDB:
     background = cdn_repo.get_background_url(object_key=branch.object_key)
     response  = await db_repo.insert_branch(branch=BranchCreateModel(**branch.dict(), background=background))
 

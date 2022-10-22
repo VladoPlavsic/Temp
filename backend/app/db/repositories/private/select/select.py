@@ -86,7 +86,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
         records = await self._fetch_many(query=select_all_subject_keys_query())
         return [StructureAllModel(**record) for record in records]
 
-    async def select_branches(self, *, fk) -> List[BranchInDB]:
+    async def select_branches(self, *, fk=1) -> List[BranchInDB]:
         """Returns all branches based on fk they refer to"""
         response_data = await self._fetch_many(query=select_branch_query(fk=fk))
         return [BranchInDB(**data) for data in response_data]

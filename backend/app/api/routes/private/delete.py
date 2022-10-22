@@ -9,21 +9,9 @@ from app.api.dependencies.cdn import get_cdn_repository
 
 from app.api.dependencies.auth import allowed_or_denied
 
+
 router = APIRouter()
 
-@router.delete('/subject', response_model=None, name="private:delete-subject", status_code=HTTP_200_OK)
-async def delete_private_subject(
-    id: int,
-    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
-
-    deleted_key = await db_repo.delete_subject(id=id)
-    if deleted_key:
-        cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
-
-    return None
 
 @router.delete('/branch', response_model=None, name="private:delete-branch", status_code=HTTP_200_OK)
 async def delete_private_branch(
