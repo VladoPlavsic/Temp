@@ -219,7 +219,7 @@ class BranchGetModel(DBCoreModel):
 class BranchCoreModel(DBCoreModel):
     name_ru: str
     object_key: str
-    order_number: int
+    # order_number: int
 
 class BranchPostModelCheck(DBCoreModel):
     name_ru: str
@@ -248,7 +248,7 @@ class LectureCoreModel(DBCoreModel):
     # name_en: str
     name_ru: str
     description: str
-    object_key: str
+    # object_key: str
     order_number: int
 
 class LecturePostModelCheck(DBCoreModel):

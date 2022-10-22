@@ -71,7 +71,7 @@ async def create_private_branch(
 async def check_create_private_lecture(
     lecture: LecturePostModelCheck = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> AllowCreate:
+) -> AllowCreate:
     """Try creating lecture. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
     response = await db_repo.insert_lecture_check(**lecture.dict())
 
@@ -83,8 +83,7 @@ async def create_private_lecture(
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> LectureInDB:
-
+) -> LectureInDB:
     background = cdn_repo.get_background_url(object_key=lecture.object_key)
     response  = await db_repo.insert_lecture(lecture=LectureCreateModel(**lecture.dict(), background=background))
 
@@ -95,7 +94,7 @@ async def create_private_lecture(
 async def check_create_private_practice(
     presentation: PresentationCreateModelCheck = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> AllowCreate:
+) -> AllowCreate:
     """Try creating practice. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
     response = await db_repo.insert_practice_check(fk=presentation.fk)
 
@@ -107,8 +106,7 @@ async def create_private_practice(
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> PresentationInDB:
-
+) -> PresentationInDB:
     images = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.IMAGES)
     audio = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.AUDIO)
 
@@ -120,10 +118,9 @@ async def create_private_practice(
 async def check_create_private_theory(
     presentation: PresentationCreateModelCheck = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> AllowCreate:
+) -> AllowCreate:
     """Try creating theory. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
     response = await db_repo.insert_theory_check(fk=presentation.fk)
-
     return AllowCreate(OK=response)
 
 @router.post("/theory", response_model=PresentationInDB, name="private:post-theory", status_code=HTTP_201_CREATED)
@@ -132,8 +129,7 @@ async def create_private_theory(
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> PresentationInDB:
-
+) -> PresentationInDB:
     images = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.IMAGES)
     audio = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.AUDIO)
 
@@ -145,10 +141,9 @@ async def create_private_theory(
 async def check_create_private_book(
     book: BookPostModelCheck = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> AllowCreate:
+) -> AllowCreate:
     """Try creating book. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
     response = await db_repo.insert_book_check(fk=book.fk)
-
     return AllowCreate(OK=response)
 
 @router.post("/book", response_model=BookInDB, name="private:post-book", status_code=HTTP_201_CREATED)
@@ -157,8 +152,7 @@ async def create_private_book(
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> BookInDB:
-
+) -> BookInDB:
     shared = cdn_repo.form_book_insert_data(folder=book.object_key)
     object_key = list(shared[0].keys())[0]
     url = shared[0][object_key]

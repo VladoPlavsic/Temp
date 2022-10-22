@@ -184,6 +184,5 @@ class PrivateDBInsertRepository(BaseDBRepository):
         return response['yes']
 
     async def insert_lecture(self, *, lecture: LectureCreateModel) -> LectureInDB:
-        """ """
         response = await self._fetch_one(query=insert_lecture_query(**lecture.dict()))
         return LectureInDB(**response) if response else None
