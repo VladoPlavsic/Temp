@@ -1,5 +1,5 @@
 """This module is connecting our server to Yandex.Cloud s3 API using boto3.
- 
+
 In particular this module uses only S3 service.
 boto3 documentation: https://boto3.amazonaws.com/v1/documentation/api/latest/index.html
 boto3 S3 service docmuentation: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html
@@ -28,8 +28,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 class BaseCDNRepository:
-    """Class connecting Yandex.Cloud s3 with our server. 
-    
+    """Class connecting Yandex.Cloud s3 with our server.
+
     Implementing logic for getting presingend link (sharing content) from items stored in s3 cloud.
     To be inherited by specific classes depending on extra functionality needed.
     """
@@ -64,7 +64,7 @@ class BaseCDNRepository:
 
     def __share_key_content(self, key: str) -> List[str]:
         """Accepts one key and creates presigned url for it. Returns {key: url} pair.
-        
+
         If the key doesn't exist in s3 warning will be logged and None returned.
         """
         try:
@@ -75,7 +75,7 @@ class BaseCDNRepository:
             logger.warn(f"404 - Key not found. Key: {key}")
             logger.warn("--- EXCEPTION GENERATING PRESIGNED URL ---")
             return None
-        
+
         return {key: presigned_url}
 
     def __get_presigned_links_from_list_of_keys(self, list_of_keys: List[str]):
@@ -95,7 +95,7 @@ class BaseCDNRepository:
 
     def __share_data(self, *, folder: str, type_: DefaultFormats) -> List[Dict[str, str]]:
         """Accept folder containing data. Create sharing links for items in that folder if suported format.
-        
+
         Keyword arguments:
         folder -- folder at which our content is located
         type_  -- format type. Used to figure out which content we want to create
@@ -127,7 +127,7 @@ class BaseCDNRepository:
 
     def __grant_public_access_to_folder_objects(self, *, folder, exclude = []) -> None:
         """Grants public access to all objects in a folder.
-        
+
         Keyword arguments:
         folder  -- key of a folder we want to grant public access to objects of which.
         exclude -- list of keys we want to exclude (not grant public access to) in a folder.
@@ -152,13 +152,13 @@ class BaseCDNRepository:
 
     def format_presentation_content(self, *, folder, fk, type_: DefaultFormats) -> List[PresentationMediaCreate]:
         """This function formats presentation content for it to be inserted into database.
-        
+
         Keyword arguments:
         folder -- s3 key containing given lecture data. (e.g. subscriptions/7-9/physics/mechanics/kinematics/practice/)
         fk     -- lecture foreign key
         type_  -- data type. Used for figuring out containing folder for given type
 
-        This function returns List of PresentationMediaCreate. 
+        This function returns List of PresentationMediaCreate.
         In case there are no images found for given path (if type_ = DefaultFormats.IMAGES)
         HTTPException will be raised, and nothing will be added to database.
         """
@@ -168,8 +168,8 @@ class BaseCDNRepository:
         for item in shared:
             key = list(item.keys())[0]
             file_format = get_format_from_key(key=key)
-         
-            order_number = get_order_number_from_key(key=key)
+
+            order_number = 1 # get_order_number_from_key(key=key)
             if order_number:
                 formated.append(PresentationMediaCreate(order=order_number, url=item[key], fk=fk, object_key=key))
 
@@ -177,13 +177,13 @@ class BaseCDNRepository:
             raise HTTPException(status_code=404, detail=f"No images found a path {folder}. Images must be present!")
 
         return formated
-    
+
     def form_book_insert_data(self, *, folder) -> List[Dict[str, str]]:
         """This function creates presigned sharing urls for book.
-        
+
         Keyword arguments:
         folder -- s3 key containing given book.
-        
+
         Returns list of dictionaries with:
         key   -- s3 key of a book
         value -- presigned url for given key
@@ -192,10 +192,10 @@ class BaseCDNRepository:
 
     def form_video_insert_data(self, *, folder) -> List[Dict[str, str]]:
         """This function creates presigned sharing urls for video.
-        
+
         Keyword arguments:
         folder -- s3 key containing given video.
-        
+
         Returns list of dictionaries with:
         key   -- s3 key of a video
         value -- presigned url for given key
@@ -223,10 +223,10 @@ class BaseCDNRepository:
 
     def form_quiz_insert_data(self, *, folder) -> List[Dict[str, str]]:
         """This function creates presigned sharing urls for quiz.
-        
+
         Keyword arguments:
         folder -- s3 key containing given quiz.
-        
+
         Returns list of dictionaries with:
         key   -- s3 key of a quiz
         value -- presigned url for given key
@@ -241,7 +241,7 @@ class BaseCDNRepository:
             for error in response['Errors']:
                 logger.warn(f"Key {error['Key']} has not been deleted.")
                 logger.warn(f"s3 said: {error['Message']}")
-            logger.warn("---THERE HAS BEEN SOME ERRORS IN DELETING KEYS---")        
+            logger.warn("---THERE HAS BEEN SOME ERRORS IN DELETING KEYS---")
 
     def delete_keys(self, *, list_of_keys) -> None:
         """Deletes all objects from a list of keys"""
@@ -251,13 +251,13 @@ class BaseCDNRepository:
             for error in response['Errors']:
                 logger.warn(f"Key {error['Key']} has not been deleted.")
                 logger.warn(f"s3 said: {error['Message']}")
-            logger.warn("---THERE HAS BEEN SOME ERRORS IN DELETING KEYS---")        
+            logger.warn("---THERE HAS BEEN SOME ERRORS IN DELETING KEYS---")
 
     def delete_folder_by_inner_key(self, *, inner_key) -> None:
         """Delete folder by any of it's containing keys"""
         folder = get_folder_by_inner_key(key=inner_key)
         self.delete_folder(folder=folder)
-    
+
     def delete_folder(self, *, folder) -> None:
         """Delete folder by it's name (key in s3)"""
         all_keys = self.__list_folder(folder=folder)
@@ -271,7 +271,7 @@ class BaseCDNRepository:
 
     def get_sharing_links_from_objects(self, *, list_of_objects) -> Dict:
         """Accept objects of any type of content stored in s3.
-        
+
         Converts objects to list of corresponding keys and shares those keys.
         Returns dictionary with:
         key   -- object key in s3
@@ -281,14 +281,14 @@ class BaseCDNRepository:
 
         shared_list = self.__get_presigned_links_from_list_of_keys(list_of_keys=list_of_keys)
 
-        final = {}        
+        final = {}
         for item in shared_list:
             final.update(item)
         return final
 
     def get_sharing_link_from_object_key(self, *, object_key: str) -> Dict:
         """Accepts single object_key of and object stored in s3.
-        
+
         Returns dictionary like object with:
         key   -- object key in s3
         value -- presigned sharing link
