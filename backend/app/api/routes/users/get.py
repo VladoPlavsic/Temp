@@ -14,7 +14,7 @@ from app.api.dependencies.database import get_db_repository
 from app.models.user import PublicUserInDB, UserInDB, AdminAvailableData
 
 from app.models.token import AccessToken, RefreshToken
-from app.core.config import AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY_ID
+from app.core.config import AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY_ID, BUCKET
 
 from app.services import auth_service
 
@@ -28,6 +28,7 @@ async def admin(
         is_superuser=is_superuser,
         AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY if is_superuser else None,
         AWS_SECRET_KEY_ID=AWS_SECRET_KEY_ID if is_superuser else None,
+        BUCKET=BUCKET if is_superuser else None,
     )
 
 @router.get("/email/confirm")
