@@ -85,6 +85,6 @@ def update_book_query(id, name_ru, description) -> str:
     return \
         f"SELECT (private.update_book_metadata({id}, {string_or_null(name_ru, description)})).*"
 
-def update_presentation_query(presentation, id, name_ru, description) -> str:
+def update_presentation_query(presentation, id, name_ru='-', description='-') -> str:
     return \
         f"SELECT (private.update_{presentation}_metadata({id}, {string_or_null(name_ru, description)})).*"

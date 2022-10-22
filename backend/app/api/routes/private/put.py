@@ -80,8 +80,7 @@ async def update_private_game(
     updated: UpdateGameModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> GameInDB:
-
+) -> GameInDB:
     response = await db_repo.update_game(updated=updated)
     return response
 
@@ -90,8 +89,7 @@ async def update_private_book(
     updated: UpdateBookModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> BookInDB:
-
+) -> BookInDB:
     response = await db_repo.update_book(updated=updated)
     return response
 
@@ -100,8 +98,7 @@ async def update_private_practice(
     updated: UpdatePresentationModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> PresentationMasterInDB:
-
+) -> PresentationMasterInDB:
     response = await db_repo.update_presentation(updated=updated, presentation=ContentType.PRACTICE)
     return response
 
@@ -110,7 +107,6 @@ async def update_private_thoery(
     updated: UpdatePresentationModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> PresentationMasterInDB:
-
+) -> PresentationMasterInDB:
     response = await db_repo.update_presentation(updated=updated, presentation=ContentType.THEORY)
     return response

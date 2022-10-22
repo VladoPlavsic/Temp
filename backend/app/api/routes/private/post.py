@@ -106,7 +106,7 @@ async def create_private_practice(
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
 ) -> PresentationInDB:
-    images = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.IMAGES)
+    images = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.PDF)
     audio = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.AUDIO)
 
     response = await db_repo.insert_practice(presentation=presentation, images=images, audio=audio)
@@ -129,7 +129,7 @@ async def create_private_theory(
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
 ) -> PresentationInDB:
-    images = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.IMAGES)
+    images = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.PDF)
     audio = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.AUDIO)
 
     response = await db_repo.insert_theory(presentation=presentation, images=images, audio=audio)

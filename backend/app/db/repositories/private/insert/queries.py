@@ -73,7 +73,7 @@ def insert_theory_check_query(fk) -> str:
     return \
         f"SELECT private.theory_can_be_created({fk}) AS yes"
 
-def insert_presentation_query(table, fk, name_ru, description, object_key) -> str:
+def insert_presentation_query(table, fk, name_ru='-', description='-', object_key=None) -> str:
     """Creates insert query for presentation.
 
     Keyword arguments:

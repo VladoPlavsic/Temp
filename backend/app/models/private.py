@@ -7,8 +7,7 @@ from app.models.core import DBCoreModel
 # ###
 
 class PresentationModelCore(DBCoreModel):
-    name_ru: str
-    description: str
+    pass
 
 class PresentationCreateModelCheck(DBCoreModel):
     fk: int

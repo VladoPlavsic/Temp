@@ -14,14 +14,15 @@ class Formats:
 
 class DefaultFormats(Enum):
     """Enum class defining suported formats for specific type of content.
-    
+
     NOTE We are using Formats helping class to get around enum aliases.
-    If we were not to use it this way, IMAGES and QUIZ would be the same, and we 
+    If we were not to use it this way, IMAGES and QUIZ would be the same, and we
     could not differ them.
     """
     IMAGES = Formats(['jpg', 'png'])
     AUDIO = Formats(['vaw', 'mp3'])
     VIDEO = Formats(['mp4'])
+    PDF = Formats(['pdf'])
     BOOK = Formats(['pdf', 'doc', 'docx'])
     QUIZ = Formats(['jpg', 'png'])
     GAME = Formats(['html'])
@@ -36,4 +37,4 @@ class ObjectTypes(Enum):
     PARTS = 'parts'
     TEAM = 'team'
     NEWS = 'news'
-    
+
