@@ -30,7 +30,6 @@ async def delete_private_branch(
 @router.delete('/lecture', response_model=None, name="private:delete-lecture", status_code=HTTP_200_OK)
 async def delete_private_lecture(
     id: int,
-    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
 ) -> None:

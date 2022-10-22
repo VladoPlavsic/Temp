@@ -339,12 +339,12 @@ class UpdateGameModel(UpdateBaseModel):
 
 class UpdateLectureModel(UpdateBaseModel):
     description: Optional[str]
-    object_key: Optional[str]
+    # object_key: Optional[str]
     order_number: Optional[int]
 
 class UpdateStructureModel(UpdateBaseModel):
     object_key: Optional[str]
-    order_number: Optional[int]
+    # order_number: Optional[int]
 
 class UpdateBookModel(UpdateBaseModel):
     description: Optional[str]

@@ -57,14 +57,9 @@ async def update_private_branch(
 async def update_private_lecture(
     updated: UpdateLectureModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> LectureInDB:
-
-    if updated.object_key:
-        background_url = cdn_repo.get_background_url(object_key=updated.object_key)
-
-    response = await db_repo.update_lecture(updated=updated, background_url=background_url)
+) -> LectureInDB:
+    response = await db_repo.update_lecture(updated=updated)
     return response
 
 @router.put("/video", response_model=VideoInDB, name="private:put-video", status_code=HTTP_200_OK)
@@ -72,7 +67,7 @@ async def update_private_theory(
     updated: UpdateVideoModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> VideoInDB:
+) -> VideoInDB:
 
     if updated.url:
         updated.url = parse_youtube_link(updated.url)
