@@ -22,7 +22,6 @@ from app.models.private import VideoPostModelYT, VideoPostModelCDN, VideoCreateM
 from app.models.private import GamePostModel, GameCreateModel, GamePostModelCheck
 from app.models.private import QuizPostModel, QuizCreateModel, QuizGetResultsModel, QuizPostModelCheck
 # structure
-from app.models.private import SubejctPostModel, SubjectCreateModel, SubejctPostModelCheck
 from app.models.private import BranchPostModel, BranchCreateModel, BranchPostModelCheck
 from app.models.private import LecturePostModel, LectureCreateModel, LecturePostModelCheck
 
@@ -37,7 +36,6 @@ from app.models.private import VideoInDB
 from app.models.private import GameInDB
 from app.models.private import QuizQuestionInDB, QuizResults
 # structure
-from app.models.private import SubjectInDB
 from app.models.private import BranchInDB
 from app.models.private import LectureInDB
 
@@ -106,7 +104,7 @@ async def create_private_practice(
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
 ) -> PresentationInDB:
-    images = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.PDF)
+    images = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.IMAGES)
     audio = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.AUDIO)
 
     response = await db_repo.insert_practice(presentation=presentation, images=images, audio=audio)
@@ -129,7 +127,7 @@ async def create_private_theory(
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
 ) -> PresentationInDB:
-    images = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.PDF)
+    images = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.IMAGES)
     audio = cdn_repo.format_presentation_content(folder=presentation.object_key, fk=presentation.fk, type_=DefaultFormats.AUDIO)
 
     response = await db_repo.insert_theory(presentation=presentation, images=images, audio=audio)
