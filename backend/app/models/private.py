@@ -259,7 +259,7 @@ class LecturePostModel(LectureCoreModel):
     pass
 
 class LectureCreateModel(LectureCoreModel):
-    background: str
+    pass
 
 class LectureInDB(LectureCoreModel):
     id: int

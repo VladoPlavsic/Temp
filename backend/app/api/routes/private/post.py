@@ -81,11 +81,10 @@ async def check_create_private_lecture(
 async def create_private_lecture(
     lecture: LecturePostModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
+    # cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
 ) -> LectureInDB:
-    background = cdn_repo.get_background_url(object_key=lecture.object_key)
-    response  = await db_repo.insert_lecture(lecture=LectureCreateModel(**lecture.dict(), background=background))
+    response  = await db_repo.insert_lecture(lecture=LectureCreateModel(**lecture.dict()))
 
     return response
 
