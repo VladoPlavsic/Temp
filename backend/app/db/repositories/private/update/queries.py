@@ -64,11 +64,11 @@ def update_subject_query(id, name_ru, background_url, object_key, order_number) 
     return \
         f"SELECT (private.update_subject({id}, {string_or_null(name_ru, background_url, object_key)}, {order_number})).*"
 
-def update_branch_query(id, name_ru,  background_url, object_key, order_number) -> str:
+def update_branch_query(id, name_ru,  background_url, object_key, order_number=1) -> str:
     return \
         f"SELECT (private.update_branch({id}, {string_or_null(name_ru, background_url, object_key)}, {order_number})).*"
 
-def update_lecture_query(id, name_ru, description, background_url, object_key, order_number) -> str:
+def update_lecture_query(id, name_ru, description, background_url='-', object_key='-', order_number=None) -> str:
     return \
         f"SELECT (private.update_lecture({id}, {string_or_null(name_ru, description, background_url, object_key)}, {order_number})).*"
 
