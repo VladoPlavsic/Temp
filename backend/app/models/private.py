@@ -62,8 +62,7 @@ class BookInDB(BookModelCore):
 # ###
 
 class VideoModelCore(DBCoreModel):
-    name_ru: str
-    description: str
+    pass
 
 class VideoPostModelYT(VideoModelCore):
     fk: int
