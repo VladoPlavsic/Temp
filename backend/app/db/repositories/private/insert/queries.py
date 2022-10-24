@@ -45,7 +45,7 @@ def insert_video_check_query(fk) -> str:
     return \
         f"SELECT private.video_can_be_created({fk}) AS yes"
 
-def insert_video_query(fk, name_ru, description, object_key, url) -> str:
+def insert_video_query(fk, name_ru='-', description='-', object_key=None, url=None) -> str:
     return \
         f"SELECT (private.insert_video({fk}, {string_or_null(name_ru, description, object_key, url)})).*"
 

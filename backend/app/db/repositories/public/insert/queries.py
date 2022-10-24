@@ -8,7 +8,7 @@ def insert_game_query(name_ru, url, description, object_key) -> str:
     return \
         f"SELECT (public.insert_game({string_or_null(name_ru, url, description, object_key)})).*"
 
-def insert_video_query(name_ru, url, description, object_key) -> str:
+def insert_video_query(name_ru='-', url=None, description='-', object_key=None) -> str:
     return \
         f"SELECT (public.insert_video({string_or_null(name_ru, url, description, object_key)})).*"
 
@@ -23,7 +23,7 @@ def insert_book_query(name_ru, url, description, object_key) -> str:
 def insert_presentation_query(table, name_ru, description, object_key) -> str:
     return \
         f"SELECT (public.insert_{table}({string_or_null(name_ru, description, object_key)})).*"
-    
+
 def insert_presentation_media_query(table, media_type , medium: List[PresentationMediaCreate]) -> str:
     """Creates insert query for presentation data.
 
