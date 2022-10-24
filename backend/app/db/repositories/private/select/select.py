@@ -1,3 +1,4 @@
+import json
 from typing import List, Tuple, Union
 from fastapi import HTTPException
 from app.db.repositories.base import BaseDBRepository
@@ -18,7 +19,7 @@ from app.models.user import UserAvailableSubjects
 from app.models.private import VideoInDB
 from app.models.private import GameInDB
 from app.models.private import BookInDB
-from app.models.private import QuizInDB, QuizQuestionInDB, AnswersInDB, QuizGetResultsModel, QuizResults, QuizQuestionAnswerCorrectPair
+from app.models.private import QuizInDB, QuizQuestionInDB, AnswersInDB, QuizGetResultsModel, QuizResults, QuizQuestionAnswerCorrectPair, QuizResponse
 from app.models.private import PresentationInDB
 from app.models.private import PresentationMediaInDB
 
@@ -150,12 +151,18 @@ class PrivateDBSelectRepository(BaseDBRepository):
         """Returns QuizInDB based on lecture fk. If there is no quiz for given lecture, return None."""
         responses = await self._fetch_many(query=select_quiz_questions_query(fk=fk))
 
-        questions = [QuizQuestionInDB(**response, answers=[]) for response in responses]
-        for question in questions:
-            responses = await self._fetch_many(query=select_quiz_answers_query(fk=question.id))
-            question.answers = [AnswersInDB(**response) for response in responses]
+        # questions = [QuizQuestionInDB(**response, answers=[]) for response in responses]
+        # for question in questions:
+        #     responses = await self._fetch_many(query=select_quiz_answers_query(fk=question.id))
+        #     question.answers = [AnswersInDB(**response) for response in responses]
 
-        return QuizInDB(questions=questions) if questions else None
+        for i, el in enumerate(responses):
+            ele = dict(el)
+            ele['answers'] = json.loads(el['answers']) if el.get('answers') else []
+            ele['options'] = json.loads(el['options']) if el.get('options') else []
+            responses[i] = ele
+
+        return [QuizResponse(**res) for res in responses]
 
     async def select_all_quiz(self) -> List[MaterialAllModel]:
         """Returns list of id, object_keys for all quizes in database"""

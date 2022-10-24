@@ -1,3 +1,4 @@
+import json
 from typing import List
 
 from app.models.private import PresentationMediaCreate
@@ -56,6 +57,10 @@ def insert_game_check_query(fk) -> str:
 def insert_game_query(fk, name_ru, description, url, object_key) -> str:
     return \
         f"SELECT (private.insert_game({fk}, {string_or_null(name_ru, description, url, object_key)})).*"
+
+def insert_quiz_query(lecture_id, question_type, order_number=None, image_url=None, question=None, object_key=None, answers=None, options=None) -> str:
+    return \
+        f"INSERT INTO private.quiz (fk, order_number, question_type, question, object_key, image_url, answers, options) VALUES ({lecture_id}, {order_number or 1}, '{question_type}', '{question or ''}', '{object_key or '-'}', '{image_url or ''}', '{json.dumps(answers or [])}'::JSONB, '{json.dumps(options or [])}'::JSONB)"
 
 def insert_book_check_query(fk) -> str:
     return \

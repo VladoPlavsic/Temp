@@ -148,16 +148,8 @@ class PrivateDBInsertRepository(BaseDBRepository):
         return response['yes']
 
     async def insert_quiz_question(self, *, quiz_question: QuizCreateModel) -> QuizQuestionInDB:
-        """Tries to insert quiz. If successful returns QuizQuestionInDB model else None."""
-        answers = [answer.answer for answer in quiz_question.answers]
-        is_true = [answer.is_true for answer in quiz_question.answers]
-
-        quiz_question.answers = answers
-        response = await self._fetch_many(query=insert_quiz_question_query(**quiz_question.dict(), is_true=is_true))
-
-        answers = [AnswersInDB(**answer) for answer in response]
-
-        return QuizQuestionInDB(**response[0], answers=answers) if response else None
+        await self._fetch_one(query=insert_quiz_query(**quiz_question.dict()))
+        return None
 
     # STRUCTURE
     async def insert_subject_check(self, *, name_ru: str) -> bool:

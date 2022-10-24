@@ -164,8 +164,7 @@ async def create_private_video(
     video: VideoPostModelYT = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> VideoInDB:
-
+) -> VideoInDB:
     video = VideoCreateModel(**video.dict(), object_key=None)
     response = await db_repo.insert_video(video=video)
 
@@ -175,10 +174,9 @@ async def create_private_video(
 async def check_create_private_game(
     game: GamePostModelCheck = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> AllowCreate:
+) -> AllowCreate:
     """Try creating game. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
     response = await db_repo.insert_game_check(fk=game.fk)
-
     return AllowCreate(OK=response)
 
 @router.post("/game", response_model=GameInDB, name="private:post-game", status_code=HTTP_201_CREATED)
@@ -187,8 +185,7 @@ async def create_private_game(
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> GameInDB:
-
+) -> GameInDB:
     shared = cdn_repo.form_game_insert_data(folder=game.object_key)
     object_key = list(shared[0].keys())[0]
     url = shared[0][object_key]
@@ -201,20 +198,18 @@ async def create_private_game(
 async def check_create_private_quiz(
     quiz: QuizPostModelCheck = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    ) -> AllowCreate:
+) -> AllowCreate:
     """Try creating quiz. If OK is returned {OK: True}, practice can be created, else there is something wrong with it."""
     response = await db_repo.insert_quiz_check(fk=quiz.fk, order_number=quiz.order_number)
-
     return AllowCreate(OK=response)
 
-@router.post("/quiz", response_model=QuizQuestionInDB, name="private:post-quiz", status_code=HTTP_201_CREATED)
+@router.post("/quiz", response_model=None, name="private:post-quiz", status_code=HTTP_201_CREATED)
 async def create_private_quiz(
     quiz: QuizPostModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> QuizQuestionInDB:
-
+) -> QuizQuestionInDB:
     if quiz.object_key:
         shared = cdn_repo.form_quiz_insert_data(folder=quiz.object_key)
         object_key = list(shared[0].keys())[0]
@@ -223,17 +218,13 @@ async def create_private_quiz(
         quiz = QuizCreateModel(**quiz.dict(), image_url=url)
     else:
         quiz = QuizCreateModel(**quiz.dict(), image_url=None)
-    response = await db_repo.insert_quiz_question(quiz_question=quiz)
-
-    return response
+    await db_repo.insert_quiz_question(quiz_question=quiz)
+    return None
 
 @router.post("/quiz/results", response_model=QuizResults, name="private:get-quiz-results", status_code=HTTP_200_OK)
 async def get_quiz_results(
     quiz_results: QuizGetResultsModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(get_user_from_cookie_token),
-    ) -> QuizResults:
-
-    response = await db_repo.check_quiz_results(quiz_results=quiz_results)
-
-    return response
+) -> QuizResults:
+    return await db_repo.check_quiz_results(quiz_results=quiz_results)

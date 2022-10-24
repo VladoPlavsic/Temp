@@ -114,6 +114,9 @@ class GameInDB(GameModelCore):
 class AnswerCoreModel(DBCoreModel):
     answer: str
     is_true: Optional[bool]
+class OptionCoreModel(DBCoreModel):
+    question: str
+    answer: str
 
 class AnswersInDB(AnswerCoreModel):
     question_id: int
@@ -121,10 +124,12 @@ class AnswersInDB(AnswerCoreModel):
 
 class QuizModelCore(DBCoreModel):
     lecture_id: int
-    order_number: int
+    order_number: Optional[int]
+    question_type: str
     question: Optional[str]
     object_key: Optional[str]
-    answers: List[AnswerCoreModel]
+    answers: Optional[List[AnswerCoreModel]]
+    options: Optional[List[OptionCoreModel]]
 
 class QuizPostModelCheck(DBCoreModel):
     fk: int
@@ -149,6 +154,16 @@ class QuizQuestionInDB(QuestionInDB):
 
 class QuizInDB(DBCoreModel):
     questions: List[QuizQuestionInDB]
+class QuizResponse(DBCoreModel):
+    id: int
+    fk: int
+    order_number: Optional[int]
+    question_type: str
+    question: Optional[str]
+    object_key: Optional[str]
+    image_url: Optional[str]
+    answers: Optional[List[AnswerCoreModel]]
+    options: Optional[List[OptionCoreModel]]
 
 class QuizQuestionAnswerPair(DBCoreModel):
     question: int
@@ -277,7 +292,7 @@ class MaterialResponseModel(DBCoreModel):
     video: Optional[VideoInDB]
     game: Optional[GameInDB]
     book: Optional[BookInDB]
-    quiz: Optional[QuizInDB]
+    quiz: Optional[List[QuizResponse]]
     practice: Optional[PresentationInDB]
     theory: Optional[PresentationInDB]
 
