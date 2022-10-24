@@ -233,9 +233,12 @@ class BranchInDB(BranchCoreModel):
     id: int
     background: str
 
+class BranchPreResponse(BranchInDB):
+    complete: int
+
 # branch response
 class BranchResponse(DBCoreModel):
-    branches: List[BranchInDB]
+    branches: List[BranchPreResponse]
 
 # lectures
 class LectureGetModel(DBCoreModel):
@@ -244,10 +247,8 @@ class LectureGetModel(DBCoreModel):
 
 class LectureCoreModel(DBCoreModel):
     fk: int
-    # name_en: str
     name_ru: str
     description: str
-    # object_key: str
     order_number: int
 
 class LecturePostModelCheck(DBCoreModel):
@@ -264,11 +265,13 @@ class LectureInDB(LectureCoreModel):
     id: int
     background: str
 
+class LecturePreResponse(LectureInDB):
+    complete: bool
+
 # lecture response
 class LectureResponse(DBCoreModel):
     fk: int
-    # path: str
-    lectures: List[LectureInDB]
+    lectures: List[LecturePreResponse]
 
 # material response
 class MaterialResponseModel(DBCoreModel):
@@ -305,7 +308,6 @@ class MaterialBulk(DBCoreModel):
 
 class MaterialResponse(DBCoreModel):
     fk: int
-    # path: str
     material: MaterialResponseModel
 
 # ###
@@ -338,12 +340,10 @@ class UpdateGameModel(UpdateBaseModel):
 
 class UpdateLectureModel(UpdateBaseModel):
     description: Optional[str]
-    # object_key: Optional[str]
     order_number: Optional[int]
 
 class UpdateStructureModel(UpdateBaseModel):
     object_key: Optional[str]
-    # order_number: Optional[int]
 
 class UpdateBookModel(UpdateBaseModel):
     description: Optional[str]

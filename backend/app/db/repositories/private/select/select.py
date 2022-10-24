@@ -8,8 +8,8 @@ from app.db.repositories.private.select.queries import *
 # response models
 from app.models.private import GradeInDB
 from app.models.private import SubjectInDB
-from app.models.private import BranchInDB
-from app.models.private import LectureInDB
+from app.models.private import BranchInDB, BranchPreResponse
+from app.models.private import LectureInDB, LecturePreResponse
 from app.models.private import MaterialResponseModel
 
 from app.models.user import UserAvailableGrades
@@ -31,6 +31,12 @@ from app.db.repositories.types import ContentType
 import logging
 
 logger = logging.getLogger(__name__)
+
+def get_branch_progress(id):
+    return id
+
+def get_lecture_progress(id):
+    return True
 
 class PrivateDBSelectRepository(BaseDBRepository):
     """Connector allowing select data from private database schema"""
@@ -89,7 +95,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
     async def select_branches(self, *, fk=1) -> List[BranchInDB]:
         """Returns all branches based on fk they refer to"""
         response_data = await self._fetch_many(query=select_branch_query(fk=fk))
-        return [BranchInDB(**data) for data in response_data]
+        return [BranchPreResponse(**data, complete=get_branch_progress(data['id'])) for data in response_data]
 
     async def select_all_branches(self) -> List[StructureAllModel]:
         """Returns list of id, object_keys for all branches in database"""
@@ -99,7 +105,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
     async def select_lectures(self, *, fk) -> List[LectureInDB]:
         """Returns all lectures based on fk they refer to"""
         response_data = await self._fetch_many(query=select_lecture_query(fk=fk))
-        return [LectureInDB(**data) for data in response_data]
+        return [LecturePreResponse(**data, complete=get_lecture_progress(data['id'])) for data in response_data]
 
     async def select_all_lectures(self) -> List[StructureAllModel]:
         """Returns list of id, object_keys for all lectures in database"""

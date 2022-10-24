@@ -2,7 +2,7 @@ import pathlib
 import sys
 import os
 
-import alembic  
+import alembic
 from sqlalchemy import engine_from_config, create_engine, pool
 from psycopg2 import DatabaseError
 
@@ -28,7 +28,7 @@ def run_migrations_online() -> None:
     Run migrations in 'online' mode
     """
     DB_URL = f"{DATABASE_URL}_test" if os.environ.get("TESTING") else str(DATABASE_URL)
-    
+
     # handle testing config for migrations
     if os.environ.get("TESTING"):
         # connect to primary db
@@ -57,21 +57,21 @@ def run_migrations_online() -> None:
 
     connectable = config.attributes.get("connection", None)
     config.set_main_option("sqlalchemy.url", DB_URL)
-    
+
     if connectable is None:
         connectable = engine_from_config(
             config.get_section(config.config_ini_section),
             prefix="sqlalchemy.",
             poolclass=pool.NullPool,
         )
-        
+
     with connectable.connect() as connection:
         alembic.context.configure(
             version_table_schema="public",
             connection=connection,
             target_metadata=target_metadata
         )
-        
+
         with alembic.context.begin_transaction():
             alembic.context.run_migrations()
 
@@ -83,7 +83,7 @@ def run_migrations_offline() -> None:
         raise DatabaseError("Running testing migrations offline currently not permitted")
 
     alembic.context.configure(url=str(DATABASE_URL))
-    
+
     with alembic.context.begin_transaction():
         alembic.context.run_migrations()
 
