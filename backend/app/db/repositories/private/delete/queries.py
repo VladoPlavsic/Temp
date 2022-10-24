@@ -32,7 +32,7 @@ def delete_video_query(id) -> str:
 
 def delete_quiz_query(fk) -> str:
     return \
-        f"SELECT private.delete_all_quiz({fk}) AS object_key"
+        f"DELETE FROM private.quiz WHERE private.quiz.fk = {fk} RETURNING private.quiz.object_key"
 
 def delete_quiz_question_query(id) -> str:
     return \

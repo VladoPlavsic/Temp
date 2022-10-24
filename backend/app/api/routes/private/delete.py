@@ -99,7 +99,6 @@ async def delete_private_quiz(
     cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
 ) -> None:
-
     deleted_keys = await db_repo.delete_quiz(fk=fk)
     if deleted_keys:
         """We have a inconsistency here and in delete_private_quiz_questions function.
