@@ -114,6 +114,7 @@ class GameInDB(GameModelCore):
 class AnswerCoreModel(DBCoreModel):
     answer: str
     is_true: Optional[bool]
+    image_size: Optional[str]
 class OptionCoreModel(DBCoreModel):
     question: str
     answer: str

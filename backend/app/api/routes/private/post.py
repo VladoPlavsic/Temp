@@ -1,3 +1,5 @@
+import json
+
 from fastapi import APIRouter
 from fastapi import Depends, Body
 from starlette.status import HTTP_201_CREATED, HTTP_200_OK
@@ -34,7 +36,7 @@ from app.models.private import PresentationInDB
 from app.models.private import BookInDB
 from app.models.private import VideoInDB
 from app.models.private import GameInDB
-from app.models.private import QuizQuestionInDB, QuizResults
+from app.models.private import QuizQuestionInDB, QuizResults, QuizResponse
 # structure
 from app.models.private import BranchInDB
 from app.models.private import LectureInDB
@@ -203,7 +205,7 @@ async def check_create_private_quiz(
     response = await db_repo.insert_quiz_check(fk=quiz.fk, order_number=quiz.order_number)
     return AllowCreate(OK=response)
 
-@router.post("/quiz", response_model=None, name="private:post-quiz", status_code=HTTP_201_CREATED)
+@router.post("/quiz", response_model=QuizResponse, name="private:post-quiz", status_code=HTTP_201_CREATED)
 async def create_private_quiz(
     quiz: QuizPostModel = Body(...),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
@@ -218,13 +220,18 @@ async def create_private_quiz(
         quiz = QuizCreateModel(**quiz.dict(), image_url=url)
     else:
         quiz = QuizCreateModel(**quiz.dict(), image_url=None)
-    await db_repo.insert_quiz_question(quiz_question=quiz)
-    return None
 
-@router.post("/quiz/results", response_model=QuizResults, name="private:get-quiz-results", status_code=HTTP_200_OK)
-async def get_quiz_results(
-    quiz_results: QuizGetResultsModel = Body(...),
-    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
-    allowed: bool = Depends(get_user_from_cookie_token),
-) -> QuizResults:
-    return await db_repo.check_quiz_results(quiz_results=quiz_results)
+    res = await db_repo.insert_quiz_question(quiz_question=quiz)
+
+    el = dict(res)
+    el['answers'] = json.loads(res['answers']) if res.get('answers') else []
+    el['options'] = json.loads(res['options']) if res.get('options') else []
+    return QuizResponse(**el)
+
+# @router.post("/quiz/results", response_model=QuizResults, name="private:get-quiz-results", status_code=HTTP_200_OK)
+# async def get_quiz_results(
+#     quiz_results: QuizGetResultsModel = Body(...),
+#     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+#     allowed: bool = Depends(get_user_from_cookie_token),
+# ) -> QuizResults:
+#     return await db_repo.check_quiz_results(quiz_results=quiz_results)

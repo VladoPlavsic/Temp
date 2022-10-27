@@ -15,7 +15,7 @@ from app.models.private import PresentationCreateModel, PresentationMediaCreate
 from app.models.private import BookCreateModel
 from app.models.private import VideoCreateModel
 from app.models.private import GameCreateModel
-from app.models.private import AnswersInDB
+from app.models.private import QuizResponse
 from app.models.private import QuizCreateModel
 # structure
 from app.models.private import SubjectCreateModel
@@ -147,9 +147,8 @@ class PrivateDBInsertRepository(BaseDBRepository):
         response = await self._fetch_one(query=insert_quiz_check_query(fk=fk, order_number=order_number))
         return response['yes']
 
-    async def insert_quiz_question(self, *, quiz_question: QuizCreateModel) -> QuizQuestionInDB:
-        await self._fetch_one(query=insert_quiz_query(**quiz_question.dict()))
-        return None
+    async def insert_quiz_question(self, *, quiz_question: QuizCreateModel) -> QuizResponse:
+        return await self._fetch_one(query=insert_quiz_query(**quiz_question.dict()))
 
     # STRUCTURE
     async def insert_subject_check(self, *, name_ru: str) -> bool:
