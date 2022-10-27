@@ -74,7 +74,7 @@ def select_one_material_query(fk, table) -> str:
 
 def select_quiz_questions_query(fk) -> str:
     return \
-        f"SELECT * FROM private.quiz"
+        f"SELECT * FROM private.quiz WHERE private.quiz.fk = {fk}"
     # return \
     #     f"SELECT (private.get_quiz_questions({fk})).*"
 

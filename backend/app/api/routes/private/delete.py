@@ -22,8 +22,11 @@ async def delete_private_branch(
 ) -> None:
 
     deleted_key = await db_repo.delete_branch(id=id)
-    if deleted_key:
-        cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
+    try:
+        if deleted_key:
+            cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
+    except:
+        pass
 
     return None
 
@@ -45,8 +48,11 @@ async def delete_private_theory(
 ) -> None:
 
     deleted_key = await db_repo.delete_theory(id=id)
-    if deleted_key:
-        cdn_repo.delete_folder(folder=deleted_key)
+    try:
+        if deleted_key:
+            cdn_repo.delete_folder(folder=deleted_key)
+    except:
+        pass
 
     return None
 
@@ -59,8 +65,11 @@ async def delete_private_practice(
 ) -> None:
 
     deleted_key = await db_repo.delete_practice(id=id)
-    if deleted_key:
-        cdn_repo.delete_folder(folder=deleted_key)
+    try:
+        if deleted_key:
+            cdn_repo.delete_folder(folder=deleted_key)
+    except:
+        pass
 
     return None
 
@@ -73,8 +82,11 @@ async def delete_private_book(
 ) -> None:
 
     deleted_key = await db_repo.delete_book(id=id)
-    if deleted_key:
-        cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
+    try:
+        if deleted_key:
+            cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
+    except:
+        pass
 
     return None
 
@@ -87,8 +99,11 @@ async def delete_private_video(
 ) -> None:
 
     deleted_key = await db_repo.delete_video(id=id)
-    if deleted_key:
-        cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
+    try:
+        if deleted_key:
+            cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
+    except:
+        pass
 
     return None
 
@@ -100,13 +115,11 @@ async def delete_private_quiz(
     allowed: bool = Depends(allowed_or_denied),
 ) -> None:
     deleted_keys = await db_repo.delete_quiz(fk=fk)
-    if deleted_keys:
-        """We have a inconsistency here and in delete_private_quiz_questions function.
-
-        In delete_private_quiz_questions we are deleting folder containing object key is refering to,
-        here we are deleting only the object.
-        """
-        cdn_repo.delete_keys(list_of_keys=deleted_keys)
+    try:
+        if deleted_keys:
+            cdn_repo.delete_keys(list_of_keys=deleted_keys)
+    except:
+        pass
 
     return None
 
@@ -119,13 +132,11 @@ async def delete_private_quiz_questions(
 ) -> None:
 
     deleted_key = await db_repo.delete_quiz_question(id=id)
-    if deleted_key:
-        """We have a inconsistency here and in delete_private_quiz function.
-
-        In delete_private_quiz we are deleting only the object that key is refering to,
-        here we are deleting folder containing that object.
-        """
-        cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
+    try:
+        if deleted_key:
+            cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
+    except:
+        pass
 
     return None
 
