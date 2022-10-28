@@ -172,8 +172,9 @@ class QuizQuestionAnswerPair(DBCoreModel):
     answer: int
 
 class QuizGetResultsModel(DBCoreModel):
-    results: List[QuizQuestionAnswerPair]
-    lecture_id: int
+    id: int
+    # results: List[QuizQuestionAnswerPair]
+    # lecture_id: int
 
 class QuizQuestionAnswerCorrectPair(DBCoreModel):
     question_id: int

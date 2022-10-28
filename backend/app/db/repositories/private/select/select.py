@@ -213,29 +213,30 @@ class PrivateDBSelectRepository(BaseDBRepository):
         return [UserAvailableSubjects(**record) for record in records]
 
     # QUIZ RESULTS
-    async def check_quiz_results(self, *, quiz_results: QuizGetResultsModel) -> QuizResults:
-        """Checks quiz results, and returns QuizResults object."""
-        questions = []
-        answers = []
-        for result in quiz_results.results:
-            questions.append(result.question)
-            answers.append(result.answer)
+    async def check_quiz_results(self, *, quiz_results: QuizGetResultsModel, user) -> QuizResults:
+        records = await self._fetch_one(query=check_quiz_results_query(quiz=quiz_results.id, user=user))
+        # """Checks quiz results, and returns QuizResults object."""
+        # questions = []
+        # answers = []
+        # for result in quiz_results.results:
+        #     questions.append(result.question)
+        #     answers.append(result.answer)
 
-        records = await self._fetch_one(query=check_quiz_results_query(questions=questions, answers=answers))
-        response = []
+        # records = await self._fetch_one(query=check_quiz_results_query(questions=questions, answers=answers))
+        # response = []
 
-        for index in range(0, len(records['question_ids'])):
-            response.append(QuizQuestionAnswerCorrectPair(
-                question_id=records['question_ids'][index],
-                answer_id=records['answer_ids'][index],
-                question_number=records['question_numbers'][index],
-                answer=records['answers'][index],
-                correct=records['correct'][index],
-                correct_answer=records['correct_answers'][index],
-                correct_answer_id=records['correct_answers_id'][index],
-            ))
+        # for index in range(0, len(records['question_ids'])):
+        #     response.append(QuizQuestionAnswerCorrectPair(
+        #         question_id=records['question_ids'][index],
+        #         answer_id=records['answer_ids'][index],
+        #         question_number=records['question_numbers'][index],
+        #         answer=records['answers'][index],
+        #         correct=records['correct'][index],
+        #         correct_answer=records['correct_answers'][index],
+        #         correct_answer_id=records['correct_answers_id'][index],
+        #     ))
 
-        return QuizResults(results=response, lecture_id=quiz_results.lecture_id)
+        return None
 
     async def check_if_content_available(self, *, user_id: int, subject_name: str) -> bool:
         """Checks if requested content is available to user requesting it.

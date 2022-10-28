@@ -228,6 +228,14 @@ async def create_private_quiz(
     el['options'] = json.loads(res['options']) if res.get('options') else []
     return QuizResponse(**el)
 
+@router.post("/quiz/done", response_model=None, name="private:quiz-done", status_code=HTTP_200_OK)
+async def get_quiz_results(
+    quiz_results: QuizGetResultsModel = Body(...),
+    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    user = Depends(get_user_from_cookie_token),
+):
+    return await db_repo.check_quiz_results(quiz_results=quiz_results, user=user.id)
+
 # @router.post("/quiz/results", response_model=QuizResults, name="private:get-quiz-results", status_code=HTTP_200_OK)
 # async def get_quiz_results(
 #     quiz_results: QuizGetResultsModel = Body(...),
