@@ -114,7 +114,6 @@ class GameInDB(GameModelCore):
 class AnswerCoreModel(DBCoreModel):
     answer: str
     is_true: Optional[bool]
-    image_size: Optional[str]
 class OptionCoreModel(DBCoreModel):
     question: str
     answer: str
@@ -131,6 +130,7 @@ class QuizModelCore(DBCoreModel):
     object_key: Optional[str]
     answers: Optional[List[AnswerCoreModel]]
     options: Optional[List[OptionCoreModel]]
+    image_size: Optional[str]
 
 class QuizPostModelCheck(DBCoreModel):
     fk: int
@@ -165,6 +165,7 @@ class QuizResponse(DBCoreModel):
     image_url: Optional[str]
     answers: Optional[List[AnswerCoreModel]]
     options: Optional[List[OptionCoreModel]]
+    image_size: Optional[str]
 
 class QuizQuestionAnswerPair(DBCoreModel):
     question: int
