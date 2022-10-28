@@ -4,7 +4,7 @@ from starlette.status import HTTP_200_OK
 from app.db.repositories.private.private import PrivateDBRepository
 
 from app.api.dependencies.database import get_db_repository
-# from app.api.dependencies.auth import get_user_from_cookie_token, is_superuser, is_verified
+from app.api.dependencies.auth import get_user_from_cookie_token # is_superuser, is_verified
 
 # ###
 # response models
@@ -30,8 +30,9 @@ async def get_private_branches(
 async def get_private_lectures(
     branch_id: int,
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    user = Depends(get_user_from_cookie_token),
 ) -> LectureResponse:
-    response = await db_repo.select_lectures(fk=branch_id)
+    response = await db_repo.select_lectures(fk=branch_id, user=user)
     return LectureResponse(lectures=response, fk=branch_id)
 
 @router.get("/material", response_model=MaterialResponse, name="private:get-material", status_code=HTTP_200_OK)

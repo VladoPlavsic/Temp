@@ -36,8 +36,23 @@ logger = logging.getLogger(__name__)
 def get_branch_progress(id):
     return id
 
-def get_lecture_progress(id):
-    return True
+async def get_lecture_progress(self, id, user):
+    res = await self._fetch_many(
+        query=(
+            f"SELECT id FROM private.quiz"
+            f" WHERE fk = {id}"
+        ),
+    )
+    quizes = [i['id'] for i in res]
+    complete = await self._fetch_many(
+        query=(
+            f"SELECT quiz_id FROM private.users_quiz"
+            f" WHERE quiz_id IN ({','.join(map(str, quizes))}) AND user_id = {user}"
+        ),
+    )
+    complete = [i['quiz_id'] for i in complete]
+    return all(i in complete for i in quizes)
+
 
 class PrivateDBSelectRepository(BaseDBRepository):
     """Connector allowing select data from private database schema"""
@@ -103,10 +118,10 @@ class PrivateDBSelectRepository(BaseDBRepository):
         records = await self._fetch_many(query=select_all_branch_keys_query())
         return [StructureAllModel(**record) for record in records]
 
-    async def select_lectures(self, *, fk) -> List[LectureInDB]:
+    async def select_lectures(self, *, fk, user) -> List[LectureInDB]:
         """Returns all lectures based on fk they refer to"""
         response_data = await self._fetch_many(query=select_lecture_query(fk=fk))
-        return [LecturePreResponse(**data, complete=get_lecture_progress(data['id'])) for data in response_data]
+        return [LecturePreResponse(**data, complete=await get_lecture_progress(self, data['id'], user.id)) for data in response_data]
 
     async def select_all_lectures(self) -> List[StructureAllModel]:
         """Returns list of id, object_keys for all lectures in database"""
