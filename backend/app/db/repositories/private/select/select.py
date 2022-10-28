@@ -31,27 +31,47 @@ from app.db.repositories.types import ContentType
 
 import logging
 
+
 logger = logging.getLogger(__name__)
 
-def get_branch_progress(id):
-    return id
+
+async def get_branch_progress(self, id, user):
+    try:
+        res = await self._fetch_many(
+            query=(
+                f"SELECT id FROM private.lecture"
+                f" WHERE fk = {id}"
+            ),
+        )
+        lectures = [i['id'] for i in res]
+        print([i['id'] for i in res])
+        complete = 0
+        for lecture in lectures:
+            if await get_lecture_progress(self, lecture, user):
+                complete += 1
+        return round(complete * 100 / len(lectures))
+    except:
+        return 100
 
 async def get_lecture_progress(self, id, user):
-    res = await self._fetch_many(
-        query=(
-            f"SELECT id FROM private.quiz"
-            f" WHERE fk = {id}"
-        ),
-    )
-    quizes = [i['id'] for i in res]
-    complete = await self._fetch_many(
-        query=(
-            f"SELECT quiz_id FROM private.users_quiz"
-            f" WHERE quiz_id IN ({','.join(map(str, quizes))}) AND user_id = {user}"
-        ),
-    )
-    complete = [i['quiz_id'] for i in complete]
-    return all(i in complete for i in quizes)
+    try:
+        res = await self._fetch_many(
+            query=(
+                f"SELECT id FROM private.quiz"
+                f" WHERE fk = {id}"
+            ),
+        )
+        quizes = [i['id'] for i in res]
+        complete = await self._fetch_many(
+            query=(
+                f"SELECT quiz_id FROM private.users_quiz"
+                f" WHERE quiz_id IN ({','.join(map(str, quizes))}) AND user_id = {user}"
+            ),
+        )
+        complete = [i['quiz_id'] for i in complete]
+        return all(i in complete for i in quizes)
+    except:
+        return True
 
 
 class PrivateDBSelectRepository(BaseDBRepository):
@@ -108,10 +128,10 @@ class PrivateDBSelectRepository(BaseDBRepository):
         records = await self._fetch_many(query=select_all_subject_keys_query())
         return [StructureAllModel(**record) for record in records]
 
-    async def select_branches(self, *, fk=1) -> List[BranchInDB]:
+    async def select_branches(self, *, fk=1, user=None) -> List[BranchInDB]:
         """Returns all branches based on fk they refer to"""
         response_data = await self._fetch_many(query=select_branch_query(fk=fk))
-        return [BranchPreResponse(**data, complete=get_branch_progress(data['id'])) for data in response_data]
+        return [BranchPreResponse(**data, complete=await get_branch_progress(self, data['id'], user.id)) for data in response_data]
 
     async def select_all_branches(self) -> List[StructureAllModel]:
         """Returns list of id, object_keys for all branches in database"""

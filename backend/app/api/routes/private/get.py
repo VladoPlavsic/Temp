@@ -22,8 +22,9 @@ router = APIRouter()
 @router.get("/branch", response_model=BranchResponse, name="private:get-branches", status_code=HTTP_200_OK)
 async def get_private_branches(
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    user = Depends(get_user_from_cookie_token),
 ) -> BranchResponse:
-    response = await db_repo.select_branches()
+    response = await db_repo.select_branches(user=user)
     return BranchResponse(branches=response)
 
 @router.get("/lecture", response_model=LectureResponse, name="private:get-lectures", status_code=HTTP_200_OK)
