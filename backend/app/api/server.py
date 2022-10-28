@@ -27,7 +27,7 @@ def get_application():
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[config.SITE_URL, 'https://www.shkembridge.ru'],
+        allow_origins=[config.SITE_URL, 'https://www.digiteducation.ru'],
         allow_credentials=True,
         allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PUT"],
         allow_headers=["Content-Type","Set-Cookie"],
