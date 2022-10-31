@@ -55,21 +55,28 @@ async def get_branch_progress(self, id, user):
 
 async def get_lecture_progress(self, id, user):
     try:
-        res = await self._fetch_many(
+        res = await self._fetch_one(
             query=(
-                f"SELECT id FROM private.quiz"
-                f" WHERE fk = {id}"
+                f"SELECT true FROM private.users_quiz"
+                f" WHERE quiz_id = {id} AND user_id = {user}"
             ),
         )
-        quizes = [i['id'] for i in res]
-        complete = await self._fetch_many(
-            query=(
-                f"SELECT quiz_id FROM private.users_quiz"
-                f" WHERE quiz_id IN ({','.join(map(str, quizes))}) AND user_id = {user}"
-            ),
-        )
-        complete = [i['quiz_id'] for i in complete]
-        return all(i in complete for i in quizes)
+        return bool(res)
+        # res = await self._fetch_many(
+        #     query=(
+        #         f"SELECT id FROM private.quiz"
+        #         f" WHERE fk = {id}"
+        #     ),
+        # )
+        # quizes = [i['id'] for i in res]
+        # complete = await self._fetch_many(
+        #     query=(
+        #         f"SELECT quiz_id FROM private.users_quiz"
+        #         f" WHERE quiz_id IN ({','.join(map(str, quizes))}) AND user_id = {user}"
+        #     ),
+        # )
+        # complete = [i['quiz_id'] for i in complete]
+        # return all(i in complete for i in quizes)
     except:
         return True
 
