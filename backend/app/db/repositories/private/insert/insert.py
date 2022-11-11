@@ -150,6 +150,9 @@ class PrivateDBInsertRepository(BaseDBRepository):
     async def insert_quiz_question(self, *, quiz_question: QuizCreateModel) -> QuizResponse:
         return await self._fetch_one(query=insert_quiz_query(**quiz_question.dict()))
 
+    async def insert_block_question(self, *, block: QuizCreateModel) -> QuizResponse:
+        return await self._fetch_one(query=insert_block_pre_query(**block.dict()))
+
     # STRUCTURE
     async def insert_subject_check(self, *, name_ru: str) -> bool:
         """Check if subject can be inserted"""

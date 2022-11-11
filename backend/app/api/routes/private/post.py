@@ -19,7 +19,7 @@ from app.cdn.types import DefaultFormats
 # ###
 # material
 from app.models.private import PresentationCreateModel, PresentationCreateModelCheck
-from app.models.private import BookPostModel, BookCreateModel, BookPostModelCheck
+from app.models.private import BookPostModel, BookCreateModel, BookPostModelCheck, RuModel
 from app.models.private import VideoPostModelYT, VideoPostModelCDN, VideoCreateModel, VideoPostModelCDNCheck
 from app.models.private import GamePostModel, GameCreateModel, GamePostModelCheck
 from app.models.private import QuizPostModel, QuizCreateModel, QuizGetResultsModel, QuizPostModelCheck
@@ -243,3 +243,16 @@ async def get_quiz_results(
 #     allowed: bool = Depends(get_user_from_cookie_token),
 # ) -> QuizResults:
 #     return await db_repo.check_quiz_results(quiz_results=quiz_results)
+
+@router.post("/block", response_model=RuModel, name="private:post-block", status_code=HTTP_201_CREATED)
+async def create_private_block(
+    block: RuModel = Body(...),
+    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
+    allowed: bool = Depends(allowed_or_denied),
+) -> RuModel:
+    block = RuModel(**block.dict())
+    res = await db_repo.insert_block_question(block=block)
+    el = dict(res)
+    el['questions'] = json.loads(res['questions']) if res.get('questions') else []
+    return RuModel(**el)

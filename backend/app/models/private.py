@@ -402,12 +402,13 @@ class Ru11(DBCoreModel):
     items: List[str]
 
 class RuModel(DBCoreModel):
-    id: int
+    id: int = None
+    fk: int
     type: str
     heading: str = None
     description: str = None
     video: str = None
-    items: List[str]
+    items: List[str] = None
     questions: List
 
 # material response
