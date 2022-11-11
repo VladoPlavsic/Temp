@@ -44,7 +44,6 @@ async def get_branch_progress(self, id, user):
             ),
         )
         lectures = [i['id'] for i in res]
-        print([i['id'] for i in res])
         complete = 0
         for lecture in lectures:
             if await get_lecture_progress(self, lecture, user):
@@ -164,6 +163,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
         quiz = await self.select_quiz(fk=fk)
         theory = await self.select_presentation(fk=fk, presentation=ContentType.THEORY)
         practice = await self.select_presentation(fk=fk, presentation=ContentType.PRACTICE)
+        blocks = None
 
         return MaterialResponseModel(
             video=video,
@@ -171,7 +171,8 @@ class PrivateDBSelectRepository(BaseDBRepository):
             game=game,
             quiz=quiz,
             theory=theory,
-            practice=practice
+            practice=practice,
+            blocks=blocks,
         )
 
     async def select_video(self, *, fk) -> VideoInDB:

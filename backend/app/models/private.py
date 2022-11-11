@@ -290,6 +290,125 @@ class LectureResponse(DBCoreModel):
     fk: int
     lectures: List[LecturePreResponse]
 
+
+class Ru1Question(DBCoreModel):
+    word: str
+    video: str
+    audio: str
+class Ru1(DBCoreModel):
+    id: int
+    type: str = 'text_audio'
+    heading: str
+    description: str
+    questions: List[Ru1Question]
+
+class Ru2Question(DBCoreModel):
+    russian_word: str
+    english_word: str
+    image: str
+class Ru2(DBCoreModel):
+    id: int
+    type: str = 'translation'
+    heading: str
+    description: str
+    questions: List[Ru2Question]
+
+class Ru3Answer(DBCoreModel):
+    answer: str
+    is_true: bool
+class Ru3Question(DBCoreModel):
+    audio: str
+    answers: List[Ru3Answer]
+class Ru3(DBCoreModel):
+    id: int
+    type: str = 'phrase_playback_test'
+    heading: str
+    description: str
+    questions: List[Ru3Question]
+
+class Ru4Question(DBCoreModel):
+    audio: str
+    answer: str
+class Ru4(DBCoreModel):
+    id: int
+    type: str = 'phrase_playback_self'
+    heading: str
+    description: str
+    questions: List[Ru4Question]
+
+class Ru5(DBCoreModel):
+    id: int
+    type: str = 'video'
+    heading: str
+    description: str
+    video: str
+
+class Ru6Question(DBCoreModel):
+    words: str
+    transcriptions: str
+class Ru6(DBCoreModel):
+    id: int
+    type: str = 'transcription'
+    heading: str
+    description: str
+    questions: List[Ru6Question]
+
+class Ru7Question(DBCoreModel):
+    video: str
+    letters: List[str]
+class Ru7(DBCoreModel):
+    id: int
+    type: str = 'articulation'
+    heading: str
+    description: str
+    questions: List[Ru7Question]
+
+class Ru8Question(DBCoreModel):
+    question: str
+    answer: str
+class Ru8(DBCoreModel):
+    id: int
+    type: str = 'matching'
+    heading: str
+    description: str
+    questions: List[Ru8Question]
+
+class Ru9Question(DBCoreModel):
+    question: str
+    answer: str
+class Ru9(DBCoreModel):
+    id: int
+    type: str = 'text_answer'
+    heading: str
+    description: str
+    questions: List[Ru9Question]
+
+class Ru10Question(DBCoreModel):
+    audio: str
+    texts: List[str]
+    answer: str
+class Ru10(DBCoreModel):
+    id: int
+    type: str = 'right_order'
+    heading: str
+    description: str
+    questions: List[Ru10Question]
+
+class Ru11(DBCoreModel):
+    id: int
+    type: str = 'theory'
+    heading: str
+    items: List[str]
+
+class RuModel(DBCoreModel):
+    id: int
+    type: str
+    heading: str = None
+    description: str = None
+    video: str = None
+    items: List[str]
+    questions: List
+
 # material response
 class MaterialResponseModel(DBCoreModel):
     video: Optional[VideoInDB]
@@ -298,6 +417,7 @@ class MaterialResponseModel(DBCoreModel):
     quiz: Optional[List[QuizResponse]]
     practice: Optional[PresentationInDB]
     theory: Optional[PresentationInDB]
+    blocks: Optional[List[Ru1 or Ru2 or Ru3 or Ru4 or Ru5 or Ru6 or Ru7 or Ru8 or Ru9 or Ru10 or Ru11]]
 
 class MaterialBulk(DBCoreModel):
     # video
