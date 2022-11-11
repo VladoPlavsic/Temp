@@ -153,3 +153,19 @@ async def delete_private_game(
         cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
 
     return None
+
+@router.delete("/block", response_model=None, name="private:delete-block", status_code=HTTP_200_OK)
+async def delete_private_block_questions(
+    id: int,
+    db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
+    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
+    allowed: bool = Depends(allowed_or_denied),
+) -> None:
+    deleted_key = await db_repo.delete_block_question(id=id)
+    # try:
+    #     if deleted_key:
+    #         cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
+    # except:
+    #     pass
+
+    return None

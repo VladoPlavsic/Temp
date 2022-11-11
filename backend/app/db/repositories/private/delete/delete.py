@@ -48,6 +48,10 @@ class PrivateDBDeleteRepository(BaseDBRepository):
         response = await self._fetch_one(query=delete_quiz_question_query(id=id))
         return response['object_key'] if response else None
 
+    async def delete_block_question(self, *, id) -> str:
+        response = await self._fetch_one(query=delete_block_question_query(id=id))
+        return None
+
     async def __delete(self, *, query):
         """Executes query and tries to return deleted object_key or raise HTTPException"""
         response = await self._fetch_one(query=query)

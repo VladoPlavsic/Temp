@@ -38,6 +38,10 @@ def delete_quiz_question_query(id) -> str:
     return \
         f"DELETE FROM private.quiz WHERE private.quiz.id = {id} RETURNING private.quiz.object_key"
 
+def delete_block_question_query(id) -> str:
+    return \
+        f"DELETE FROM private.blocks WHERE private.blocks.id = {id}"
+
 # we don't need to return anything from these
 def delete_game_query(id) -> str:
     return \
