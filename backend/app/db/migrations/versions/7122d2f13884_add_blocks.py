@@ -17,6 +17,7 @@ def upgrade() -> None:
     op.execute("""
     CREATE TABLE "private"."blocks" (
         "id" SERIAL NOT NULL PRIMARY KEY,
+        "fk" INT4 NOT NULL,
         "type" TEXT NOT NULL,
         "heading" TEXT,
         "description" TEXT,

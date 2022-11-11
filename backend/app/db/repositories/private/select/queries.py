@@ -78,6 +78,10 @@ def select_quiz_questions_query(fk) -> str:
     # return \
     #     f"SELECT (private.get_quiz_questions({fk})).*"
 
+def select_blocks_query(fk) -> str:
+    return \
+        f"SELECT * FROM private.blocks WHERE private.blocks.fk = {fk}"
+
 def select_quiz_answers_query(fk) -> str:
     return \
         f"SELECT (private.get_quiz_answers({fk})).*"

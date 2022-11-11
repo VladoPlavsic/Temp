@@ -345,6 +345,7 @@ class Ru5(DBCoreModel):
 
 class Ru6Question(DBCoreModel):
     words: str
+    audio: str
     transcriptions: str
 class Ru6(DBCoreModel):
     id: int

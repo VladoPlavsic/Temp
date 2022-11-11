@@ -19,7 +19,7 @@ from app.models.user import UserAvailableSubjects
 from app.models.private import VideoInDB
 from app.models.private import GameInDB
 from app.models.private import BookInDB
-from app.models.private import QuizInDB, QuizQuestionInDB, AnswersInDB, QuizGetResultsModel, QuizResults, QuizQuestionAnswerCorrectPair, QuizResponse
+from app.models.private import QuizInDB, QuizQuestionInDB, AnswersInDB, QuizGetResultsModel, QuizResults, QuizQuestionAnswerCorrectPair, QuizResponse, RuModel
 from app.models.private import PresentationInDB
 from app.models.private import PresentationMediaInDB
 
@@ -163,7 +163,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
         quiz = await self.select_quiz(fk=fk)
         theory = await self.select_presentation(fk=fk, presentation=ContentType.THEORY)
         practice = await self.select_presentation(fk=fk, presentation=ContentType.PRACTICE)
-        blocks = None
+        blocks = await self.select_blocks(fk=fk)
 
         return MaterialResponseModel(
             video=video,
@@ -206,6 +206,17 @@ class PrivateDBSelectRepository(BaseDBRepository):
             responses[i] = ele
 
         return [QuizResponse(**res) for res in responses]
+
+    async def select_blocks(self, *, fk) -> QuizInDB:
+        """Returns QuizInDB based on lecture fk. If there is no quiz for given lecture, return None."""
+        responses = await self._fetch_many(query=select_blocks_query(fk=fk))
+
+        for i, el in enumerate(responses):
+            ele = dict(el)
+            ele['questions'] = json.loads(el['questions']) if el.get('questions') else []
+            responses[i] = ele
+
+        return [RuModel(**res) for res in responses]
 
     async def select_all_quiz(self) -> List[MaterialAllModel]:
         """Returns list of id, object_keys for all quizes in database"""
