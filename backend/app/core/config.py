@@ -10,8 +10,8 @@ VERSION = "1.0.0"
 API_PREFIX = "/api"
 
 # EMAIL
-SERVER_EMAIL = config("SERVER_EMAIL", cast=str,  default="vladoplavsicvladoplavsic@gmail.com")
-ADMIN_EMAIL = config("ADMIN_EMAIL", cast=str, default='johnyglup98@gmail.com')
+SERVER_EMAIL = config("SERVER_EMAIL", cast=str,  default="digiteducationplatform@gmail.com")
+ADMIN_EMAIL = config("ADMIN_EMAIL", cast=str, default='digiteducationplatform@gmail.com')
 # GMAIL
 GMAIL_TOKEN = config("GMAIL_TOKEN", cast=str)
 GMAIL_REFRESH_TOKEN = config("GMAIL_REFRESH_TOKEN", cast=str)

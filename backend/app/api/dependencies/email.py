@@ -68,7 +68,7 @@ def send_message(subject, message_text, to=ADMIN_EMAIL) -> EmailResponse:
     # If there are no (valid) credentials available, let the user log in.
     else:
         creds = Credentials(
-          token=GMAIL_TOKEN, 
+          token=GMAIL_TOKEN,
           refresh_token=GMAIL_REFRESH_TOKEN,
           token_uri=GMAIL_TOKEN_URI,
           client_id=GMAIL_CLIENT_ID,
