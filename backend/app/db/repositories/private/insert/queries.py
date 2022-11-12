@@ -67,9 +67,9 @@ def insert_quiz_query(lecture_id, question_type, order_number=None, image_url=No
     return \
         f"INSERT INTO private.quiz (fk, order_number, question_type, question, object_key, image_url, answers, options, image_size) VALUES ({lecture_id}, {order_number or 1}, '{question_type}', '{question or ''}', '{object_key or '-'}', '{image_url or ''}', '{json.dumps(answers or [])}'::JSONB, '{json.dumps(options or [])}'::JSONB, {image_size}) RETURNING *"
 
-def insert_block_pre_query(id, fk, type, heading=None, description=None, video=None, items=None, questions=None, object_key=None) -> str:
+def insert_block_pre_query(id, fk, type, heading=None, description=None, video=None, items=None, questions=None, object_key=None, order_number=None) -> str:
     return \
-        f"INSERT INTO private.blocks (fk, type, heading, description, video, items, questions, object_key) VALUES ({fk}, '{type}', '{heading or ''}', '{description or ''}', '{video or '-'}', '{items or '{}'}', '{json.dumps(questions or [])}'::JSONB, '{object_key}') RETURNING *"
+        f"INSERT INTO private.blocks (fk, type, heading, description, video, items, questions, object_key, order_number) VALUES ({fk}, '{type}', '{heading or ''}', '{description or ''}', '{video or '-'}', '{items or '{}'}', '{json.dumps(questions or [])}'::JSONB, '{object_key}', {order_number}) RETURNING *"
 
 def insert_book_check_query(fk) -> str:
     return \
