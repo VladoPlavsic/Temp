@@ -302,6 +302,7 @@ class Ru1(DBCoreModel):
     description: str
     questions: List[dict]
     object_key: str = None
+    order_number: int = None
 
 class Ru2Question(DBCoreModel):
     russian_word: str
@@ -314,6 +315,7 @@ class Ru2(DBCoreModel):
     description: str
     questions: List[dict]
     object_key: str = None
+    order_number: int = None
 
 class Ru3Answer(DBCoreModel):
     answer: str
@@ -328,6 +330,7 @@ class Ru3(DBCoreModel):
     description: str
     questions: List[dict]
     object_key: str = None
+    order_number: int = None
 
 class Ru4Question(DBCoreModel):
     audio: str
@@ -339,6 +342,7 @@ class Ru4(DBCoreModel):
     description: str
     questions: List[dict]
     object_key: str = None
+    order_number: int = None
 
 class Ru5(DBCoreModel):
     id: int
@@ -347,6 +351,7 @@ class Ru5(DBCoreModel):
     description: str
     video: str
     object_key: str = None
+    order_number: int = None
 
 class Ru6Question(DBCoreModel):
     words: str
@@ -359,6 +364,7 @@ class Ru6(DBCoreModel):
     description: str
     questions: List[dict]
     object_key: str = None
+    order_number: int = None
 
 class Ru7Question(DBCoreModel):
     video: str
@@ -370,6 +376,7 @@ class Ru7(DBCoreModel):
     description: str
     questions: List[dict]
     object_key: str = None
+    order_number: int = None
 
 class Ru8Question(DBCoreModel):
     question: str
@@ -381,6 +388,7 @@ class Ru8(DBCoreModel):
     description: str
     questions: List[dict]
     object_key: str = None
+    order_number: int = None
 
 class Ru9Question(DBCoreModel):
     question: str
@@ -392,6 +400,7 @@ class Ru9(DBCoreModel):
     description: str
     questions: List[dict]
     object_key: str = None
+    order_number: int = None
 
 class Ru10Question(DBCoreModel):
     audio: str
@@ -404,6 +413,7 @@ class Ru10(DBCoreModel):
     description: str
     questions: List[dict]
     object_key: str = None
+    order_number: int = None
 
 class Ru11(DBCoreModel):
     id: int
@@ -411,6 +421,7 @@ class Ru11(DBCoreModel):
     heading: str
     items: List[str]
     object_key: str = None
+    order_number: int = None
 
 class RuModel(DBCoreModel):
     id: int = None
@@ -422,6 +433,7 @@ class RuModel(DBCoreModel):
     items: List[str] = None
     questions: List[dict] = None
     object_key: str = None
+    order_number: int = None
 
 # material response
 class MaterialResponseModel(DBCoreModel):
