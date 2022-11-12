@@ -1,3 +1,5 @@
+import re
+
 from fastapi import APIRouter, HTTPException
 from fastapi import Depends, Body
 from starlette.status import HTTP_201_CREATED, HTTP_200_OK
@@ -24,7 +26,7 @@ from app.models.public import InstructionPostModel
 from app.models.public import ReviewPostModel
 from app.models.public import TitlesPostModel
 
-# create models 
+# create models
 from app.models.public import PresentationCreateModel
 from app.models.public import BookCreateModel
 from app.models.public import VideoCreateModel
@@ -59,7 +61,7 @@ async def create_public_practice(
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
     ) -> PresentationInDB:
-    
+
     images = cdn_repo.format_presentation_content(folder=presentation.object_key, type_=DefaultFormats.IMAGES)
     audio = cdn_repo.format_presentation_content(folder=presentation.object_key, type_=DefaultFormats.AUDIO)
 
@@ -89,10 +91,12 @@ async def create_public_book(
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
     ) -> BookInDB:
-    
+
     shared = cdn_repo.form_book_insert_data(folder=book.object_key)
     object_key = list(shared[0].keys())[0]
-    url = shared[0][object_key]
+    url = shared[0]
+    if url:
+        url = re.sub(r'\?.*', '', url)
     book.object_key = object_key
     book = BookCreateModel(**book.dict(), url=url)
     response = await db_repo.insert_book(book=book)
@@ -171,6 +175,8 @@ async def create_public_video(
     shared = cdn_repo.form_video_insert_data(folder=video.object_key)
     object_key = list(shared[0].keys())[0]
     url = shared[0][object_key]
+    if url:
+        url = re.sub(r'\?.*', '', url)
     video.object_key = object_key
     video = IntroVideoCreateModel(**video.dict(), url=url)
     response = await db_repo.insert_intro_video(video=video)
@@ -188,6 +194,8 @@ async def create_public_game(
     shared = cdn_repo.form_game_insert_data(folder=game.object_key)
     object_key = list(shared[0].keys())[0]
     url = shared[0][object_key]
+    if url:
+        url = re.sub(r'\?.*', '', url)
     game.object_key = object_key
     game = GameCreateModel(**game.dict(), url=url)
     response = await db_repo.insert_game(game=game)
@@ -206,6 +214,8 @@ async def create_private_quiz(
         shared = cdn_repo.form_quiz_insert_data(folder=quiz.object_key)
         object_key = list(shared[0].keys())[0]
         url = shared[0][object_key]
+        if url:
+            url = re.sub(r'\?.*', '', url)
         quiz.object_key = object_key
         quiz = QuizCreateModel(**quiz.dict(), image_url=url)
     else:
@@ -231,7 +241,7 @@ async def create_about_us(
     db_repo: PublicDBRepository = Depends(get_db_repository(PublicDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
     ) -> AboutUsInDB:
-    
+
     response = await db_repo.insert_about_us(about_us=about_us)
     return response
 
@@ -262,7 +272,7 @@ async def create_review(
     cdn_repo: PublicYandexCDNRepository = Depends(get_cdn_repository(PublicYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
     ) -> ReviewInDB:
-    
+
     shared = cdn_repo.get_sharing_link_from_object_key(object_key=review.object_key)
     review = ReviewCreateModel(**review.dict(), image_url=shared[review.object_key])
     response = await db_repo.insert_review(review=review)

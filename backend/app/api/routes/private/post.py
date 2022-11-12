@@ -1,3 +1,4 @@
+import re
 import json
 
 from fastapi import APIRouter
@@ -155,6 +156,8 @@ async def create_private_book(
     shared = cdn_repo.form_book_insert_data(folder=book.object_key)
     object_key = list(shared[0].keys())[0]
     url = shared[0][object_key]
+    if url:
+        url = re.sub(r'\?.*', '', url)
     book.object_key = object_key
     book = BookCreateModel(**book.dict(), url=url)
     response = await db_repo.insert_book(book=book)
@@ -191,6 +194,8 @@ async def create_private_game(
     shared = cdn_repo.form_game_insert_data(folder=game.object_key)
     object_key = list(shared[0].keys())[0]
     url = shared[0][object_key]
+    if url:
+        url = re.sub(r'\?.*', '', url)
     game.object_key = object_key
     response = await db_repo.insert_game(game=GameCreateModel(**game.dict(), url=url))
 
@@ -216,6 +221,8 @@ async def create_private_quiz(
         shared = cdn_repo.form_quiz_insert_data(folder=quiz.object_key)
         object_key = list(shared[0].keys())[0]
         url = shared[0][object_key]
+        if url:
+            url = re.sub(r'\?.*', '', url)
         quiz.object_key = object_key
         quiz = QuizCreateModel(**quiz.dict(), image_url=url)
     else:
