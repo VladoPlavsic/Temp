@@ -443,7 +443,7 @@ class MaterialResponseModel(DBCoreModel):
     quiz: Optional[List[QuizResponse]]
     practice: Optional[PresentationInDB]
     theory: Optional[PresentationInDB]
-    blocks: Optional[List[Ru1 or Ru2 or Ru3 or Ru4 or Ru5 or Ru6 or Ru7 or Ru8 or Ru9 or Ru10 or Ru11]]
+    blocks: Optional[List[RuModel]]
 
 class MaterialBulk(DBCoreModel):
     # video

@@ -207,7 +207,7 @@ class PrivateDBSelectRepository(BaseDBRepository):
 
         return [QuizResponse(**res) for res in responses]
 
-    async def select_blocks(self, *, fk) -> QuizInDB:
+    async def select_blocks(self, *, fk):
         """Returns QuizInDB based on lecture fk. If there is no quiz for given lecture, return None."""
         responses = await self._fetch_many(query=select_blocks_query(fk=fk))
 
