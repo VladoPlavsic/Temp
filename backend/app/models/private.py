@@ -300,7 +300,8 @@ class Ru1(DBCoreModel):
     type: str = 'text_audio'
     heading: str
     description: str
-    questions: List[Ru1Question]
+    questions: List[dict]
+    object_key: str = None
 
 class Ru2Question(DBCoreModel):
     russian_word: str
@@ -311,7 +312,8 @@ class Ru2(DBCoreModel):
     type: str = 'translation'
     heading: str
     description: str
-    questions: List[Ru2Question]
+    questions: List[dict]
+    object_key: str = None
 
 class Ru3Answer(DBCoreModel):
     answer: str
@@ -324,7 +326,8 @@ class Ru3(DBCoreModel):
     type: str = 'phrase_playback_test'
     heading: str
     description: str
-    questions: List[Ru3Question]
+    questions: List[dict]
+    object_key: str = None
 
 class Ru4Question(DBCoreModel):
     audio: str
@@ -334,7 +337,8 @@ class Ru4(DBCoreModel):
     type: str = 'phrase_playback_self'
     heading: str
     description: str
-    questions: List[Ru4Question]
+    questions: List[dict]
+    object_key: str = None
 
 class Ru5(DBCoreModel):
     id: int
@@ -342,6 +346,7 @@ class Ru5(DBCoreModel):
     heading: str
     description: str
     video: str
+    object_key: str = None
 
 class Ru6Question(DBCoreModel):
     words: str
@@ -352,7 +357,8 @@ class Ru6(DBCoreModel):
     type: str = 'transcription'
     heading: str
     description: str
-    questions: List[Ru6Question]
+    questions: List[dict]
+    object_key: str = None
 
 class Ru7Question(DBCoreModel):
     video: str
@@ -362,7 +368,8 @@ class Ru7(DBCoreModel):
     type: str = 'articulation'
     heading: str
     description: str
-    questions: List[Ru7Question]
+    questions: List[dict]
+    object_key: str = None
 
 class Ru8Question(DBCoreModel):
     question: str
@@ -372,7 +379,8 @@ class Ru8(DBCoreModel):
     type: str = 'matching'
     heading: str
     description: str
-    questions: List[Ru8Question]
+    questions: List[dict]
+    object_key: str = None
 
 class Ru9Question(DBCoreModel):
     question: str
@@ -382,7 +390,8 @@ class Ru9(DBCoreModel):
     type: str = 'text_answer'
     heading: str
     description: str
-    questions: List[Ru9Question]
+    questions: List[dict]
+    object_key: str = None
 
 class Ru10Question(DBCoreModel):
     audio: str
@@ -393,13 +402,15 @@ class Ru10(DBCoreModel):
     type: str = 'right_order'
     heading: str
     description: str
-    questions: List[Ru10Question]
+    questions: List[dict]
+    object_key: str = None
 
 class Ru11(DBCoreModel):
     id: int
     type: str = 'theory'
     heading: str
     items: List[str]
+    object_key: str = None
 
 class RuModel(DBCoreModel):
     id: int = None
@@ -409,7 +420,8 @@ class RuModel(DBCoreModel):
     description: str = None
     video: str = None
     items: List[str] = None
-    questions: List
+    questions: List[dict] = None
+    object_key: str = None
 
 # material response
 class MaterialResponseModel(DBCoreModel):
