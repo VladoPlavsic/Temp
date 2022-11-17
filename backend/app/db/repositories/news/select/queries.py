@@ -12,9 +12,9 @@ def select_news_preview_query(start: int, count: int) -> str:
     return \
         f"SELECT (news.select_master_news({start}, {count})).*"
 
-def select_news_query(date: str, url: str) -> str:
+def select_news_query(id: int) -> str:
     return \
-        f"SELECT (news.select_news_by_unique_key({string_or_null(date, url)})).*"
+        f"SELECT * FROM news.news WHERE id={id}"
 
 def select_images_for_news_query(fk: int) -> str:
     return \

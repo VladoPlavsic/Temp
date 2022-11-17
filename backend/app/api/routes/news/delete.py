@@ -16,12 +16,7 @@ router = APIRouter()
 async def create_news(
     id: int,
     db_repo: NewsDBRepository = Depends(get_db_repository(NewsDBRepository)),
-    cdn_repo: NewsYandexCDNRepository = Depends(get_cdn_repository(NewsYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> None:
-
-    deleted_key = await db_repo.delete_news(id=id)
-    if deleted_key:
-        cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
-
+) -> None:
+    await db_repo.delete_news(id=id)
     return None

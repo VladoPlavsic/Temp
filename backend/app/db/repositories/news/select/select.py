@@ -1,3 +1,5 @@
+import json
+
 from typing import List
 from fastapi import HTTPException
 
@@ -30,13 +32,13 @@ class NewsDBSelectRepository(BaseDBRepository):
     async def select_all_news_images(self) -> List[NewsImagesAllModel]:
         """Returns list of object_keys for all news images in database"""
         records = await self._fetch_many(query=select_all_news_images_query())
-        return [NewsImagesAllModel(**record) for record in records] 
+        return [NewsImagesAllModel(**record) for record in records]
 
     async def select_news_preview(self, *, start: int, count: int) -> List[NewsPreviewInDBModel]:
         """Returns list of preview images (NewsPreviewInDBModel) from db.
-        
+
         Keyword arguments:
-        start -- starting offset for images 
+        start -- starting offset for images
         count -- number of images to fetch
             (e.g. If there is 15 images, and we want 12-14 we would set these parameters to be:
                 start = 11
@@ -45,13 +47,16 @@ class NewsDBSelectRepository(BaseDBRepository):
         records = await self._fetch_many(query=select_news_preview_query(start=start, count=count))
         return [NewsPreviewInDBModel(**record) for record in records]
 
-    async def select_news(self, *, date: str, url: str) -> NewsInDBModel:
-        news = await self._fetch_one(query=select_news_query(date=date, url=url))
+    async def select_news(self, id: int) -> NewsInDBModel:
+        news = await self._fetch_one(query=select_news_query(id))
         if not news:
             raise HTTPException(status_code=404, detail=f"News not found!")
-
-        images = await self.select_news_images(fk=news['id'])
-        return NewsInDBModel(**news, images=images)
+        # for i, el in enumerate(news):
+        #     ele = dict(el)
+        news = dict(news)
+        news['images'] = json.loads(news['images']) if news.get('images') else []
+        # news[i] = ele
+        return NewsInDBModel(**news)
 
     async def get_news_count(self) -> int:
         response = await self._fetch_one(query=get_news_count_query())

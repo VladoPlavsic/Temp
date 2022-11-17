@@ -27,18 +27,18 @@ class NewsDBInsertRepository(BaseDBRepository):
     async def insert_news(self, *, news: NewsCreateModel) -> NewsInDBModel:
         metadata = await self._fetch_one(query=insert_news_master_query(
             date=news.date,
-            title=news.title, 
+            title=news.title,
             short_desc=news.short_desc,
             content=news.content,
-            url=news.url,
             object_key=news.object_key,
-            preview_image_url=news.preview_image_url
+            preview_image_url=news.preview_image_url,
+            images=news.images,
         ))
         if not metadata:
             return None
-
-        images = await self.__insert_news_slave(fk=metadata['id'], images=news.images)
-        return NewsInDBModel(**metadata, images=images)
+        metadata = dict(metadata)
+        metadata['images'] = json.loads(metadata['images']) if metadata.get('images') else []
+        return NewsInDBModel(**metadata)
 
     async def __insert_news_slave(self, *, fk: int, images: List[NewsImagesCreate]) -> NewsImagesCore:
         records = await self._fetch_many(query=insert_news_slave_query(fk=fk, medium=images))

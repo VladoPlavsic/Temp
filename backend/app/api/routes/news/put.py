@@ -22,14 +22,7 @@ router = APIRouter()
 async def create_news(
     updated: NewsUpdateModel = Body(...),
     db_repo: NewsDBRepository = Depends(get_db_repository(NewsDBRepository)),
-    cdn_repo: NewsYandexCDNRepository = Depends(get_cdn_repository(NewsYandexCDNRepository)),
     allowed: bool = Depends(allowed_or_denied),
-    ) -> NewsInDBModel:
-
-    if updated.object_key:
-        preview_image_url = cdn_repo.get_sharing_link_from_object_key(object_key=updated.object_key)
-        updated.preview_image_url = preview_image_url[updated.object_key]
-
+) -> NewsInDBModel:
     response = await db_repo.update_news_metadata(updated=updated)
     return response
-    

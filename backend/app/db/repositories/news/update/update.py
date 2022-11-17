@@ -1,3 +1,5 @@
+import json
+
 from typing import Optional
 from fastapi import HTTPException
 
@@ -30,6 +32,6 @@ class NewsDBUpdateRepository(BaseDBRepository):
         response = await self._fetch_one(query=update_news_metadata_query(**updated.dict()))
         if not response:
             return None
-
-        images = await self.select_news_images(fk=response['id'])
-        return NewsInDBModel(**response, images=images)
+        response = dict(response)
+        response['images'] = json.loads(response['images']) if response.get('images') else []
+        return NewsInDBModel(**response)

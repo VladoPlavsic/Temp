@@ -6,8 +6,8 @@ class NewsCoreModel(BaseModel):
     date: str
     title: str
     short_desc: str
-    url: str
     object_key: str
+    preview_image_url: str
 
 class NewsImagesCore(BaseModel):
     order: int
@@ -21,26 +21,23 @@ class NewsImagesCreate(NewsImagesCore):
     pass
 
 class NewsPostModel(NewsCoreModel):
+    images: list
     content: str
-    folder: str
 
 class NewsCreateModel(NewsCoreModel):
     content: str
-    preview_image_url: str
-    images: List[NewsImagesCreate]
+    images: list
 
 class NewsPreviewInDBModel(NewsCoreModel):
     id: int
-    preview_image_url: str
 
 class NewsInDBModel(NewsCoreModel):
     id: int
     content: str
-    preview_image_url: str
-    images: List[NewsImagesInDB]
+    images: list
 
 class NewsResponseModel(BaseModel):
-    count: int 
+    count: int
     news: List[NewsPreviewInDBModel]
 
 class NewsUpdateModel(BaseModel):
@@ -49,7 +46,7 @@ class NewsUpdateModel(BaseModel):
     title: Optional[str]
     short_desc: Optional[str]
     content: Optional[str]
-    url: Optional[str]
+    images: Optional[list]
     object_key: Optional[str]
     preview_image_url: Optional[str]
 
