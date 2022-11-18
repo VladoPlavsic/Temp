@@ -24,11 +24,9 @@ async def get_news_preview(
     start: int,
     count: int,
     db_repo: NewsDBRepository = Depends(get_db_repository(NewsDBRepository)),
-    ) -> NewsResponseModel:
-
+) -> NewsResponseModel:
     news = await db_repo.select_news_preview(start=start, count=count)
     count = await db_repo.get_news_count()
-
     return NewsResponseModel(news=news, count=count)
 
 @router.get("/get/news", response_model=NewsInDBModel, name="news:get-news", status_code=HTTP_200_OK)

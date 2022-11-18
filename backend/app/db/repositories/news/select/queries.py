@@ -10,7 +10,7 @@ def select_all_news_images_query() -> str:
 
 def select_news_preview_query(start: int, count: int) -> str:
     return \
-        f"SELECT (news.select_master_news({start}, {count})).*"
+        f"SELECT * FROM news.news ORDER BY id DESC LIMIT {count} OFFSET {start}"
 
 def select_news_query(id: int) -> str:
     return \
