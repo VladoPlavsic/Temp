@@ -1,14 +1,15 @@
 import json
 
-from app.db.repositories.parsers import string_or_null, list_to_string
+from app.db.repositories.parsers import string_or_null
 
 def insert_news_check_query(date, url) -> str:
     return \
         f"SELECT (news.check_if_news_can_be_created({string_or_null(date, url)})) AS yes"
 
 def insert_news_master_query(date, title, short_desc, content, object_key, preview_image_url, images) -> str:
+    js1 = json.dumps(images or []).replace("'", "''")
     return (
-        f"INSERT INTO news.news (date, title, short_desc, content, object_key, preview_image_url, images) VALUES ('{date or ''}', '{title or ''}', '{short_desc or ''}', '{content or ''}', '{object_key or '-'}', '{preview_image_url or ''}', '{json.dumps(images or [])}'::JSONB) RETURNING *"
+        f"INSERT INTO news.news (date, title, short_desc, content, object_key, preview_image_url, images) VALUES ({string_or_null(date, title, short_desc, content, object_key, preview_image_url)}, '{js1}'::JSONB) RETURNING *"
     )
 
 def insert_news_slave_query(fk, medium) -> str:

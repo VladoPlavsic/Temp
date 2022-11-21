@@ -2,7 +2,7 @@ from fastapi import HTTPException
 
 def parse_youtube_link(link) -> str:
     '''
-    Parse youtube link and return only 
+    Parse youtube link and return only
     '''
     try:
         link = link.split('?v=')[1]
@@ -32,6 +32,8 @@ def string_or_null(*args) -> str:
         if arg == None or arg == '':
             string += 'null, '
         else:
+            if isinstance(arg, str):
+                arg = arg.replace("'", "''")
             string += f"'{arg}', "
 
     return string.strip(', ')
