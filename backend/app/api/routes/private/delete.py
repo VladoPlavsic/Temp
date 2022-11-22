@@ -33,10 +33,17 @@ async def delete_private_branch(
 @router.delete('/lecture', response_model=None, name="private:delete-lecture", status_code=HTTP_200_OK)
 async def delete_private_lecture(
     id: int,
+    cdn_repo: PrivateYandexCDNRepository = Depends(get_cdn_repository(PrivateYandexCDNRepository)),
     db_repo: PrivateDBRepository = Depends(get_db_repository(PrivateDBRepository)),
     allowed: bool = Depends(allowed_or_denied),
 ) -> None:
-    await db_repo.delete_lecture(id=id)
+    deleted_key = await db_repo.delete_lecture(id=id)
+    try:
+        if deleted_key:
+            cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
+    except:
+        pass
+
     return None
 
 @router.delete('/theory', response_model=None, name="private:delete-theory", status_code=HTTP_200_OK)
@@ -149,8 +156,11 @@ async def delete_private_game(
 ) -> None:
 
     deleted_key = await db_repo.delete_game(id=id)
-    if deleted_key:
-        cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
+    try:
+        if deleted_key:
+            cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
+    except:
+        pass
 
     return None
 
@@ -162,10 +172,10 @@ async def delete_private_block_questions(
     allowed: bool = Depends(allowed_or_denied),
 ) -> None:
     deleted_key = await db_repo.delete_block_question(id=id)
-    # try:
-    #     if deleted_key:
-    #         cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
-    # except:
-    #     pass
+    try:
+        if deleted_key:
+            cdn_repo.delete_folder_by_inner_key(inner_key=deleted_key)
+    except:
+        pass
 
     return None
