@@ -512,7 +512,7 @@ def drop_stored_procedures() -> None:
     "delete_video_by_id",]
 
     for procedure in procedure_list:
-        op.execute(f"DROP FUNCTION private.{procedure}")
+        op.execute(f"DROP FUNCTION IF EXISTS private.{procedure}")
 
 def create_private_tables() -> None:
     # grades table

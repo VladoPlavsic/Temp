@@ -15,7 +15,7 @@ depends_on = None
 
 def upgrade() -> None:
     op.execute("""
-    INSERT INTO private.subject (id, fk, name_en, name_ru, background, object_key, order_number) VALUES (1, 1, 'Fix', 'Костыль', 'https://storage.yandexcloud.net/mpei-production/subscription/10klass/shubham-sharan-z-fq3wbvfmu-unsplash.jpg?AWSAccessKeyId=rUapbMUCujqhRIsxcDUV&Signature=3%2BHU8s6mIIWl5oLFSdgXUQb1he0%3D&Expires=1666644061', 'subscription/10klass/shubham-sharan-z-fq3wbvfmu-unsplash.jpg', 1);
+    INSERT INTO private.subject (id, fk, name_en, name_ru, background, object_key, order_number) VALUES (1, 1, 'Fix', 'Костыль', 'https://eduplat.storage.yandexcloud.net/courses/b16319aa-faea-46ff-9f4b-b9796c432fff/128/blocks/theory/0691f069-5875-481e-8b34-71773dc6cb4c/%D1%81.png', 'courses/b16319aa-faea-46ff-9f4b-b9796c432fff/128/blocks/theory/0691f069-5875-481e-8b34-71773dc6cb4c/с.png', 1);
     """)
 
 def downgrade() -> None:
