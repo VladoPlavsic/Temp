@@ -150,3 +150,8 @@ docker/docker-compose/docker-compose.yaml
 
 #Gmail API token
 token.json
+
+# For now add this so I don't leak pipeline to pub repo
+.vscode
+extras/*
+.github/
